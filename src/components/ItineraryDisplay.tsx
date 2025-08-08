@@ -55,7 +55,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     };
     
     // Compress and encode the data
-    const encodedData = btoa(JSON.stringify(shareData));
+    const encodedData = btoa(encodeURIComponent(JSON.stringify(shareData)));
     const baseUrl = window.location.origin;
     return `${baseUrl}/share/${encodedData}`;
   };

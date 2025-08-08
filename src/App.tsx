@@ -32,7 +32,7 @@ function App() {
     if (path.startsWith('/share/')) {
       const encodedData = path.replace('/share/', '');
       try {
-        const decodedData = atob(encodedData);
+        const decodedData = decodeURIComponent(atob(encodedData));
         const itineraryData = JSON.parse(decodedData);
         setSharedItinerary(itineraryData);
         setAppState('shared');
