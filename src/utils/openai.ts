@@ -56,18 +56,18 @@ const convertCurrencyRange = (minUsd: number, maxUsd: number, toCurrency: string
 
 export const generateItinerary = async (formData: FormData): Promise<Itinerary> => {
   try {
-    // Check if Supabase is configured
+    // Check if Supabase is configured (frontend environment variables)
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
     
     if (!supabaseUrl || !supabaseAnonKey) {
-      console.warn('Supabase environment variables not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file.');
+      console.warn('Supabase frontend environment variables not configured. Using mock data.');
       return generateMockItinerary(formData);
     }
 
     // Validate Supabase URL format
     if (!supabaseUrl.includes('supabase.co')) {
-      console.warn('Invalid Supabase URL format. Please check your VITE_SUPABASE_URL in .env file.');
+      console.warn('Invalid Supabase URL format. Using mock data.');
       return generateMockItinerary(formData);
     }
 
@@ -94,7 +94,6 @@ export const generateItinerary = async (formData: FormData): Promise<Itinerary> 
     if (!response.ok) {
       if (response.status === 404) {
         console.warn('Edge Function not found (404). The generate-itinerary function may not be deployed to your Supabase project.');
-        console.warn('To deploy: Run "supabase functions deploy generate-itinerary" in your project directory.');
         console.warn('Falling back to mock data...');
         return generateMockItinerary(formData);
       }
@@ -102,12 +101,22 @@ export const generateItinerary = async (formData: FormData): Promise<Itinerary> 
       const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
       console.error(`Supabase Edge Function error (${response.status}):`, errorData);
       
+      // If it's an API key error, provide helpful message
+      if (errorData.error && errorData.error.includes('OpenAI API key')) {
+        console.error('OpenAI API key issue detected. Please verify:');
+        console.error('1. OPENAI_API_KEY is set in Supabase Edge Functions environment variables');
+        console.error('2. The API key is valid and starts with "sk-"');
+        console.error('3. The Edge Function has been redeployed after adding the key');
+      }
+      
       if (response.status >= 500) {
         console.warn('Server error detected, falling back to mock data...');
         return generateMockItinerary(formData);
       }
       
-      throw new Error(`Edge Function error: ${response.status} - ${errorData.error || 'Unknown error'}`);
+      // For client errors (4xx), fall back to mock data instead of throwing
+      console.warn('Client error detected, falling back to mock data...');
+      return generateMockItinerary(formData);
     }
 
     const itinerary = await response.json();
