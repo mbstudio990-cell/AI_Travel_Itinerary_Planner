@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from './hooks/useLocation';
 import Header from './components/Header';
 import { TypingText } from './components/ui/TypingText';
 import TravelForm from './components/TravelForm';
@@ -8,10 +9,12 @@ import LoadingSpinner from './components/LoadingSpinner';
 import { FormData, Itinerary } from './types';
 import { generateItinerary } from './utils/openai';
 import { getItineraries } from './utils/storage';
+import SharedItineraryView from './components/SharedItineraryView';
 
-type AppState = 'form' | 'loading' | 'itinerary' | 'saved';
+type AppState = 'form' | 'loading' | 'itinerary' | 'saved' | 'shared';
 
 function App() {
+  const location = useLocation();
   const [appState, setAppState] = useState<AppState>('form');
   const [currentItinerary, setCurrentItinerary] = useState<Itinerary | null>(null);
   const [savedItineraries, setSavedItineraries] = useState<Itinerary[]>([]);
@@ -19,9 +22,27 @@ function App() {
   const [showSubtitle, setShowSubtitle] = useState(false);
   const [showMainContent, setShowMainContent] = useState(false);
   const [fadeOutText, setFadeOutText] = useState(false);
+  const [sharedItinerary, setSharedItinerary] = useState<Itinerary | null>(null);
 
   useEffect(() => {
     setSavedItineraries(getItineraries());
+    
+    // Check if this is a shared itinerary URL
+    const path = window.location.pathname;
+    if (path.startsWith('/share/')) {
+      const encodedData = path.replace('/share/', '');
+      try {
+        const decodedData = atob(encodedData);
+        const itineraryData = JSON.parse(decodedData);
+        setSharedItinerary(itineraryData);
+        setAppState('shared');
+        setShowMainContent(true); // Skip the typing animation for shared links
+      } catch (error) {
+        console.error('Error decoding shared itinerary:', error);
+        // If decoding fails, show normal form
+        setAppState('form');
+      }
+    }
   }, []);
 
   const handleFormSubmit = async (formData: FormData) => {
@@ -199,6 +220,13 @@ function App() {
             onBack={handleBackToForm}
             onView={handleViewItinerary}
             onUpdate={handleUpdateSaved}
+          />
+        )}
+
+        {appState === 'shared' && sharedItinerary && (
+          <SharedItineraryView
+            itinerary={sharedItinerary}
+            onPlanNewTrip={handleBackToForm}
           />
         )}
       </main>

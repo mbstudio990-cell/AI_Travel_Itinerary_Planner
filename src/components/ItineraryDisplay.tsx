@@ -29,19 +29,40 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   };
 
   const handleNativeShare = () => {
-    const shareText = getShareText();
+    const shareableLink = createShareableLink(itinerary);
+    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️`;
     if (navigator.share) {
       navigator.share({
         title: `Travel Itinerary for ${itinerary.destination}`,
         text: shareText,
-        url: getShareUrl()
+        url: shareableLink
       }).catch(err => console.log('Error sharing:', err));
     }
     setShowShareMenu(false);
   };
 
+  const createShareableLink = (itinerary: Itinerary): string => {
+    // Create a shareable link by encoding the itinerary data
+    const shareData = {
+      id: itinerary.id,
+      destination: itinerary.destination,
+      startDate: itinerary.startDate,
+      endDate: itinerary.endDate,
+      preferences: itinerary.preferences,
+      days: itinerary.days,
+      totalBudget: itinerary.totalBudget,
+      createdAt: itinerary.createdAt
+    };
+    
+    // Compress and encode the data
+    const encodedData = btoa(JSON.stringify(shareData));
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/share/${encodedData}`;
+  };
+
   const handleCopyLink = async () => {
-    const shareText = getShareText();
+    const shareableLink = createShareableLink(itinerary);
+    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️\n\n${shareableLink}`;
     try {
       await navigator.clipboard.writeText(shareText);
       alert('Itinerary copied to clipboard!');
@@ -52,7 +73,8 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   };
 
   const handleEmailShare = () => {
-    const shareText = getShareText();
+    const shareableLink = createShareableLink(itinerary);
+    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️\n\nView the full itinerary here: ${shareableLink}`;
     const subject = `Travel Itinerary for ${itinerary.destination}`;
     const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(shareText)}`;
     window.open(mailtoUrl);
@@ -60,28 +82,32 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   };
 
   const handleWhatsAppShare = () => {
-    const shareText = getShareText();
+    const shareableLink = createShareableLink(itinerary);
+    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️\n\n${shareableLink}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, '_blank');
     setShowShareMenu(false);
   };
 
   const handleTelegramShare = () => {
-    const shareText = getShareText();
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(getShareUrl())}&text=${encodeURIComponent(shareText)}`;
+    const shareableLink = createShareableLink(itinerary);
+    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️`;
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareableLink)}&text=${encodeURIComponent(shareText)}`;
     window.open(telegramUrl, '_blank');
     setShowShareMenu(false);
   };
 
   const handleTwitterShare = () => {
+    const shareableLink = createShareableLink(itinerary);
     const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(getShareUrl())}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareableLink)}`;
     window.open(twitterUrl, '_blank');
     setShowShareMenu(false);
   };
 
   const handleFacebookShare = () => {
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getShareUrl())}`;
+    const shareableLink = createShareableLink(itinerary);
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareableLink)}`;
     window.open(facebookUrl, '_blank');
     setShowShareMenu(false);
   };
