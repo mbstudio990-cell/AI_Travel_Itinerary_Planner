@@ -1,8 +1,9 @@
 import React from 'react';
-import { Share2, Save, Download, MapPin, Calendar, DollarSign, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users } from 'lucide-react';
+import { Share2, Save, Download, MapPin, Calendar, DollarSign, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown } from 'lucide-react';
 import { Itinerary } from '../types';
 import DayCard from './DayCard';
 import { saveItinerary, shareItinerary } from '../utils/storage';
+import { generatePDF } from '../utils/pdfGenerator';
 
 interface ItineraryDisplayProps {
   itinerary: Itinerary;
@@ -112,10 +113,13 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     setShowShareMenu(false);
   };
 
-  const handlePrint = () => {
-    setTimeout(() => {
-      window.print();
-    }, 0);
+  const handleDownloadPDF = async () => {
+    try {
+      await generatePDF(itinerary);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Sorry, there was an error generating the PDF. Please try again.');
+    }
   };
 
   return (
@@ -259,11 +263,11 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             </div>
             
             <button
-              onClick={handlePrint}
+              onClick={handleDownloadPDF}
               className="flex items-center space-x-2 px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors font-medium"
             >
-              <Download className="h-5 w-5" />
-              <span>Print</span>
+              <FileDown className="h-5 w-5" />
+              <span>Download PDF</span>
             </button>
           </div>
         </div>
