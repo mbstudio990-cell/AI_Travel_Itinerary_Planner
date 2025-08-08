@@ -173,10 +173,38 @@ serve(async (req) => {
     // Parse the JSON response
     let aiItinerary: AIItineraryResponse
     try {
-      aiItinerary = JSON.parse(content)
+      // Extract JSON from OpenAI response (handle markdown code blocks and extra text)
+      let jsonString = content.trim()
+      
+      // Check if content is wrapped in markdown code blocks
+      if (jsonString.includes('```json')) {
+        const jsonMatch = jsonString.match(/```json\s*([\s\S]*?)\s*```/)
+        if (jsonMatch && jsonMatch[1]) {
+          jsonString = jsonMatch[1].trim()
+        }
+      } else if (jsonString.includes('```')) {
+        // Handle generic code blocks
+        const codeMatch = jsonString.match(/```\s*([\s\S]*?)\s*```/)
+        if (codeMatch && codeMatch[1]) {
+          jsonString = codeMatch[1].trim()
+        }
+      }
+      
+      // If still not pure JSON, try to extract JSON object between first { and last }
+      if (!jsonString.startsWith('{')) {
+        const firstBrace = jsonString.indexOf('{')
+        const lastBrace = jsonString.lastIndexOf('}')
+        if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+          jsonString = jsonString.substring(firstBrace, lastBrace + 1)
+        }
+      }
+      
+      console.log('Extracted JSON string:', jsonString)
+      aiItinerary = JSON.parse(jsonString)
     } catch (parseError) {
       console.error('JSON parsing error:', parseError)
       console.error('Content that failed to parse:', content)
+      console.error('Extracted JSON string that failed:', jsonString)
       throw new Error('Invalid JSON response from OpenAI')
     }
 
