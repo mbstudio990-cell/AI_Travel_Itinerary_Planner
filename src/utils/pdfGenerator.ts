@@ -129,9 +129,9 @@ export const generatePDF = async (itinerary: Itinerary): Promise<void> => {
       // Tips
       if (activity.tips) {
         pdf.setFont('helvetica', 'bold');
-        pdf.text('💡 Tips:', margin, yPosition);
+        pdf.text('Tips:', margin, yPosition);
         pdf.setFont('helvetica', 'normal');
-        yPosition = addWrappedText(activity.tips, margin + 20, yPosition, contentWidth - 20, 9);
+        yPosition = addWrappedText(activity.tips, margin + 15, yPosition, contentWidth - 15, 9);
         yPosition += 5;
       }
       
