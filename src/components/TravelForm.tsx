@@ -145,8 +145,12 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted with data:', formData);
     if (validateForm()) {
+      console.log('Form validation passed, calling onSubmit');
       onSubmit(formData);
+    } else {
+      console.log('Form validation failed, errors:', errors);
     }
   };
 
@@ -421,7 +425,12 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white font-medium py-4 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
+          className="w-full bg-blue-700 hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-4 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
+          onClick={(e) => {
+            console.log('Generate button clicked');
+            console.log('Form data at click:', formData);
+            console.log('Loading state:', loading);
+          }}
         >
           {loading ? (
             <>

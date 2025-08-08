@@ -46,11 +46,14 @@ function App() {
   }, []);
 
   const handleFormSubmit = async (formData: FormData) => {
+    console.log('handleFormSubmit called with:', formData);
     setLoading(true);
     setAppState('loading');
     
     try {
+      console.log('Calling generateItinerary...');
       const itinerary = await generateItinerary(formData);
+      console.log('Itinerary generated successfully:', itinerary);
       setCurrentItinerary(itinerary);
       setAppState('itinerary');
     } catch (error) {

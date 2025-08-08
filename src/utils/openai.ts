@@ -56,9 +56,17 @@ const convertCurrencyRange = (minUsd: number, maxUsd: number, toCurrency: string
 
 export const generateItinerary = async (formData: FormData): Promise<Itinerary> => {
   try {
+    console.log('generateItinerary called with formData:', formData);
+    
     // Check if Supabase is configured (frontend environment variables)
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    
+    console.log('Supabase config check:', { 
+      hasUrl: !!supabaseUrl, 
+      hasKey: !!supabaseAnonKey,
+      urlValid: supabaseUrl?.includes('supabase.co')
+    });
     
     if (!supabaseUrl || !supabaseAnonKey) {
       console.warn('Supabase frontend environment variables not configured. Using mock data.');
@@ -74,6 +82,7 @@ export const generateItinerary = async (formData: FormData): Promise<Itinerary> 
     const functionUrl = `${supabaseUrl}/functions/v1/generate-itinerary`;
     
     console.log('Attempting to call Supabase Edge Function...');
+    console.log('Function URL:', functionUrl);
     
     const response = await fetch(functionUrl, {
       method: 'POST',
@@ -90,6 +99,9 @@ export const generateItinerary = async (formData: FormData): Promise<Itinerary> 
         currency: formData.currency
       })
     });
+
+    console.log('Edge Function response status:', response.status);
+    console.log('Edge Function response ok:', response.ok);
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -120,6 +132,7 @@ export const generateItinerary = async (formData: FormData): Promise<Itinerary> 
     }
 
     const itinerary = await response.json();
+    console.log('Received itinerary from Edge Function:', itinerary);
     
     if (itinerary.error) {
       throw new Error(itinerary.error);
