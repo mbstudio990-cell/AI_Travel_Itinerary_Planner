@@ -70,7 +70,7 @@ const getBudgetRanges = (budget: string, currency: string) => {
   return `${symbol}${min.toLocaleString()}-${max.toLocaleString()}/day`;
 };
 const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData }) => {
-  const [formData, setFormData] = useState<FormData>(initialData || {
+    time: '10:00 AM - 12:00 PM',
     destinations: [],
     startDate: '',
     endDate: '',
