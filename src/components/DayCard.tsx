@@ -60,6 +60,45 @@ const DayCard: React.FC<DayCardProps> = ({
     });
   };
 
+  // Helper function to categorize activities by time ranges
+  const categorizeByTimeRange = (activities: Activity[]) => {
+    const timeRanges = {
+      'Early Morning (6:00-9:00 AM)': [],
+      'Morning (9:00 AM-12:00 PM)': [],
+      'Lunch Time (12:00-2:00 PM)': [],
+      'Afternoon (2:00-5:00 PM)': [],
+      'Evening (5:00-8:00 PM)': [],
+      'Night (8:00 PM-Late)': []
+    };
+
+    activities.forEach(activity => {
+      const time = activity.time.toLowerCase();
+      if (time.includes('6:') || time.includes('7:') || (time.includes('8:') && time.includes('am'))) {
+        timeRanges['Early Morning (6:00-9:00 AM)'].push(activity);
+      } else if (time.includes('9:') || time.includes('10:') || (time.includes('11:') && time.includes('am'))) {
+        timeRanges['Morning (9:00 AM-12:00 PM)'].push(activity);
+      } else if (time.includes('12:') || (time.includes('1:') && time.includes('pm'))) {
+        timeRanges['Lunch Time (12:00-2:00 PM)'].push(activity);
+      } else if (time.includes('2:') || time.includes('3:') || (time.includes('4:') && time.includes('pm'))) {
+        timeRanges['Afternoon (2:00-5:00 PM)'].push(activity);
+      } else if (time.includes('5:') || time.includes('6:') || (time.includes('7:') && time.includes('pm'))) {
+        timeRanges['Evening (5:00-8:00 PM)'].push(activity);
+      } else {
+        timeRanges['Night (8:00 PM-Late)'].push(activity);
+      }
+    });
+
+    // Filter out empty time ranges and sort activities within each range
+    const filteredRanges = {};
+    Object.entries(timeRanges).forEach(([range, activities]) => {
+      if (activities.length > 0) {
+        filteredRanges[range] = sortActivitiesByTime(activities);
+      }
+    });
+
+    return filteredRanges;
+  };
+
   // Load notes from Supabase when component mounts
   useEffect(() => {
     const loadNotes = async () => {
@@ -91,7 +130,7 @@ const DayCard: React.FC<DayCardProps> = ({
   // In view mode, always show only selected activities
   const isInManageMode = showManage || localManageMode;
   const displayActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
-  const sortedDisplayActivities = sortActivitiesByTime(displayActivities);
+  const activitiesByTimeRange = categorizeByTimeRange(displayActivities);
   
   const toggleActivity = (index: number) => {
     const newExpanded = new Set(expandedActivities);
@@ -308,137 +347,169 @@ const DayCard: React.FC<DayCardProps> = ({
             </div>
           ) : (
             <div className="space-y-4">
-              {/* Timeline Header */}
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="bg-blue-100 p-2 rounded-lg">
-                  <Calendar className="h-5 w-5 text-blue-600" />
-                </div>
-                <h4 className="text-lg font-semibold text-gray-900">Daily Schedule</h4>
-                <div className="flex-1 h-px bg-gray-200"></div>
-              </div>
-
-              {/* Timeline List */}
-              <div className="space-y-3">
-                {(isInManageMode ? sortActivitiesByTime(dayItinerary.activities) : sortedDisplayActivities).map((activity, index) => (
-                  <div key={index} className="flex items-start space-x-4 group">
-                    {/* Timeline Dot */}
-                    <div className="flex flex-col items-center">
-                      <div className={`w-4 h-4 rounded-full border-2 ${
-                        activity.selected !== false 
-                          ? 'bg-blue-600 border-blue-600' 
-                          : 'bg-gray-300 border-gray-300'
-                      }`}></div>
-                      {index < (isInManageMode ? dayItinerary.activities.length - 1 : sortedDisplayActivities.length - 1) && (
-                        <div className="w-px h-16 bg-gray-200 mt-2"></div>
-                      )}
+              {/* Time Range Groups */}
+              {Object.entries(activitiesByTimeRange).map(([timeRange, activities], rangeIndex) => (
+                <div key={timeRange} className="mb-8">
+                  {/* Time Range Header */}
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-lg shadow-sm">
+                      <Clock className="h-5 w-5 text-white" />
                     </div>
+                    <div className="flex-1">
+                      <h4 className="text-lg font-bold text-gray-900">{timeRange}</h4>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <span className="text-sm text-gray-600">{activities.length} activities</span>
+                        <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                        <span className="text-sm text-blue-600 font-medium">
+                          {activities.reduce((total, activity) => {
+                            const cost = activity.costEstimate.toLowerCase();
+                            if (cost.includes('free')) return total;
+                            const match = cost.match(/\d+/);
+                            return total + (match ? parseInt(match[0]) : 0);
+                          }, 0) > 0 ? `~$${activities.reduce((total, activity) => {
+                            const cost = activity.costEstimate.toLowerCase();
+                            if (cost.includes('free')) return total;
+                            const match = cost.match(/\d+/);
+                            return total + (match ? parseInt(match[0]) : 0);
+                          }, 0)}` : 'Free activities'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-                    {/* Activity Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className={`bg-white border rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300 ${
-                        activity.selected !== false 
-                          ? 'border-green-200 hover:border-green-300' 
-                          : 'border-gray-200 opacity-75'
-                      }`}>
-                        {/* Activity Header */}
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex-1">
-                            {/* Time Badge */}
-                            <div className="inline-flex items-center space-x-2 mb-2">
-                              <div className="bg-blue-100 px-3 py-1 rounded-full">
-                                <span className="text-sm font-semibold text-blue-700">{activity.time}</span>
-                              </div>
-                              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                                activity.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
-                                activity.category === 'Food' ? 'bg-orange-100 text-orange-700' :
-                                activity.category === 'Nature' ? 'bg-green-100 text-green-700' :
-                                activity.category === 'Adventure' ? 'bg-red-100 text-red-700' :
-                                activity.category === 'Shopping' ? 'bg-pink-100 text-pink-700' :
-                                'bg-blue-100 text-blue-700'
-                              }`}>
-                                {activity.category}
-                              </span>
-                            </div>
-
-                            {/* Activity Title */}
-                            <h5 className="font-bold text-gray-900 text-lg mb-2">{activity.title}</h5>
-                            
-                            {/* Location */}
-                            <div className="flex items-center space-x-2 text-gray-600 mb-2">
-                              <MapPin className="h-4 w-4" />
-                              <span className="text-sm">{activity.location}</span>
-                            </div>
+                  {/* Activities in this time range */}
+                  <div className="space-y-3 ml-4 border-l-2 border-gray-200 pl-6">
+                    {activities.map((activity, activityIndex) => {
+                      const globalIndex = rangeIndex * 100 + activityIndex; // Create unique index
+                      return (
+                        <div key={globalIndex} className="relative">
+                          {/* Timeline Dot */}
+                          <div className="absolute -left-8 top-4">
+                            <div className={`w-4 h-4 rounded-full border-2 ${
+                              activity.selected !== false 
+                                ? 'bg-blue-600 border-blue-600 shadow-sm' 
+                                : 'bg-gray-300 border-gray-300'
+                            }`}></div>
                           </div>
 
-                          {/* Cost and Manage Controls */}
-                          <div className="flex items-center space-x-3">
-                            {/* Cost Badge */}
-                            <div className="bg-green-50 px-3 py-1 rounded-lg border border-green-200">
-                              <span className="text-sm font-semibold text-green-700">{activity.costEstimate}</span>
+                          {/* Activity Card */}
+                          <div className={`bg-white border rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300 ${
+                            activity.selected !== false 
+                              ? 'border-blue-200 hover:border-blue-300' 
+                              : 'border-gray-200 opacity-75'
+                          }`}>
+                            {/* Activity Header */}
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex-1">
+                                {/* Time and Category */}
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <div className="bg-blue-100 px-3 py-1 rounded-full">
+                                    <span className="text-sm font-semibold text-blue-700">{activity.time}</span>
+                                  </div>
+                                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                    activity.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
+                                    activity.category === 'Food' ? 'bg-orange-100 text-orange-700' :
+                                    activity.category === 'Nature' ? 'bg-green-100 text-green-700' :
+                                    activity.category === 'Adventure' ? 'bg-red-100 text-red-700' :
+                                    activity.category === 'Shopping' ? 'bg-pink-100 text-pink-700' :
+                                    'bg-blue-100 text-blue-700'
+                                  }`}>
+                                    {activity.category}
+                                  </span>
+                                </div>
+
+                                {/* Activity Title */}
+                                <h5 className="font-bold text-gray-900 text-lg mb-2">{activity.title}</h5>
+                                
+                                {/* Location */}
+                                <div className="flex items-center space-x-2 text-gray-600 mb-2">
+                                  <MapPin className="h-4 w-4" />
+                                  <span className="text-sm">{activity.location}</span>
+                                </div>
+                              </div>
+
+                              {/* Cost and Manage Controls */}
+                              <div className="flex items-center space-x-3">
+                                {/* Cost Badge */}
+                                <div className="bg-green-50 px-3 py-1 rounded-lg border border-green-200">
+                                  <span className="text-sm font-semibold text-green-700">{activity.costEstimate}</span>
+                                </div>
+
+                                {/* Manage Checkbox */}
+                                {isInManageMode && (
+                                  <div
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleToggleActivity(activity);
+                                    }}
+                                    className="flex items-center justify-center cursor-pointer"
+                                    title={activity.selected !== false ? "Remove from itinerary" : "Add to itinerary"}
+                                  >
+                                    <div className={`w-6 h-6 border-2 rounded-md flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+                                      activity.selected !== false
+                                        ? 'bg-green-500 border-green-500 hover:bg-green-600 hover:border-green-600'
+                                        : 'border-gray-300 hover:border-green-400 bg-white'
+                                    }`}>
+                                      {activity.selected !== false && (
+                                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                        </svg>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
 
-                            {/* Manage Checkbox */}
-                            {isInManageMode && (
-                              <div
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleToggleActivity(activity);
-                                }}
-                                className="flex items-center justify-center cursor-pointer"
-                                title={activity.selected !== false ? "Remove from itinerary" : "Add to itinerary"}
-                              >
-                                <div className={`w-6 h-6 border-2 rounded-md flex items-center justify-center transition-all duration-200 hover:scale-110 ${
-                                  activity.selected !== false
-                                    ? 'bg-green-500 border-green-500 hover:bg-green-600 hover:border-green-600'
-                                    : 'border-gray-300 hover:border-green-400 bg-white'
-                                }`}>
-                                  {activity.selected !== false && (
-                                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                  )}
+                            {/* Activity Description */}
+                            <p className="text-gray-700 text-sm mb-3 leading-relaxed">{activity.description}</p>
+
+                            {/* Expand/Collapse Button */}
+                            <button
+                              onClick={() => toggleActivity(globalIndex)}
+                              className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium transition-all duration-200 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg text-sm"
+                            >
+                              <span>{expandedActivities.has(globalIndex) ? 'Hide Details' : 'Show Tips & Details'}</span>
+                              {expandedActivities.has(globalIndex) ? (
+                                <ChevronUp className="h-4 w-4" />
+                              ) : (
+                                <ChevronDown className="h-4 w-4" />
+                              )}
+                            </button>
+
+                            {/* Expanded Details */}
+                            {expandedActivities.has(globalIndex) && (
+                              <div className="mt-4 pt-4 border-t border-gray-200">
+                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                                  <div className="flex items-start space-x-3">
+                                    <div className="bg-amber-100 p-2 rounded-lg">
+                                      <Lightbulb className="h-4 w-4 text-amber-600" />
+                                    </div>
+                                    <div>
+                                      <h6 className="font-semibold text-amber-800 mb-2 text-sm">💡 Pro Tip</h6>
+                                      <p className="text-amber-700 leading-relaxed text-sm">{activity.tips}</p>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             )}
                           </div>
                         </div>
-
-                        {/* Activity Description */}
-                        <p className="text-gray-700 text-sm mb-3 leading-relaxed">{activity.description}</p>
-
-                        {/* Expand/Collapse Button */}
-                        <button
-                          onClick={() => toggleActivity(index)}
-                          className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium transition-all duration-200 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg text-sm"
-                        >
-                          <span>{expandedActivities.has(index) ? 'Hide Details' : 'Show Tips & Details'}</span>
-                          {expandedActivities.has(index) ? (
-                            <ChevronUp className="h-4 w-4" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4" />
-                          )}
-                        </button>
-
-                        {/* Expanded Details */}
-                        {expandedActivities.has(index) && (
-                          <div className="mt-4 pt-4 border-t border-gray-200">
-                            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                              <div className="flex items-start space-x-3">
-                                <div className="bg-amber-100 p-2 rounded-lg">
-                                  <Lightbulb className="h-4 w-4 text-amber-600" />
-                                </div>
-                                <div>
-                                  <h6 className="font-semibold text-amber-800 mb-2 text-sm">💡 Pro Tip</h6>
-                                  <p className="text-amber-700 leading-relaxed text-sm">{activity.tips}</p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                      );
+                    })}
                   </div>
-                ))}
+                </div>
+              ))}
+
+              {/* Empty state if no activities */}
+              {Object.keys(activitiesByTimeRange).length === 0 && (
+                <div className="text-center py-8">
+                  <div className="text-gray-400 mb-4">
+                    <Calendar className="h-12 w-12 mx-auto" />
+                  </div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">No activities scheduled</h4>
+                  <p className="text-gray-600">All activities have been removed or none are selected.</p>
+                </div>
               </div>
             </div>
           )}
