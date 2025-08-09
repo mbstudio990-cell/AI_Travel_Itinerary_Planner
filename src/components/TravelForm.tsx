@@ -163,6 +163,11 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
         ? prev.interests.filter(i => i !== interest)
         : [...prev.interests, interest]
     }));
+    
+    // Clear interest errors when user makes a selection
+    if (errors.interests) {
+      setErrors(prev => ({ ...prev, interests: undefined }));
+    }
   };
 
   const handleStartDateSelect = (date: Date) => {
