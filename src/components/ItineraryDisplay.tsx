@@ -71,6 +71,28 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     });
   };
 
+  const handleEdit = () => {
+    if (!isAuthenticated) {
+      // Show auth modal for signup when trying to edit
+      if (typeof onSave === 'function') {
+        onSave(); // This will trigger the auth modal in App.tsx
+      }
+      return;
+    }
+    onEdit();
+  };
+
+  const handleShare = () => {
+    if (!isAuthenticated) {
+      // Show auth modal for signup when trying to share
+      if (typeof onSave === 'function') {
+        onSave(); // This will trigger the auth modal in App.tsx
+      }
+      return;
+    }
+    setShowShareMenu(!showShareMenu);
+  };
+
   const handleSaveNotes = (dayNumber: number, notes: string) => {
     const updatedItinerary = {
       ...currentItinerary,
@@ -404,7 +426,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
             <button
-              onClick={onEdit}
+              onClick={handleEdit}
               className="flex items-center space-x-1 sm:space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl transition-colors font-medium text-sm sm:text-base"
             >
               <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -421,7 +443,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
             <div className="relative">
               <button
-                onClick={() => setShowShareMenu(!showShareMenu)}
+                onClick={handleShare}
                 className="flex items-center space-x-1 sm:space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors font-medium relative z-10 text-sm sm:text-base"
               >
                 <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />

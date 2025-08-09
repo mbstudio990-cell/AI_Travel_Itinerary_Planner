@@ -175,6 +175,12 @@ function App() {
   };
 
   const handleBackToForm = () => {
+    // Check if user is authenticated for "Plan Another Trip"
+    if (!isAuthenticated && hasGeneratedItinerary) {
+      setShowAuthModal(true);
+      return;
+    }
+    
     // Clear current itinerary when going back to form for a new trip
     setCurrentItinerary(null);
     // Reset the generation flag when going back to form
