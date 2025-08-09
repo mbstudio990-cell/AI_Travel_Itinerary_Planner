@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Banknote, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus, Lightbulb, Clock, Settings } from 'lucide-react';
+import { Calendar, Banknote, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus, Lightbulb, Clock } from 'lucide-react';
 import { DayItinerary, Activity } from '../types';
 import ActivityCard from './ActivityCard';
 import { AddActivityModal } from './AddActivityModal';
@@ -14,6 +14,8 @@ interface DayCardProps {
   currency?: string;
   onSaveNotes?: (dayNumber: number, notes: string) => void;
   onToggleActivity?: (dayNumber: number, activity: Activity) => void;
+  showManage?: boolean;
+  onToggleManageMode?: (dayNumber: number) => void;
 }
 
 const getLocationSpecificImage = (activity: Activity): string => {
@@ -227,14 +229,16 @@ const DayCard: React.FC<DayCardProps> = ({
   currency = 'USD',
   onSaveNotes,
   onToggleActivity,
+  showManage = false,
+  onToggleManageMode
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedActivities, setExpandedActivities] = useState<Set<number>>(new Set());
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   const [currentNotes, setCurrentNotes] = useState(dayItinerary.notes || '');
   const [showAddActivityModal, setShowAddActivityModal] = useState(false);
+  const [localManageMode, setLocalManageMode] = useState(false);
   const [hasBeenCustomized, setHasBeenCustomized] = useState(false);
-  const [isManageMode, setIsManageMode] = useState(false);
 
   // Helper function to parse time and sort activities chronologically
   const parseTimeForSorting = (timeString: string): number => {
@@ -327,7 +331,7 @@ const DayCard: React.FC<DayCardProps> = ({
 
   // In manage mode, show all activities if never customized, otherwise show only selected
   // In view mode, always show only selected activities
-  const currentIsManageMode = isManageMode;
+  const isInManageMode = showManage || localManageMode;
   const displayActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
   const activitiesByTimeRange = categorizeByTimeRange(displayActivities);
   
@@ -354,14 +358,35 @@ const DayCard: React.FC<DayCardProps> = ({
     }
   };
 
-  const handleToggleManageMode = () => {
-    const newManageMode = !isManageMode;
-    setIsManageMode(newManageMode);
+  const handleToggleLocalManage = () => {
+    const newManageMode = !localManageMode;
+    setLocalManageMode(newManageMode);
     
     // If exiting manage mode (clicking Done), remove unselected activities
-    if (!newManageMode && isManageMode) {
-      // This will be handled by the parent component through onToggleActivity
-      // We just need to notify that we're done managing
+    if (!newManageMode && localManageMode) {
+      // Remove ALL unselected activities from the data structure at once
+      if (onToggleActivity) {
+        const unselectedActivities = dayItinerary.activities.filter(activity => activity.selected === false);
+        
+        // Create a batch removal by filtering out all unselected activities
+        const selectedActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
+        
+        // Signal to parent to replace the entire activities array with only selected ones
+        if (unselectedActivities.length > 0) {
+          onToggleActivity(dayItinerary.day, { 
+            title: '__BATCH_REMOVE_UNSELECTED__', 
+            time: '', 
+            description: '', 
+            location: '', 
+            costEstimate: '', 
+            tips: '', 
+            category: '',
+            batchRemove: true,
+            selectedActivities: selectedActivities
+          });
+        }
+      }
+      setHasBeenCustomized(true);
     }
   };
 
@@ -409,6 +434,19 @@ const DayCard: React.FC<DayCardProps> = ({
               ) : (
                 <Edit3 className="h-5 w-5" />
               )}
+            </button>
+            
+            {/* Customize Activities Button */}
+            <button
+              onClick={handleToggleLocalManage}
+              className={`px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 font-medium text-sm ${
+                isInManageMode
+                  ? 'bg-green-500/30 hover:bg-green-500/40 text-white border border-white/30'
+                  : 'bg-white/20 hover:bg-white/30 text-white border border-white/30'
+              }`}
+              title={isInManageMode ? "Done Customizing" : "Customize Activities"}
+            >
+              {isInManageMode ? 'Done' : 'Customize'}
             </button>
             
             <div className="text-right">
@@ -465,46 +503,27 @@ const DayCard: React.FC<DayCardProps> = ({
       {isExpanded && (
         <div className="p-6 bg-gray-50">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center justify-between w-full">
-              <div>
-               {currentIsManageMode ? (
-                  <p className="text-indigo-600 font-semibold">
-                    {dayItinerary.activities.filter(a => a.selected !== false).length} of {dayItinerary.activities.length} activities selected
-                  </p>
-                ) : (
-                  <p className="text-indigo-600 font-semibold">
-                    {displayActivities.length} activities planned for this day
-                  </p>
-                )}
-              </div>
-              
-              <div className="flex items-center space-x-3">
+            {isInManageMode ? (
+              <div className="flex items-center justify-between w-full">
+                <p className="text-indigo-600 font-semibold">
+                  {dayItinerary.activities.filter(a => a.selected !== false).length} of {dayItinerary.activities.length} activities selected
+                </p>
                 <button
-                  onClick={() => setIsManageMode(!isManageMode)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors font-medium ${
-                    isManageMode
-                      ? 'bg-green-500 hover:bg-green-600 text-white'
-                      : 'bg-blue-500 hover:bg-blue-600 text-white'
-                  }`}
+                  onClick={() => setShowAddActivityModal(true)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
                 >
-                  <Settings className="h-4 w-4" />
-                  <span>{isManageMode ? 'Done' : 'Customize'}</span>
+                  <Plus className="h-4 w-4" />
+                  <span>Add New Activity</span>
                 </button>
-                
-                {isManageMode && (
-                  <button
-                    onClick={() => setShowAddActivityModal(true)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
-                  >
-                    <Plus className="h-4 w-4" />
-                    <span>Add Activity</span>
-                  </button>
-                )}
               </div>
-            </div>
+            ) : (
+              <p className="text-indigo-600 font-semibold">
+                {displayActivities.length} activities planned for this day
+              </p>
+            )}
           </div>
           
-          {currentIsManageMode && (
+          {isInManageMode && (
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">
                 <strong>Customize Mode:</strong> Check the boxes to add activities to your itinerary, uncheck to remove them. Green border = selected, gray = not selected.
@@ -512,14 +531,14 @@ const DayCard: React.FC<DayCardProps> = ({
             </div>
           )}
           
-          {(currentIsManageMode ? dayItinerary.activities : displayActivities).length === 0 ? (
+          {(isInManageMode ? dayItinerary.activities : displayActivities).length === 0 ? (
             <div className="text-center py-8">
               <div className="text-gray-400 mb-4">
                 <Calendar className="h-12 w-12 mx-auto" />
               </div>
               <h4 className="text-lg font-medium text-gray-900 mb-2">No activities planned</h4>
               <p className="text-gray-600 mb-4">Add some activities to make this day amazing!</p>
-              {currentIsManageMode && (
+              {isInManageMode && (
                 <button
                   onClick={() => setShowAddActivityModal(true)}
                   className="flex items-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium mx-auto"
@@ -622,7 +641,7 @@ const DayCard: React.FC<DayCardProps> = ({
                               </div>
 
                               {/* Manage Checkbox Overlay */}
-                              {currentIsManageMode && (
+                              {isInManageMode && (
                                 <div className="absolute bottom-2 right-2">
                                   <div
                                     onClick={(e) => {
@@ -679,7 +698,7 @@ const DayCard: React.FC<DayCardProps> = ({
                               <div className="flex items-center space-x-3">
 
                                 {/* Manage Checkbox */}
-                                {currentIsManageMode && (
+                                {isInManageMode && (
                                   <div
                                     onClick={(e) => {
                                       e.stopPropagation();
