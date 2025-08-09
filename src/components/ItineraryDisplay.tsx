@@ -179,11 +179,11 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
               </div>
             </div>
             
-            {/* Travel Summary Button in Header */}
-            <div className="mt-8">
+            {/* Travel Summary Button - Right After Budget */}
+            <div className="mt-6">
               <button
                 onClick={() => setShowTravelSummary(true)}
-                className="flex items-center space-x-2 px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-xl transition-colors font-medium border border-white/30 hover:border-white/50"
+                className="flex items-center space-x-2 px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-colors font-medium border border-white/30 hover:border-white/50 text-sm"
               >
                 <BookOpen className="h-5 w-5" />
                 <span>View Travel Summary</span>
