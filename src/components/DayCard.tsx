@@ -399,8 +399,8 @@ const DayCard: React.FC<DayCardProps> = ({
                           {/* Activity Card */}
                           <div className={`bg-white border rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300 ${
                             activity.selected !== false 
-                              ? 'border-blue-200 hover:border-blue-300' 
-                              : 'border-gray-200 opacity-75'
+                              ? 'border-blue-200 hover:border-blue-300 hover:scale-[1.02] hover:bg-blue-50' 
+                              : 'border-gray-200 opacity-75 hover:opacity-90 hover:border-gray-300'
                           }`}>
                             {/* Activity Header */}
                             <div className="flex items-start justify-between mb-3">
