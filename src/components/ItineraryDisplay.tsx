@@ -86,6 +86,13 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
           ? {
               ...day,
               activities: (() => {
+                // If activity has remove flag, completely remove it
+                if (activity.remove) {
+                  return day.activities.filter(act => 
+                    !(act.title === activity.title && act.time === activity.time)
+                  );
+                }
+                
                 const existingActivityIndex = day.activities.findIndex(act => 
                   act.title === activity.title && act.time === activity.time
                 );

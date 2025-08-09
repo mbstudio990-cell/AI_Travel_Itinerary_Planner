@@ -12,6 +12,7 @@ export interface Activity {
   tips: string;
   category: string;
   selected?: boolean;
+  remove?: boolean;
 }
 
 export interface DayItinerary {

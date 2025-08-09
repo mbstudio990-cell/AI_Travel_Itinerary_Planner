@@ -101,8 +101,16 @@ const DayCard: React.FC<DayCardProps> = ({
     const newManageMode = !localManageMode;
     setLocalManageMode(newManageMode);
     
-    // If exiting manage mode (clicking Done), mark as customized
+    // If exiting manage mode (clicking Done), remove unselected activities
     if (!newManageMode && localManageMode) {
+      // Remove unselected activities from the data structure
+      if (onToggleActivity) {
+        const unselectedActivities = dayItinerary.activities.filter(activity => activity.selected === false);
+        unselectedActivities.forEach(activity => {
+          // Remove the activity by setting it as completely removed
+          onToggleActivity(dayItinerary.day, { ...activity, remove: true });
+        });
+      }
       setHasBeenCustomized(true);
     }
   };
