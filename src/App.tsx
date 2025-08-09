@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from './hooks/useLocation';
+import { useAuth } from './hooks/useAuth';
 import Header from './components/Header';
+import { AuthModal } from './components/AuthModal';
 import { TypingText } from './components/ui/TypingText';
 import TravelForm from './components/TravelForm';
 import ItineraryDisplay from './components/ItineraryDisplay';
@@ -15,6 +17,7 @@ type AppState = 'form' | 'loading' | 'itinerary' | 'saved' | 'shared';
 
 function App() {
   const location = useLocation();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const [appState, setAppState] = useState<AppState>('form');
   const [currentItinerary, setCurrentItinerary] = useState<Itinerary | null>(null);
   const [savedItineraries, setSavedItineraries] = useState<Itinerary[]>([]);
@@ -23,6 +26,7 @@ function App() {
   const [showMainContent, setShowMainContent] = useState(false);
   const [fadeOutText, setFadeOutText] = useState(false);
   const [sharedItinerary, setSharedItinerary] = useState<Itinerary | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     setSavedItineraries(getItineraries());
@@ -137,11 +141,21 @@ function App() {
     setSavedItineraries(getItineraries());
   };
 
+  const handleShowAuth = () => {
+    setShowAuthModal(true);
+  };
+
+  const handleAuthSuccess = () => {
+    // Refresh saved itineraries after successful auth
+    setSavedItineraries(getItineraries());
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <Header 
         onViewSaved={handleViewSaved}
         savedCount={savedItineraries.length}
+        onShowAuth={handleShowAuth}
       />
       
       <main className="container mx-auto px-4 py-8">
@@ -229,6 +243,7 @@ function App() {
               onSave={handleSaveItinerary}
               onEdit={() => handleEditPlan(currentItinerary)}
               onUpdate={setCurrentItinerary}
+              currency={currentItinerary.currency || 'USD'}
             />
           </div>
         )}
@@ -240,6 +255,7 @@ function App() {
             onView={handleViewItinerary}
             onEdit={handleEditItinerary}
             onUpdate={handleUpdateSaved}
+            defaultCurrency="USD"
           />
         )}
 
@@ -250,6 +266,13 @@ function App() {
           />
         )}
       </main>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onAuthSuccess={handleAuthSuccess}
+      />
 
       <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto py-8 px-4 text-center">

@@ -116,7 +116,7 @@ export const generateItinerary = async (formData: FormData): Promise<Itinerary> 
       // If it's an API key error, provide helpful message
       if (errorData.error && errorData.error.includes('OpenAI API key')) {
         console.error('OpenAI API key issue detected. Please verify:');
-        console.error('1. OPENAI_API_KEY is set in Supabase Edge Functions environment variables');
+        console.error('1. OPEN_API_KEY is set in Supabase Edge Functions environment variables');
         console.error('2. The API key is valid and starts with "sk-"');
         console.error('3. The Edge Function has been redeployed after adding the key');
       }
@@ -193,7 +193,8 @@ const generateMockItinerary = async (formData: FormData): Promise<Itinerary> => 
     },
     days,
     totalBudget: calculateTotalBudget(formData.budget, diffDays, formData.currency),
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    currency: formData.currency
   };
 };
 

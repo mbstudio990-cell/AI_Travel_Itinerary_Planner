@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, MapPin, Clock, DollarSign, Lightbulb, X } from 'lucide-react';
+import { Plus, MapPin, Clock, Banknote, Lightbulb, X } from 'lucide-react';
 import { Modal } from './ui/Modal';
 import { Activity } from '../types';
 
@@ -336,7 +336,7 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Clock className="h-4 w-4 inline mr-1" />
+                    <Banknote className="h-4 w-4 inline mr-1" />
                     Time
                   </label>
                   <input
@@ -406,7 +406,7 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <DollarSign className="h-4 w-4 inline mr-1" />
+                  <Banknote className="h-4 w-4 inline mr-1" />
                   Cost Estimate
                 </label>
                 <input

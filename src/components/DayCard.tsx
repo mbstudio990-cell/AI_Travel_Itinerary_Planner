@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus, Lightbulb, Clock } from 'lucide-react';
+import { Calendar, Banknote, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus, Lightbulb, Clock } from 'lucide-react';
 import { DayItinerary, Activity } from '../types';
 import ActivityCard from './ActivityCard';
 import { AddActivityModal } from './AddActivityModal';
@@ -209,7 +209,7 @@ const DayCard: React.FC<DayCardProps> = ({
                 <h3 className="text-xl font-bold text-white">{dayItinerary.date}</h3>
               </div>
               <div className="flex items-center space-x-2">
-                <DollarSign className="h-5 w-5 text-white" />
+                <Banknote className="h-5 w-5 text-white" />
                 <span className="text-white font-semibold">Est. {dayItinerary.totalEstimatedCost}</span>
               </div>
             </div>
@@ -364,14 +364,20 @@ const DayCard: React.FC<DayCardProps> = ({
                           {activities.reduce((total, activity) => {
                             const cost = activity.costEstimate.toLowerCase();
                             if (cost.includes('free')) return total;
-                            const match = cost.match(/\d+/);
+                            const match = cost.match(/[\d,]+/);
                             return total + (match ? parseInt(match[0]) : 0);
-                          }, 0) > 0 ? `~$${activities.reduce((total, activity) => {
-                            const cost = activity.costEstimate.toLowerCase();
-                            if (cost.includes('free')) return total;
-                            const match = cost.match(/\d+/);
-                            return total + (match ? parseInt(match[0]) : 0);
-                          }, 0)}` : 'Free activities'}
+                          }, 0) > 0 ? (
+                            <div className="flex items-center space-x-1">
+                              <Banknote className="h-3 w-3" />
+                              <span>{activities.reduce((total, activity) => {
+                                const cost = activity.costEstimate.toLowerCase();
+                                if (cost.includes('free')) return total;
+                                const match = cost.match(/[\d,]+/);
+                                return total + (match ? parseInt(match[0]) : 0);
+                              }, 0)}</span>
+                            </div>
+                          ) : 'Free activities'
+                        }
                         </span>
                       </div>
                     </div>
@@ -423,8 +429,16 @@ const DayCard: React.FC<DayCardProps> = ({
                                 
                                 {/* Location */}
                                 <div className="flex items-center space-x-2 text-gray-600 mb-2">
-                                  <MapPin className="h-4 w-4" />
-                                  <span className="text-sm">{activity.location}</span>
+                                  <a
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activity.location)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors group"
+                                    title="Open in Google Maps"
+                                  >
+                                    <MapPin className="h-4 w-4 group-hover:text-blue-600" />
+                                    <span className="text-sm group-hover:text-blue-600">{activity.location}</span>
+                                  </a>
                                 </div>
                               </div>
 

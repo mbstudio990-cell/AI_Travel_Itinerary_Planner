@@ -14,12 +14,12 @@ serve(async (req) => {
 
   try {
     // Get OpenAI API key from environment variables
-    const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
+    const openaiApiKey = Deno.env.get('OPEN_API_KEY')
     
     console.log('Environment variables check:')
-    console.log('OPENAI_API_KEY exists:', !!openaiApiKey)
-    console.log('OPENAI_API_KEY length:', openaiApiKey?.length || 0)
-    console.log('OPENAI_API_KEY starts with sk-:', openaiApiKey?.startsWith('sk-') || false)
+    console.log('OPEN_API_KEY exists:', !!openaiApiKey)
+    console.log('OPEN_API_KEY length:', openaiApiKey?.length || 0)
+    console.log('OPEN_API_KEY starts with sk-:', openaiApiKey?.startsWith('sk-') || false)
     
     // Don't expose the actual key, just check if it exists and format
     const response = {

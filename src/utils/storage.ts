@@ -15,8 +15,10 @@ const getCurrentUserId = async (): Promise<string | null> => {
   return user?.id || null;
 };
 
+// Save itinerary to Supabase if authenticated, otherwise localStorage
 export const saveItinerary = (itinerary: Itinerary): void => {
   try {
+    // Always save to localStorage for immediate access
     const existing = getItineraries();
     
     // Check if itinerary with same ID already exists
@@ -33,17 +35,188 @@ export const saveItinerary = (itinerary: Itinerary): void => {
     }
     
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    
+    // Also try to save to Supabase if authenticated (async, non-blocking)
+    saveToSupabaseAsync(itinerary);
   } catch (error) {
     console.error('Error saving itinerary:', error);
   }
 };
 
+// Async function to save to Supabase (non-blocking)
+const saveToSupabaseAsync = async (itinerary: Itinerary) => {
+  try {
+    if (await isAuthenticated()) {
+      const userId = await getCurrentUserId();
+      if (!userId) return;
+
+      // Save travel request
+      const { data: travelRequest, error: travelRequestError } = await supabase
+        .from('travel_requests')
+        .upsert({
+          id: `${itinerary.id}-request`,
+          destinations: [itinerary.destination],
+          start_date: itinerary.startDate,
+          end_date: itinerary.endDate,
+          budget: itinerary.preferences.budget,
+          interests: itinerary.preferences.interests,
+          currency: 'USD', // Default currency
+          user_id: userId
+        })
+        .select()
+        .single();
+
+      if (travelRequestError) {
+        console.warn('Error saving travel request to Supabase:', travelRequestError);
+        return;
+      }
+
+      // Save itinerary
+      const { data: savedItinerary, error: itineraryError } = await supabase
+        .from('itineraries')
+        .upsert({
+          id: itinerary.id,
+          travel_request_id: travelRequest.id,
+          destination: itinerary.destination,
+          total_budget: itinerary.totalBudget,
+          user_id: userId
+        })
+        .select()
+        .single();
+
+      if (itineraryError) {
+        console.warn('Error saving itinerary to Supabase:', itineraryError);
+        return;
+      }
+
+      // Save day itineraries and activities
+      for (const day of itinerary.days) {
+        const { data: dayItinerary, error: dayError } = await supabase
+          .from('day_itineraries')
+          .upsert({
+            id: `${itinerary.id}-day-${day.day}`,
+            itinerary_id: savedItinerary.id,
+            day: day.day,
+            date: day.date,
+            total_estimated_cost: day.totalEstimatedCost,
+            notes: day.notes || ''
+          })
+          .select()
+          .single();
+
+        if (dayError) {
+          console.warn('Error saving day itinerary to Supabase:', dayError);
+          continue;
+        }
+
+        // Save activities
+        for (let i = 0; i < day.activities.length; i++) {
+          const activity = day.activities[i];
+          const { error: activityError } = await supabase
+            .from('activities')
+            .upsert({
+              id: `${itinerary.id}-day-${day.day}-activity-${i}`,
+              day_itinerary_id: dayItinerary.id,
+              time: activity.time,
+              title: activity.title,
+              description: activity.description,
+              location: activity.location,
+              cost_estimate: activity.costEstimate,
+              tips: activity.tips,
+              category: activity.category,
+              order_index: i
+            });
+
+          if (activityError) {
+            console.warn('Error saving activity to Supabase:', activityError);
+          }
+        }
+      }
+
+      console.log('Successfully saved itinerary to Supabase');
+    }
+  } catch (error) {
+    console.warn('Error in saveToSupabaseAsync:', error);
+  }
+};
+
+// Load itineraries from Supabase if authenticated, otherwise localStorage
 export const getItineraries = (): Itinerary[] => {
   try {
+    // Always return localStorage data for immediate access
+    // TODO: In a future update, we could sync with Supabase data
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch (error) {
     console.error('Error getting itineraries:', error);
+    return [];
+  }
+};
+
+// Load itineraries from Supabase (async)
+export const loadItinerariesFromSupabase = async (): Promise<Itinerary[]> => {
+  try {
+    if (!(await isAuthenticated())) {
+      return [];
+    }
+
+    const userId = await getCurrentUserId();
+    if (!userId) return [];
+
+    const { data: itineraries, error } = await supabase
+      .from('itineraries')
+      .select(`
+        *,
+        travel_requests(*),
+        day_itineraries(
+          *,
+          activities(*)
+        )
+      `)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error loading itineraries from Supabase:', error);
+      return [];
+    }
+
+    // Transform Supabase data to our format
+    return itineraries.map(itinerary => ({
+      id: itinerary.id,
+      destination: itinerary.destination,
+      startDate: itinerary.travel_requests?.start_date || '',
+      endDate: itinerary.travel_requests?.end_date || '',
+      preferences: {
+        budget: itinerary.travel_requests?.budget || 'Mid-range',
+        interests: itinerary.travel_requests?.interests || []
+      },
+      days: itinerary.day_itineraries
+        .sort((a: any, b: any) => a.day - b.day)
+        .map((day: any) => ({
+          day: day.day,
+          date: day.date,
+          totalEstimatedCost: day.total_estimated_cost,
+          notes: day.notes,
+          activities: day.activities
+            .sort((a: any, b: any) => a.order_index - b.order_index)
+            .map((activity: any) => ({
+              time: activity.time,
+              title: activity.title,
+              description: activity.description,
+              location: activity.location,
+              costEstimate: activity.cost_estimate,
+              tips: activity.tips,
+              category: activity.category,
+              selected: true
+            }))
+        })),
+      totalBudget: itinerary.total_budget,
+      createdAt: itinerary.created_at,
+      currency: itinerary.travel_requests?.currency || 'USD'
+    }));
+  } catch (error) {
+    console.error('Error in loadItinerariesFromSupabase:', error);
     return [];
   }
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, MapPin, DollarSign, Lightbulb, Camera, Utensils, Mountain, Palette, ChevronDown, ChevronUp, Plus, Minus, X } from 'lucide-react';
+import { Clock, MapPin, Banknote, Lightbulb, Camera, Utensils, Mountain, Palette, ChevronDown, ChevronUp, Plus, Minus, X } from 'lucide-react';
 import { Activity } from '../types';
 
 interface ActivityCardProps {
@@ -79,7 +79,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
           </div>
           <div className="bg-green-50 px-3 py-1 rounded-lg border border-green-200">
             <div className="flex items-center space-x-1 text-green-700 font-semibold text-sm">
-              <DollarSign className="h-3 w-3" />
+              <Banknote className="h-3 w-3" />
               <span>{activity.costEstimate}</span>
             </div>
           </div>
@@ -99,8 +99,16 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
         <p className="text-gray-700 leading-relaxed text-sm">{activity.description}</p>
         
         <div className="flex items-center space-x-2 bg-gray-50 px-3 py-2 rounded-lg">
-          <MapPin className="h-3 w-3 text-gray-500" />
-          <span className="text-gray-700 font-medium text-sm">{activity.location}</span>
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activity.location)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-2 text-gray-500 hover:text-blue-600 transition-colors group"
+            title="Open in Google Maps"
+          >
+            <MapPin className="h-3 w-3 group-hover:text-blue-600" />
+            <span className="text-gray-700 font-medium text-sm group-hover:text-blue-600">{activity.location}</span>
+          </a>
         </div>
 
         <button
