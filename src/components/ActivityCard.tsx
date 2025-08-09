@@ -13,61 +13,6 @@ interface ActivityCardProps {
 
 const getPlaceholderImage = (category: string): string => {
   const images = {
-    'food': 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'culture': 'https://images.pexels.com/photos/2901209/pexels-photo-2901209.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'nature': 'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'adventure': 'https://images.pexels.com/photos/1365425/pexels-photo-1365425.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'shopping': 'https://images.pexels.com/photos/1488463/pexels-photo-1488463.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'history': 'https://images.pexels.com/photos/2901209/pexels-photo-2901209.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'art': 'https://images.pexels.com/photos/1839919/pexels-photo-1839919.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'default': 'https://images.pexels.com/photos/1008155/pexels-photo-1008155.jpeg?auto=compress&cs=tinysrgb&w=400'
-  };
-  
-  return images[category.toLowerCase() as keyof typeof images] || images.default;
-};
-const ActivityCard: React.FC<ActivityCardProps> = ({ 
-  activity, 
-  isExpanded, 
-  onToggle, 
-  onToggleActivity,
-  showManage = false,
-  isSelected = true
-}) => {
-  const getCategoryIcon = (category: string) => {
-    const iconClass = "h-5 w-5 text-white";
-    switch (category.toLowerCase()) {
-      case 'food': return <Utensils className={iconClass} />;
-      case 'culture': return <Palette className={iconClass} />;
-      case 'nature': return <Mountain className={iconClass} />;
-      case 'adventure': return <Camera className={iconClass} />;
-      default: return <MapPin className={iconClass} />;
-    }
-  };
-
-  const getCategoryColor = (category: string) => {
-    switch (category.toLowerCase()) {
-      case 'food': return 'bg-orange-500';
-      case 'culture': return 'bg-purple-500';
-      case 'nature': return 'bg-green-500';
-      case 'adventure': return 'bg-red-500';
-      default: return 'bg-blue-500';
-    }
-  };
-
-  const handleToggleActivity = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onToggleActivity) {
-      onToggleActivity(activity);
-    }
-  };
-
-  return (
-    <div className={`bg-white border rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer ${
-      isSelected 
-        ? 'border-green-300 hover:border-green-400 hover:scale-105' 
-        : 'border-gray-200 hover:border-blue-300 hover:scale-105 opacity-75'
-    }`}>
-      
       {/* Activity Content */}
       <div className="p-4">
         {/* Time Badge */}
