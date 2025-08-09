@@ -246,11 +246,11 @@ function App() {
         onShowAuth={handleShowAuth}
       />
       
-      <main className="w-full px-1 sm:px-2 py-4 sm:py-8">
+      <main className="w-full py-4 sm:py-8">
         {appState === 'form' && (
           <div className="space-y-8">
             {!showMainContent && (
-              <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center z-50 px-2">
+              <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center z-50">
                 <div className="text-center max-w-sm sm:max-w-none">
                   <h1 className={`text-3xl sm:text-5xl lg:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 sm:mb-6 transition-opacity duration-1000 ${fadeOutText ? 'opacity-0' : 'opacity-100'}`}>
                     <TypingText 
@@ -284,12 +284,12 @@ function App() {
             )}
             
             {showMainContent && (
-              <div className="text-center mb-8 sm:mb-12 animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards] px-1">
+              <div className="text-center mb-8 sm:mb-12 animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]">
                 <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
                   WanderAI
                 </h1>
                 <p className="text-base sm:text-lg lg:text-xl text-gray-500 mb-6 sm:mb-8">Your AI Travel Companion</p>
-                <p className="text-sm sm:text-base lg:text-xl text-gray-600 max-w-2xl mx-auto px-1">
+                <p className="text-sm sm:text-base lg:text-xl text-gray-600 max-w-2xl mx-auto">
                   Intelligent itinerary planning for unforgettable adventures. Hidden gems and must-see spots, perfectly tailored
                 </p>
                 {!isAuthenticated && (
@@ -325,7 +325,7 @@ function App() {
 
         {appState === 'itinerary' && currentItinerary && (
           <div className="space-y-8">
-            <div className="flex justify-center px-1">
+            <div className="flex justify-center">
               <button
                 onClick={handleBackToForm}
                 className="text-blue-600 hover:text-blue-700 font-medium text-sm sm:text-base px-4 py-2"
@@ -383,7 +383,7 @@ function App() {
       />
 
       <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="w-full py-4 sm:py-6 lg:py-8 px-1 text-center">
+        <div className="w-full py-4 sm:py-6 lg:py-8 text-center">
           <p className="text-sm sm:text-base text-gray-600">
             Powered by AI • Made with ❤️ for travelers everywhere
           </p>

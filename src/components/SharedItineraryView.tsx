@@ -19,7 +19,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
   };
 
   return (
-    <div className="w-full space-y-8 px-1 sm:px-2">
+    <div className="w-full space-y-8">
       {/* Shared Banner */}
       <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white p-4 rounded-xl text-center">
         <div className="flex items-center justify-center space-x-2 mb-2">
@@ -32,7 +32,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
       </div>
 
       {/* Header Section */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-none sm:rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-12 text-white">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-6">
@@ -114,7 +114,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
+        <div className="bg-white rounded-none sm:rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
             <span className="text-2xl">📋</span>
           </div>
@@ -139,7 +139,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
       )}
 
       {/* Footer */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
+      <div className="bg-white rounded-none sm:rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
           <span className="text-2xl">✈️</span>
         </div>

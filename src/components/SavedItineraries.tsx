@@ -51,7 +51,7 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
   };
 
   return (
-    <div className="w-full px-1 sm:px-2">
+    <div className="w-full">
       <div className="flex items-center space-x-4 mb-8">
         <button
           onClick={onBack}
@@ -64,7 +64,7 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
       </div>
 
       {itineraries.length === 0 ? (
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-6 sm:p-8 lg:p-12 text-center mx-1 sm:mx-auto max-w-none sm:max-w-4xl">
+        <div className="bg-white rounded-none sm:rounded-2xl shadow-lg sm:shadow-xl p-6 sm:p-8 lg:p-12 text-center">
           <div className="text-gray-400 mb-4">
             <MapPin className="h-12 w-12 sm:h-16 sm:w-16 mx-auto" />
           </div>
@@ -82,7 +82,7 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
       ) : (
         <div className="grid gap-4 sm:gap-6">
           {itineraries.map((itinerary) => (
-            <div key={itinerary.id} className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-4 sm:p-6">
+            <div key={itinerary.id} className="bg-white rounded-none sm:rounded-2xl shadow-lg sm:shadow-xl p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row items-start justify-between space-y-4 sm:space-y-0">
                 <div className="flex-1">
                   <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">

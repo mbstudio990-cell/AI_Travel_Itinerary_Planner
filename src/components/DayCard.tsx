@@ -193,7 +193,7 @@ const DayCard: React.FC<DayCardProps> = ({
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl hover:border-blue-200 sm:hover:scale-[1.02] transition-all duration-300">
+      <div className="bg-white rounded-none sm:rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl hover:border-blue-200 sm:hover:scale-[1.02] transition-all duration-300">
       {/* Day Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 sm:px-6 py-6 sm:py-8 text-white">
         <div className="flex items-center justify-between">

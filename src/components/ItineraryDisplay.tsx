@@ -332,7 +332,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   return (
     <div className="w-full space-y-8">
       {/* Header Section */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mx-1 sm:mx-2">
+      <div className="bg-white rounded-none sm:rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-4 sm:px-8 py-8 sm:py-12 text-white">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-full mb-4 sm:mb-6">
@@ -546,7 +546,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
       />
 
       {/* Daily Itineraries */}
-      <div className="space-y-4 sm:space-y-6 px-1 sm:px-2">
+      <div className="space-y-4 sm:space-y-6">
         {currentItinerary.days.map((day) => (
           <DayCard 
             key={day.day} 
@@ -562,7 +562,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
       </div>
 
       {/* Footer */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 text-center mx-1 sm:mx-2">
+      <div className="bg-white rounded-none sm:rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 text-center">
         <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full mb-4 sm:mb-6">
           <span className="text-2xl">🌟</span>
         </div>
