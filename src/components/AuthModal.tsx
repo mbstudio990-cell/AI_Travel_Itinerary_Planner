@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { X, Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../utils/supabase';
+import { Dialog } from './ui/Dialog';
+import { useDialog } from '../hooks/useDialog';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -21,6 +23,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
   const [resetLoading, setResetLoading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const { dialogState, showDialog, closeDialog } = useDialog();
 
   const resetForm = () => {
     setEmail('');
@@ -99,7 +102,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
       }
     } catch (error: any) {
       console.error('Sign up error:', error);
-      setError(error.message || 'Failed to create account');
+      showDialog({
+        title: 'Sign Up Error',
+        message: error.message || 'Failed to create account',
+        type: 'error'
+      });
     } finally {
       setLoading(false);
     }
@@ -129,9 +136,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
     } catch (error: any) {
       console.error('Sign in error:', error);
       if (error.message === 'Invalid login credentials') {
-        setError('Invalid email or password. Please check your credentials and try again.');
+        showDialog({
+          title: 'Sign In Error',
+          message: 'Invalid email or password. Please check your credentials and try again.',
+          type: 'error'
+        });
       } else {
-        setError(error.message || 'Failed to sign in');
+        showDialog({
+          title: 'Sign In Error',
+          message: error.message || 'Failed to sign in',
+          type: 'error'
+        });
       }
     } finally {
       setLoading(false);
@@ -163,7 +178,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
       setMessage('Password reset email sent! Please check your inbox and follow the instructions.');
     } catch (error: any) {
       console.error('Password reset error:', error);
-      setError(error.message || 'Failed to send password reset email');
+      showDialog({
+        title: 'Password Reset Error',
+        message: error.message || 'Failed to send password reset email',
+        type: 'error'
+      });
     } finally {
       setResetLoading(false);
     }
@@ -384,6 +403,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
             </div>
           </div>
         </motion.div>
+
+        {/* Dialog Modal */}
+        <Dialog
+          isOpen={dialogState.isOpen}
+          onClose={closeDialog}
+          title={dialogState.title}
+          message={dialogState.message}
+          type={dialogState.type}
+          confirmText={dialogState.confirmText}
+          cancelText={dialogState.cancelText}
+          showCancel={dialogState.showCancel}
+          onConfirm={dialogState.onConfirm}
+        />
       </div>
     </AnimatePresence>
   );
