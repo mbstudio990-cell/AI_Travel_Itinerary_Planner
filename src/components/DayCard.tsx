@@ -100,7 +100,7 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
                 <FileText className="h-4 w-4 text-gray-600 dark:text-gray-300" />
               </div>
               <div className="flex-1">
-                <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-1">Your Experience</h4>
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-1">Your Experience</h4>
                 <p className="text-sm text-gray-900 dark:text-white line-clamp-2 leading-relaxed">
                   {dayItinerary.notes.length > 150 
                     ? `${dayItinerary.notes.substring(0, 150)}...` 
