@@ -184,34 +184,32 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(shareText)}`;
     window.open(mailtoUrl);
     setShowShareMenu(false);
-    const baseUrl = window.location.origin;
-    return `${baseUrl}/share/${encodedData}`;
   };
 
   const handleCopyLink = async () => {
     const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️\n\n${shareableLink}`;
+    const shareText = `🌍 Check out my ${currentItinerary.destination} travel plan!\n${shareableLink}`;
     try {
       await navigator.clipboard.writeText(shareText);
-      alert('Itinerary copied to clipboard!');
+      alert('Itinerary link copied to clipboard!');
     } catch (err) {
       console.error('Failed to copy:', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = shareText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      alert('Itinerary link copied to clipboard!');
     }
-    setShowShareMenu(false);
-  };
-
-  const handleEmailShare = () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️\n\nView the full itinerary here: ${shareableLink}`;
-    const subject = `Travel Itinerary for ${currentItinerary.destination}`;
-    const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(shareText)}`;
-    window.open(mailtoUrl);
     setShowShareMenu(false);
   };
 
   const handleWhatsAppShare = () => {
     const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️\n\n${shareableLink}`;
+    // Create a shorter message for WhatsApp
+    const shareText = `🌍 Check out my ${currentItinerary.destination} travel plan!\n${shareableLink}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, '_blank');
     setShowShareMenu(false);
@@ -219,7 +217,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
   const handleTelegramShare = () => {
     const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️`;
+    const shareText = `🌍 ${currentItinerary.destination} travel itinerary`;
     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareableLink)}&text=${encodeURIComponent(shareText)}`;
     window.open(telegramUrl, '_blank');
     setShowShareMenu(false);
@@ -227,7 +225,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
   const handleTwitterShare = () => {
     const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️`;
+    const shareText = `🌍 My ${currentItinerary.destination} travel itinerary`;
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareableLink)}`;
     window.open(twitterUrl, '_blank');
     setShowShareMenu(false);
