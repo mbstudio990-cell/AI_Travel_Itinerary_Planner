@@ -170,7 +170,7 @@ export const TooltipContent: React.FC<TooltipContentProps & { isOpen?: boolean }
             marginRight: side === 'left' ? sideOffset : undefined,
           }}
         >
-          <div className="bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg max-w-xs relative">
+          <div className="bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg relative whitespace-nowrap">
             {children}
             {arrow && (
               <div
