@@ -45,12 +45,12 @@ export const TravelSummaryModal: React.FC<TravelSummaryModalProps> = ({
           </div>
         </div>
 
-        {/* Notes Summary */}
+        {/* Travel Notes */}
         {totalNotes > 0 ? (
           <div className="space-y-6">
             <div className="flex items-center space-x-2 mb-4">
               <BookOpen className="h-5 w-5 text-blue-600" />
-              <h4 className="text-lg font-semibold text-gray-900">Your Travel Experience</h4>
+              <h4 className="text-lg font-semibold text-gray-900">Your Travel Notes</h4>
             </div>
 
             {daysWithNotes.map((day) => (
@@ -126,7 +126,7 @@ export const TravelSummaryModal: React.FC<TravelSummaryModalProps> = ({
               onClick={onClose}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
             >
-              Close Summary
+              Close Notes
             </button>
           </div>
         </div>

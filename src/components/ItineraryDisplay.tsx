@@ -335,7 +335,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
                 <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 group-hover:bg-blue-200 rounded-xl mb-2 sm:mb-3 transition-colors">
                   <BookOpen className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                 </div>
-                <div className="text-xs sm:text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors">Travel Summary</div>
+                <div className="text-xs sm:text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors">Travel Notes</div>
               </button>
             </div>
           </div>
