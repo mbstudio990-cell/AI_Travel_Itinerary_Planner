@@ -287,6 +287,14 @@ const DayCard: React.FC<DayCardProps> = ({
       {isExpanded && (
         <div className="p-6 bg-gray-50">
           <div className="flex items-center justify-between mb-4">
+            {/* Activities Count Text */}
+            <p className="text-indigo-600 font-semibold">
+              {isInManageMode 
+                ? `${dayItinerary.activities.filter(a => a.selected !== false).length} of ${dayItinerary.activities.length} activities selected`
+                : `${displayActivities.length} activities planned for this day`
+              }
+            </p>
+
             {/* Customize Activities Button */}
             <button
               onClick={handleToggleLocalManage}
@@ -299,26 +307,27 @@ const DayCard: React.FC<DayCardProps> = ({
             >
               <span>{isInManageMode ? 'Done Customizing' : 'Customize Activities'}</span>
             </button>
-            
-            {isInManageMode ? (
-              <div className="flex items-center justify-between w-full">
-                <p className="text-indigo-600 font-semibold ml-4">
-                  {dayItinerary.activities.filter(a => a.selected !== false).length} of {dayItinerary.activities.length} activities selected
-                </p>
-                <button
-                  onClick={() => setShowAddActivityModal(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Add New Activity</span>
-                </button>
-              </div>
-            ) : (
-              <p className="text-indigo-600 font-semibold ml-4">
-                {displayActivities.length} activities planned for this day
-              </p>
-            )}
           </div>
+          
+          {isInManageMode && (
+            <div className="mb-4 flex items-center justify-between">
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg flex-1 mr-4">
+                <p className="text-sm text-blue-800">
+                  <strong>Customize Mode:</strong> Check the boxes to add activities to your itinerary, uncheck to remove them. Green border = selected, gray = not selected.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowAddActivityModal(true)}
+                className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium whitespace-nowrap"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Add New Activity</span>
+              </button>
+            </div>
+          )}
+          
+          {!isInManageMode && (
+            {isInManageMode ? (
           
           {isInManageMode && (
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
