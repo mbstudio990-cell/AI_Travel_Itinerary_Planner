@@ -120,7 +120,7 @@ export const TravelSummaryModal: React.FC<TravelSummaryModalProps> = ({
         <div className="mt-8 pt-6 border-t border-gray-200">
           <div className="flex justify-between items-center">
             <div className="text-sm text-gray-500">
-              Trip created on {new Date(itinerary.createdAt).toLocaleDateString()}
+              Trip created on {new Date(itinerary.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
             </div>
             <button
               onClick={onClose}
