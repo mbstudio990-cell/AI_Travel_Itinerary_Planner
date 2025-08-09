@@ -490,16 +490,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
                     </button>
                     
                     <button
-                      onClick={handleEmailShare}
-                     className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-2 sm:space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02] text-sm sm:text-base"
-                    >
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-red-500 rounded-lg flex items-center justify-center">
-                        <Mail className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
-                      </div>
-                      <span>Email</span>
-                    </button>
-                    
-                    <button
                       onClick={handleCopyLink}
                      className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-2 sm:space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02] text-sm sm:text-base"
                     >
