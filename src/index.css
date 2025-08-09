@@ -11,9 +11,9 @@
 :root {
   /* Light theme colors */
   --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --bg-tertiary: #f1f5f9;
-  --bg-accent: #eff6ff;
+  --bg-secondary: #fafbfc;
+  --bg-tertiary: #f7f9fb;
+  --bg-accent: #f5f8ff;
   --bg-card: #ffffff;
   --bg-input: #ffffff;
   

@@ -151,7 +151,9 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-25 via-white to-indigo-25" style={{
+      background: 'linear-gradient(to bottom right, rgba(239, 246, 255, 0.3), #ffffff, rgba(238, 242, 255, 0.3))'
+    }}>
       <Header 
         onViewSaved={handleViewSaved}
         savedCount={savedItineraries.length}
