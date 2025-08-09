@@ -89,7 +89,7 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
                     {itinerary.destination}
                   </h3>
                   
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-gray-600 mb-4">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-gray-600 mb-2">
                     <div className="flex items-center space-x-2">
                       <Calendar className="h-4 w-4" />
                       <span className="text-sm">
@@ -97,14 +97,15 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
                         {new Date(itinerary.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                       </span>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
+                  </div>
+                  
+                  <div className="flex flex-wrap items-center gap-2 mb-4">
                       <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded">
                         {itinerary.days.length} days
                       </span>
                       <span className="text-sm bg-green-100 text-green-700 px-2 py-1 rounded">
                         {itinerary.preferences.budget}
                       </span>
-                    </div>
                   </div>
 
                   <p className="text-gray-600 text-sm mb-4 break-words">
@@ -116,7 +117,7 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+                <div className="flex flex-col space-y-2 w-full sm:w-auto">
                   <button
                     onClick={() => onView(itinerary)}
                     className="flex items-center justify-center space-x-2 px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm sm:text-base"
