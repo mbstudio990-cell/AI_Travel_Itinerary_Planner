@@ -423,22 +423,15 @@ const DayCard: React.FC<DayCardProps> = ({
                                 
                                 {/* Location */}
                                 <div className="flex items-center space-x-2 text-gray-600 mb-2">
-                                  <MapPin className="h-4 w-4" />
-                                  <span className="text-sm">{activity.location}</span>
                                   <a
                                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activity.location)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="ml-2 p-1 hover:bg-blue-100 rounded-full transition-colors group"
+                                    className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors group"
                                     title="Open in Google Maps"
                                   >
-                                    <svg 
-                                      className="h-4 w-4 text-blue-600 group-hover:text-blue-700" 
-                                      viewBox="0 0 24 24" 
-                                      fill="currentColor"
-                                    >
-                                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                                    </svg>
+                                    <MapPin className="h-4 w-4 group-hover:text-blue-600" />
+                                    <span className="text-sm group-hover:text-blue-600">{activity.location}</span>
                                   </a>
                                 </div>
                               </div>
