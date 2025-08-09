@@ -47,7 +47,7 @@ export const Modal: React.FC<ModalProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-            className={`bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full ${maxWidth} max-h-[90vh] overflow-hidden mx-4`}
+            onClick={onClose}
           >
             {/* Modal Content */}
             <motion.div
@@ -59,8 +59,8 @@ export const Modal: React.FC<ModalProps> = ({
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900 pr-4">{title}</h2>
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 pr-4">{title}</h2>
                 <button
                   onClick={onClose}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -71,15 +71,13 @@ export const Modal: React.FC<ModalProps> = ({
               </div>
 
               {/* Content */}
-              <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
-            <div className="overflow-y-auto max-h-[calc(90vh-60px)] sm:max-h-[calc(90vh-80px)]">
+              <div className="overflow-y-auto max-h-[calc(90vh-60px)] sm:max-h-[calc(90vh-80px)]">
+                {children}
               </div>
             </motion.div>
           </motion.div>
         </>
       )}
     </AnimatePresence>
-      );
-    };
-  )
-}
+  );
+};
