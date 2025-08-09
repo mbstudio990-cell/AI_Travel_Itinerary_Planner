@@ -102,7 +102,7 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
     tips: ''
   });
 
-  // Calculate available time slots
+  // Calculate available time slots based on existing activities
   const getAvailableTimeSlots = () => {
     const allTimeSlots = [
       'Early Morning (6:00-9:00 AM)',
@@ -113,7 +113,10 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
       'Night (8:00 PM-Late)'
     ];
 
-    const occupiedSlots = existingActivities.map(activity => {
+    // Only consider selected activities when determining occupied slots
+    const occupiedSlots = existingActivities
+      .filter(activity => activity.selected !== false)
+      .map(activity => {
       const time = activity.time.toLowerCase();
       if (time.includes('6:') || time.includes('7:') || time.includes('8:') && time.includes('am')) {
         return 'Early Morning (6:00-9:00 AM)';
@@ -135,15 +138,24 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
 
   const availableTimeSlots = getAvailableTimeSlots();
 
-  const handleSuggestionClick = (suggestion: string, category: string) => {
+  const handleSuggestionClick = (suggestion: any, timeSlot: string) => {
+    const timeMap = {
+      'Early Morning (6:00-9:00 AM)': '7:00 AM',
+      'Morning (9:00 AM-12:00 PM)': '10:00 AM',
+      'Lunch Time (12:00-2:00 PM)': '12:30 PM',
+      'Afternoon (2:00-5:00 PM)': '3:00 PM',
+      'Evening (5:00-8:00 PM)': '6:00 PM',
+      'Night (8:00 PM-Late)': '8:00 PM'
+    };
+    
     const activity: Activity = {
-      time: '10:00 AM',
-      title: suggestion,
-      description: `Enjoy ${suggestion.toLowerCase()} in ${destination}. A great way to experience the local ${category.toLowerCase()}.`,
+      time: timeMap[timeSlot as keyof typeof timeMap],
+      title: suggestion.title,
+      description: suggestion.description,
       location: `${destination}`,
-      category,
+      category: suggestion.category,
       costEstimate: getBudgetRange(budget, currency),
-      tips: `Book in advance for better rates. Check opening hours before visiting.`,
+      tips: 'Check opening hours and book in advance if needed.',
       selected: true
     };
     
@@ -217,7 +229,7 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
                 </div>
                 <h4 className="text-lg font-semibold text-gray-900 mb-2">Day is Fully Scheduled!</h4>
                 <p className="text-gray-600 mb-4">
-                  All time slots are occupied. You can still create a custom activity or replace an existing one.
+                  All time slots for this day are occupied with selected activities. You can still create a custom activity.
                 </p>
                 <button
                   onClick={() => setShowCustomForm(true)}
@@ -228,68 +240,70 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
               </div>
             ) : (
               <>
-                {/* Time-based Activity Suggestions */}
+                {/* Available Time Slots with Suggestions */}
                 <div className="space-y-6">
                   {availableTimeSlots.map((timeSlot) => {
                     const suggestions = getTimeBasedSuggestions(timeSlot, destination);
                     return (
-                      <div key={timeSlot}>
-                        <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
-                          <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm mr-3 flex items-center">
+                      <div key={timeSlot} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                        <h4 className="font-semibold text-gray-800 mb-4 flex items-center justify-between">
+                          <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm flex items-center">
                             <Clock className="h-4 w-4 mr-2" />
                             {timeSlot}
                           </div>
-                          <span className="text-green-600 text-sm">Available</span>
+                          <span className="text-green-600 text-sm font-medium bg-green-100 px-3 py-1 rounded-full">
+                            ✓ Available
+                          </span>
                         </h4>
+                        
+                        <p className="text-gray-600 text-sm mb-4">
+                          Perfect activities for this time slot in {destination}:
+                        </p>
+                        
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                           {suggestions.map((suggestion) => (
                             <button
                               key={suggestion.title}
-                              onClick={() => {
-                                const timeMap = {
-                                  'Early Morning (6:00-9:00 AM)': '7:00 AM',
-                                  'Morning (9:00 AM-12:00 PM)': '10:00 AM',
-                                  'Lunch Time (12:00-2:00 PM)': '12:30 PM',
-                                  'Afternoon (2:00-5:00 PM)': '3:00 PM',
-                                  'Evening (5:00-8:00 PM)': '6:00 PM',
-                                  'Night (8:00 PM-Late)': '8:00 PM'
-                                };
-                                
-                                const activity: Activity = {
-                                  time: timeMap[timeSlot as keyof typeof timeMap],
-                                  title: suggestion.title,
-                                  description: suggestion.description,
-                                  location: `${destination}`,
-                                  category: suggestion.category,
-                                  costEstimate: getBudgetRange(budget, currency),
-                                  tips: 'Check opening hours and book in advance if needed.',
-                                  selected: true
-                                };
-                                
-                                onAddActivity(activity);
-                                onClose();
-                              }}
-                              className="text-left p-4 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-md group"
+                              onClick={() => handleSuggestionClick(suggestion, timeSlot)}
+                              className="text-left p-4 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-md group relative overflow-hidden"
                             >
+                              {/* Hover effect background */}
+                              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                              
+                              <div className="relative z-10">
                               <div className="flex items-start justify-between mb-2">
                                 <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                                   suggestion.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
                                   suggestion.category === 'Food' ? 'bg-orange-100 text-orange-700' :
                                   suggestion.category === 'Nature' ? 'bg-green-100 text-green-700' :
                                   suggestion.category === 'Adventure' ? 'bg-red-100 text-red-700' :
+                                  suggestion.category === 'Shopping' ? 'bg-pink-100 text-pink-700' :
+                                  suggestion.category === 'History' ? 'bg-yellow-100 text-yellow-700' :
                                   'bg-blue-100 text-blue-700'
                                 }`}>
                                   {suggestion.category}
                                 </span>
+                                <div className="text-xs text-gray-500 font-medium">
+                                  {getBudgetRange(budget, currency)}
+                                </div>
                               </div>
+                              
                               <div className="font-medium text-gray-900 group-hover:text-blue-700 mb-1">
                                 {suggestion.title}
                               </div>
+                              
                               <div className="text-sm text-gray-600 group-hover:text-blue-600 mb-2">
                                 {suggestion.description}
                               </div>
-                              <div className="text-sm text-gray-500">
-                                {getBudgetRange(budget, currency)}
+                              
+                              <div className="flex items-center justify-between mt-3">
+                                <div className="text-xs text-gray-500">
+                                  📍 {destination}
+                                </div>
+                                <div className="text-xs text-blue-600 font-medium group-hover:text-blue-700">
+                                  Click to add →
+                                </div>
+                              </div>
                               </div>
                             </button>
                           ))}
@@ -302,16 +316,14 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
             )}
             
             {/* Custom Activity Button */}
-            <div className="space-y-6">
-              <div className="pt-6 border-t border-gray-200">
+            <div className="pt-6 border-t border-gray-200">
                 <button
                   onClick={() => setShowCustomForm(true)}
-                  className="w-full flex items-center justify-center space-x-3 p-6 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-105"
+                  className="w-full flex items-center justify-center space-x-3 p-6 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-[1.02] group"
                 >
-                  <Plus className="h-6 w-6 text-blue-600" />
+                  <Plus className="h-6 w-6 text-blue-600 group-hover:scale-110 transition-transform" />
                   <span className="font-semibold text-blue-600 text-lg">Create Custom Activity</span>
                 </button>
-              </div>
             </div>
           </div>
         ) : (
