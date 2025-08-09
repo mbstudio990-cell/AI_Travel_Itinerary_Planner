@@ -230,7 +230,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
 
   return (
     <>
-      <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-3 sm:p-6 lg:p-8 w-full max-w-2xl mx-auto relative">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-3 sm:p-6 lg:p-8 w-full mx-auto relative max-w-none sm:max-w-2xl">
         <div className="text-center mb-6 sm:mb-8">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Plan Your Perfect Trip</h2>
           <p className="text-sm sm:text-base text-gray-600">Tell us about your travel dreams and we'll create a personalized itinerary</p>

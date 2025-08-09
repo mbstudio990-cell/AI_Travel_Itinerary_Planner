@@ -470,6 +470,13 @@ input::placeholder, textarea::placeholder {
     overflow-x: hidden;
   }
   
+  /* Remove default margins and padding */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
   /* Improve touch targets */
   button, .cursor-pointer {
     min-height: 44px;
@@ -515,8 +522,8 @@ input::placeholder, textarea::placeholder {
 
   /* Mobile-specific container padding */
   .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
   }
 
   /* Mobile typography adjustments */

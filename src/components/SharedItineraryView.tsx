@@ -19,7 +19,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="w-full space-y-8 px-1 sm:px-2">
       {/* Shared Banner */}
       <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white p-4 rounded-xl text-center">
         <div className="flex items-center justify-center space-x-2 mb-2">

@@ -51,7 +51,7 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4">
+    <div className="w-full px-1 sm:px-2">
       <div className="flex items-center space-x-4 mb-8">
         <button
           onClick={onBack}
@@ -64,7 +64,7 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
       </div>
 
       {itineraries.length === 0 ? (
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-6 sm:p-8 lg:p-12 text-center">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-6 sm:p-8 lg:p-12 text-center mx-1 sm:mx-auto max-w-none sm:max-w-4xl">
           <div className="text-gray-400 mb-4">
             <MapPin className="h-12 w-12 sm:h-16 sm:w-16 mx-auto" />
           </div>
