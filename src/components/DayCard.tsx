@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Banknote, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus, Lightbulb, Clock } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { DayItinerary, Activity } from '../types';
 import ActivityCard from './ActivityCard';
 import { AddActivityModal } from './AddActivityModal';
