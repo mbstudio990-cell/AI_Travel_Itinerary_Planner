@@ -181,23 +181,12 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
                 <span>{currentItinerary.totalBudget}</span>
               </div>
             </div>
-            
-            {/* Travel Summary Button - Left Side Below Trip Details */}
-            <div className="mt-8 flex justify-start">
-              <button
-                onClick={() => setShowTravelSummary(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-colors font-medium border border-white/30 hover:border-white/50 text-sm"
-              >
-                <BookOpen className="h-5 w-5" />
-                <span>View Travel Summary</span>
-              </button>
-            </div>
           </div>
         </div>
 
         {/* Trip Stats */}
         <div className="px-8 py-6 bg-gray-50 border-b border-gray-100">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl mb-3">
                 <Calendar className="h-6 w-6 text-blue-600" />
@@ -218,6 +207,17 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
               </div>
               <div className="text-2xl font-bold text-gray-900">{currentItinerary.preferences.interests.length}</div>
               <div className="text-sm text-gray-600">Interests</div>
+            </div>
+            <div className="text-center">
+              <button
+                onClick={() => setShowTravelSummary(true)}
+                className="flex flex-col items-center justify-center w-full h-full p-4 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-xl transition-all duration-200 hover:shadow-md group"
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 group-hover:bg-blue-200 rounded-xl mb-3 transition-colors">
+                  <BookOpen className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className="text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors">Travel Summary</div>
+              </button>
             </div>
           </div>
         </div>
