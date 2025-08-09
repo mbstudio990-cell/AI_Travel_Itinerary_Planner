@@ -36,9 +36,45 @@ function App() {
     if (path.startsWith('/share/')) {
       const encodedData = path.replace('/share/', '');
       try {
-        const decodedData = decodeURIComponent(atob(encodedData));
+        // Try simple base64 decoding first
+        let decodedData;
+        try {
+          decodedData = atob(encodedData);
+        } catch {
+          // Fallback to URL decoding if needed
+          decodedData = decodeURIComponent(atob(encodedData));
+        }
+        
         const itineraryData = JSON.parse(decodedData);
-        setSharedItinerary(itineraryData);
+        
+        // Convert minimal data back to full itinerary format
+        const reconstructedItinerary = {
+          id: itineraryData.id || 'shared-' + Date.now(),
+          destination: itineraryData.d || itineraryData.destination || 'Unknown Destination',
+          startDate: itineraryData.s || itineraryData.startDate || '',
+          endDate: itineraryData.e || itineraryData.endDate || '',
+          preferences: {
+            budget: itineraryData.b === 'B' ? 'Budget' : 
+                    itineraryData.b === 'M' ? 'Mid-range' : 
+                    itineraryData.b === 'L' ? 'Luxury' : 
+                    itineraryData.b || itineraryData.budget || 'Mid-range',
+            interests: itineraryData.i || itineraryData.interests || []
+          },
+          days: itineraryData.days ? 
+            Array.from({ length: typeof itineraryData.days === 'number' ? itineraryData.days : itineraryData.dc || 1 }, (_, i) => ({
+              day: i + 1,
+              date: `Day ${i + 1}`,
+              activities: [],
+              totalEstimatedCost: 'Varies',
+              notes: ''
+            })) : 
+            itineraryData.days || [],
+          totalBudget: itineraryData.tb || itineraryData.totalBudget || 'Contact for details',
+          createdAt: new Date().toISOString(),
+          currency: 'USD'
+        };
+        
+        setSharedItinerary(reconstructedItinerary);
         setAppState('shared');
         setShowMainContent(true); // Skip the typing animation for shared links
       } catch (error) {

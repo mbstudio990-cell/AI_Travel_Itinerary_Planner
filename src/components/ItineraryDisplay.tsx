@@ -154,57 +154,48 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   };
 
   const createShareableLink = (itinerary: Itinerary): string => {
-    // Create a more compact shareable link with essential data only
-    const compactData = {
-      d: itinerary.destination,
+    // Create a very minimal shareable link to avoid URL length limits
+    const minimalData = {
+      d: itinerary.destination.substring(0, 30), // Limit destination length
       s: itinerary.startDate,
       e: itinerary.endDate,
       b: itinerary.preferences.budget,
-      i: itinerary.preferences.interests.slice(0, 3), // Limit interests
-      days: itinerary.days.map(day => ({
-        d: day.day,
-        dt: day.date.split(',')[0], // Shorter date format
-        c: day.totalEstimatedCost,
-        a: day.activities.slice(0, 3).map(act => ({ // Limit activities
-          t: act.time,
-          n: act.title.substring(0, 50), // Truncate title
-          l: act.location.substring(0, 40), // Truncate location
-          c: act.costEstimate,
-          cat: act.category
-        }))
-      }))
+      i: itinerary.preferences.interests.slice(0, 2), // Only 2 interests
+      dc: itinerary.days.length, // Just day count
+      tb: itinerary.totalBudget.substring(0, 20), // Limit budget text
+      id: itinerary.id.substring(0, 8) // Short ID for reference
     };
     
     try {
-      const jsonString = JSON.stringify(compactData);
-      // Check if the data is still too large
-      if (jsonString.length > 1500) {
-        // Create an even more minimal version
-        const minimalData = {
-          d: itinerary.destination,
-          s: itinerary.startDate,
-          e: itinerary.endDate,
-          b: itinerary.preferences.budget,
+      const jsonString = JSON.stringify(minimalData);
+      
+      // Use a simple base64 encoding without URL encoding to keep it shorter
+      const encodedData = btoa(jsonString);
+      const baseUrl = window.location.origin;
+      
+      // Check if URL is too long (most browsers/services limit to ~2000 chars)
+      const fullUrl = `${baseUrl}/share/${encodedData}`;
+      if (fullUrl.length > 1800) {
+        // Fallback to even more minimal data
+        const ultraMinimal = {
+          d: itinerary.destination.substring(0, 20),
           days: itinerary.days.length,
-          budget: itinerary.totalBudget
+          b: itinerary.preferences.budget.charAt(0) // Just first letter
         };
-        const encodedData = btoa(encodeURIComponent(JSON.stringify(minimalData)));
-        const baseUrl = window.location.origin;
-        return `${baseUrl}/share/${encodedData}`;
+        const ultraEncoded = btoa(JSON.stringify(ultraMinimal));
+        return `${baseUrl}/share/${ultraEncoded}`;
       }
       
-      const encodedData = btoa(encodeURIComponent(jsonString));
-      const baseUrl = window.location.origin;
-      return `${baseUrl}/share/${encodedData}`;
+      return fullUrl;
     } catch (error) {
       console.error('Error creating shareable link:', error);
-      // Fallback to minimal data
+      // Ultimate fallback - just basic info
       const fallbackData = {
-        destination: itinerary.destination,
+        d: itinerary.destination.substring(0, 15),
         days: itinerary.days.length,
-        budget: itinerary.totalBudget
+        b: itinerary.preferences.budget.charAt(0)
       };
-      const encodedData = btoa(encodeURIComponent(JSON.stringify(fallbackData)));
+      const encodedData = btoa(JSON.stringify(fallbackData));
       const baseUrl = window.location.origin;
       return `${baseUrl}/share/${encodedData}`;
     }
@@ -212,8 +203,8 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
   const handleWhatsAppShare = () => {
     const shareableLink = createShareableLink(currentItinerary);
-    // Create a shorter message for WhatsApp
-    const shareText = `🌍 Check out my ${currentItinerary.destination} travel plan!\n${shareableLink}`;
+    // Create a very short message for WhatsApp to avoid issues
+    const shareText = `🌍 ${currentItinerary.destination} travel plan: ${shareableLink}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, '_blank');
     setShowShareMenu(false);
@@ -237,7 +228,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
   const handleCopyLink = async () => {
     const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `🌍 Check out my ${currentItinerary.destination} travel itinerary!\n\n${shareableLink}`;
+    const shareText = `🌍 ${currentItinerary.destination} travel itinerary: ${shareableLink}`;
     try {
       await navigator.clipboard.writeText(shareText);
       alert('Itinerary link copied to clipboard!');
@@ -257,7 +248,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
   const handleEmailShare = () => {
     const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}!\n\nView the full itinerary: ${shareableLink}`;
+    const shareText = `${currentItinerary.destination} travel itinerary: ${shareableLink}`;
     const subject = `${currentItinerary.destination} Travel Itinerary`;
     const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(shareText)}`;
     window.open(mailtoUrl);
