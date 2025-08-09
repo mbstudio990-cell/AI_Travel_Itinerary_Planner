@@ -277,24 +277,24 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
                                 }`}>
                                   {suggestion.category}
                                 </span>
-                                <div className="text-xs text-gray-500 group-hover:text-blue-600 font-medium transition-colors duration-200">
+                                <div className="text-xs text-gray-500 group-hover:text-black font-medium transition-colors duration-200">
                                   {getBudgetRange(budget, currency)}
                                 </div>
                               </div>
                               
-                              <div className="font-medium text-gray-900 group-hover:text-blue-800 mb-1 transition-colors duration-200">
+                              <div className="font-medium text-gray-900 group-hover:text-black mb-1 transition-colors duration-200">
                                 {suggestion.title}
                               </div>
                               
-                              <div className="text-sm text-gray-600 group-hover:text-blue-700 mb-2 transition-colors duration-200">
+                              <div className="text-sm text-gray-600 group-hover:text-black mb-2 transition-colors duration-200">
                                 {suggestion.description}
                               </div>
                               
                               <div className="flex items-center justify-between mt-3">
-                                <div className="text-xs text-gray-500 group-hover:text-blue-600 transition-colors duration-200">
+                                <div className="text-xs text-gray-500 group-hover:text-black transition-colors duration-200">
                                   📍 {destination}
                                 </div>
-                                <div className="text-xs text-blue-600 font-medium group-hover:text-blue-800 transition-colors duration-200">
+                                <div className="text-xs text-blue-600 font-medium group-hover:text-black transition-colors duration-200">
                                   Add to schedule →
                                 </div>
                               </div>
