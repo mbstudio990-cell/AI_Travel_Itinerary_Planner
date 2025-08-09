@@ -79,8 +79,11 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
               <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl mb-3">
                 <Heart className="h-6 w-6 text-purple-600" />
               </div>
-              <div className="text-2xl font-bold text-gray-900">{itinerary.preferences.interests.length}</div>
-              <div className="text-sm text-gray-600">Interests</div>
+              <div className="text-sm font-bold text-gray-900 px-2">
+                {itinerary.preferences.interests.slice(0, 2).join(', ')}
+                {itinerary.preferences.interests.length > 2 && ` +${itinerary.preferences.interests.length - 2} more`}
+              </div>
+              <div className="text-sm text-gray-600">Selected Interests</div>
             </div>
           </div>
         </div>

@@ -321,8 +321,11 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
               <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-xl mb-2 sm:mb-3">
                 <Heart className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
               </div>
-              <div className="text-xl sm:text-2xl font-bold text-gray-900">{currentItinerary.preferences.interests.length}</div>
-              <div className="text-xs sm:text-sm text-gray-600">Interests</div>
+              <div className="text-sm sm:text-base font-bold text-gray-900 px-2">
+                {currentItinerary.preferences.interests.slice(0, 2).join(', ')}
+                {currentItinerary.preferences.interests.length > 2 && ` +${currentItinerary.preferences.interests.length - 2} more`}
+              </div>
+              <div className="text-xs sm:text-sm text-gray-600">Selected Interests</div>
             </div>
             <div className="text-center">
               <button
