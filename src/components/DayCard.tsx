@@ -64,7 +64,7 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
                   ? 'bg-yellow-400/30 hover:bg-yellow-400/40 text-white' 
                   : 'hover:bg-white/20 text-white/80 hover:text-white'
               }`}
-              title={dayItinerary.notes ? 'View/Edit Notes' : 'Add Notes'}
+              title="Take Notes"
             >
               {dayItinerary.notes ? (
                 <FileText className="h-5 w-5" />
