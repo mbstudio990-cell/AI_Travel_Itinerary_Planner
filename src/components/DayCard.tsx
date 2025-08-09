@@ -521,22 +521,21 @@ const DayCard: React.FC<DayCardProps> = ({
           
           {/* Add Activity Button - Only show in manage mode */}
           {isInManageMode && (
-            <div className="mb-6">
-              <button
-                onClick={() => setShowAddActivityModal(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
-              >
-                <Plus className="h-4 w-4" />
-                <span>Add New Activity</span>
-              </button>
-            </div>
-          )}
-          
-          {isInManageMode && (
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
-                <strong>Customize Mode:</strong> Check the boxes to add activities to your itinerary, uncheck to remove them. Green border = selected, gray = not selected.
-              </p>
+            <div className="mb-6 space-y-4">
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>Customize Mode:</strong> Check the boxes to add activities to your itinerary, uncheck to remove them. Green border = selected, gray = not selected.
+                </p>
+              </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowAddActivityModal(true)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Add New Activity</span>
+                </button>
+              </div>
             </div>
           )}
           
