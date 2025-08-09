@@ -102,7 +102,11 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
       {/* Daily Itineraries */}
       <div className="space-y-6">
         {itinerary.days.map((day) => (
-          <DayCard key={day.day} dayItinerary={day} />
+          <DayCard 
+            key={day.day} 
+            dayItinerary={day} 
+            currency={itinerary.currency || 'USD'}
+          />
         ))}
       </div>
 

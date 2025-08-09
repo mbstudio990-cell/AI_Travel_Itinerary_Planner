@@ -11,10 +11,9 @@ interface ItineraryDisplayProps {
   onSave: () => void;
   onEdit: () => void;
   onUpdate?: (updatedItinerary: Itinerary) => void;
-  currency?: string;
 }
 
-const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, onEdit, onUpdate, currency = 'USD' }) => {
+const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, onEdit, onUpdate }) => {
   const [showShareMenu, setShowShareMenu] = React.useState(false);
   const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
   const [showTravelSummary, setShowTravelSummary] = React.useState(false);
@@ -489,7 +488,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             itineraryId={currentItinerary.id}
             destination={currentItinerary.destination}
             budget={currentItinerary.preferences.budget}
-            currency="USD" // You might want to store this in the itinerary
+            currency={currency}
             onSaveNotes={handleSaveNotes}
             onToggleActivity={handleToggleActivity}
           />

@@ -9,6 +9,7 @@ interface SavedItinerariesProps {
   onView: (itinerary: Itinerary) => void;
   onEdit: (itinerary: Itinerary) => void;
   onUpdate: () => void;
+  defaultCurrency?: string;
 }
 
 const SavedItineraries: React.FC<SavedItinerariesProps> = ({ 
@@ -16,7 +17,8 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
   onBack, 
   onView, 
   onEdit,
-  onUpdate 
+  onUpdate,
+  defaultCurrency = 'USD'
 }) => {
   const handleDelete = (id: string, event: React.MouseEvent) => {
     // Prevent any event bubbling

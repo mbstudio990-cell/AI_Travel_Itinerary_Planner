@@ -212,7 +212,8 @@ export const loadItinerariesFromSupabase = async (): Promise<Itinerary[]> => {
             }))
         })),
       totalBudget: itinerary.total_budget,
-      createdAt: itinerary.created_at
+      createdAt: itinerary.created_at,
+      currency: itinerary.travel_requests?.currency || 'USD'
     }));
   } catch (error) {
     console.error('Error in loadItinerariesFromSupabase:', error);

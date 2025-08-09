@@ -364,12 +364,12 @@ const DayCard: React.FC<DayCardProps> = ({
                           {activities.reduce((total, activity) => {
                             const cost = activity.costEstimate.toLowerCase();
                             if (cost.includes('free')) return total;
-                            const match = cost.match(/\d+/);
+                            const match = cost.match(/[\d,]+/);
                             return total + (match ? parseInt(match[0]) : 0);
                           }, 0) > 0 ? `~$${activities.reduce((total, activity) => {
                             const cost = activity.costEstimate.toLowerCase();
                             if (cost.includes('free')) return total;
-                            const match = cost.match(/\d+/);
+                            const match = cost.match(/[\d,]+/);
                             return total + (match ? parseInt(match[0]) : 0);
                           }, 0)}` : 'Free activities'}
                         </span>
