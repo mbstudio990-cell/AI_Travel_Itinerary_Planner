@@ -19,7 +19,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
   const [showTravelSummary, setShowTravelSummary] = React.useState(false);
   const [autoSaveStatus, setAutoSaveStatus] = React.useState<'idle' | 'saving' | 'saved'>('idle');
-  const [isManageMode, setIsManageMode] = React.useState(false);
 
   // Update current itinerary when prop changes
   React.useEffect(() => {
@@ -130,33 +129,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
     // Auto-save the itinerary
     autoSaveItinerary(updatedItinerary);
-  };
-
-  const handleToggleManageMode = () => {
-    const newManageMode = !isManageMode;
-    setIsManageMode(newManageMode);
-    
-    // If exiting manage mode (clicking Done), remove unselected activities
-    if (!newManageMode && isManageMode) {
-      // Remove ALL unselected activities from all days
-      const updatedItinerary = {
-        ...currentItinerary,
-        days: currentItinerary.days.map(day => ({
-          ...day,
-          activities: day.activities.filter(activity => activity.selected !== false)
-        }))
-      };
-      
-      setCurrentItinerary(updatedItinerary);
-      
-      // Notify parent component of the update
-      if (onUpdate) {
-        onUpdate(updatedItinerary);
-      }
-
-      // Auto-save the itinerary
-      autoSaveItinerary(updatedItinerary);
-    }
   };
 
   const getShareText = () => {
@@ -410,18 +382,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             </button>
             
             <button
-              onClick={handleToggleManageMode}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-xl transition-colors font-medium ml-4 ${
-                isManageMode
-                  ? 'bg-green-500 hover:bg-green-600 text-white'
-                  : 'bg-blue-500 hover:bg-blue-600 text-white'
-              }`}
-            >
-              <Settings className="h-5 w-5" />
-              <span>{isManageMode ? 'Done Customizing' : 'Customize Activities'}</span>
-            </button>
-            
-            <button
               onClick={handleSave}
               className="flex items-center space-x-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors font-medium"
             >
@@ -522,32 +482,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
       {/* Daily Itineraries */}
       <div className="space-y-6">
-        {isManageMode && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
-            <div className="flex items-center justify-center space-x-2 mb-3">
-              <Settings className="h-6 w-6 text-blue-600" />
-              <h3 className="text-lg font-semibold text-blue-900">Customize Mode Active</h3>
-            </div>
-            <p className="text-blue-800 mb-4">
-              You can now customize activities for all days. Check boxes to include activities in your itinerary, uncheck to remove them.
-            </p>
-            <div className="flex items-center justify-center space-x-4 text-sm text-blue-700">
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-green-500 rounded border-2 border-green-500 flex items-center justify-center">
-                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <span>Selected</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 border-2 border-gray-300 rounded bg-white"></div>
-                <span>Not Selected</span>
-              </div>
-            </div>
-          </div>
-        )}
-        
         {currentItinerary.days.map((day) => (
           <DayCard 
             key={day.day} 
@@ -558,7 +492,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             currency={currency}
             onSaveNotes={handleSaveNotes}
             onToggleActivity={handleToggleActivity}
-            isManageMode={isManageMode}
           />
         ))}
       </div>
