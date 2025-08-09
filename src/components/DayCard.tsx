@@ -467,7 +467,7 @@ const DayCard: React.FC<DayCardProps> = ({
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center justify-between w-full">
               <div>
-                {isInManageMode ? (
+                {isManageMode ? (
                   <p className="text-indigo-600 font-semibold">
                     {dayItinerary.activities.filter(a => a.selected !== false).length} of {dayItinerary.activities.length} activities selected
                   </p>
