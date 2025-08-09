@@ -186,31 +186,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     setShowShareMenu(false);
   };
 
-  const handleWhatsAppShare = () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    // Create a shorter message for WhatsApp
-    const shareText = `🌍 Check out my ${currentItinerary.destination} travel plan!\n${shareableLink}`;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-    window.open(whatsappUrl, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const handleTelegramShare = () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `🌍 ${currentItinerary.destination} travel itinerary`;
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareableLink)}&text=${encodeURIComponent(shareText)}`;
-    window.open(telegramUrl, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const handleTwitterShare = () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `🌍 My ${currentItinerary.destination} travel itinerary`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareableLink)}`;
-    window.open(twitterUrl, '_blank');
-    setShowShareMenu(false);
-  };
-
   const handleFacebookShare = () => {
     const shareableLink = createShareableLink(currentItinerary);
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareableLink)}`;
