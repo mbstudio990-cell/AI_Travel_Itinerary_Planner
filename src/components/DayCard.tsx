@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus } from 'lucide-react';
 import { DayItinerary, Activity } from '../types';
 import ActivityCard from './ActivityCard';
-import { AddActivityCard } from './AddActivityCard';
+import { AddActivityModal } from './AddActivityModal';
 import { NotesModal } from './NotesModal';
 import { loadItineraryNotes } from '../utils/storage';
 
@@ -31,7 +31,7 @@ const DayCard: React.FC<DayCardProps> = ({
   const [expandedActivities, setExpandedActivities] = useState<Set<number>>(new Set());
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   const [currentNotes, setCurrentNotes] = useState(dayItinerary.notes || '');
-  const [showAddActivity, setShowAddActivity] = useState(false);
+  const [showAddActivityModal, setShowAddActivityModal] = useState(false);
 
   // Load notes from Supabase when component mounts
   useEffect(() => {
@@ -186,7 +186,7 @@ const DayCard: React.FC<DayCardProps> = ({
                   {dayItinerary.activities.filter(a => a.selected !== false).length} of {dayItinerary.activities.length} activities selected
                 </p>
                 <button
-                  onClick={() => setShowAddActivity(true)}
+                  onClick={() => setShowAddActivityModal(true)}
                   className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
                 >
                   <Plus className="h-4 w-4" />
@@ -208,25 +208,6 @@ const DayCard: React.FC<DayCardProps> = ({
             </div>
           )}
           
-          {/* Add Activity Card */}
-          {showAddActivity && (
-            <div className="mb-6">
-              <AddActivityCard
-                onAddActivity={(activity) => {
-                  if (onToggleActivity) {
-                    onToggleActivity(dayItinerary.day, activity);
-                  }
-                  setShowAddActivity(false);
-                }}
-                onCancel={() => setShowAddActivity(false)}
-                dayNumber={dayItinerary.day}
-                destination={destination}
-                budget={budget}
-                currency={currency}
-              />
-            </div>
-          )}
-          
           {(showManage ? dayItinerary.activities : displayActivities).length === 0 ? (
             <div className="text-center py-8">
               <div className="text-gray-400 mb-4">
@@ -236,7 +217,7 @@ const DayCard: React.FC<DayCardProps> = ({
               <p className="text-gray-600 mb-4">Add some activities to make this day amazing!</p>
               {showManage && (
                 <button
-                  onClick={() => setShowAddActivity(true)}
+                  onClick={() => setShowAddActivityModal(true)}
                   className="flex items-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium mx-auto"
                 >
                   <Plus className="h-5 w-5" />
@@ -262,6 +243,21 @@ const DayCard: React.FC<DayCardProps> = ({
         </div>
       )}
     </div>
+
+      {/* Add Activity Modal */}
+      <AddActivityModal
+        isOpen={showAddActivityModal}
+        onClose={() => setShowAddActivityModal(false)}
+        onAddActivity={(activity) => {
+          if (onToggleActivity) {
+            onToggleActivity(dayItinerary.day, activity);
+          }
+        }}
+        dayNumber={dayItinerary.day}
+        destination={destination}
+        budget={budget}
+        currency={currency}
+      />
 
       {/* Notes Modal */}
       <NotesModal
