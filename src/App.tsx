@@ -150,6 +150,14 @@ function App() {
     setSavedItineraries(getItineraries());
   };
 
+  // Clear saved itineraries when user signs out
+  React.useEffect(() => {
+    if (!isAuthenticated && !authLoading) {
+      // User has signed out, clear the saved itineraries from state
+      setSavedItineraries([]);
+    }
+  }, [isAuthenticated, authLoading]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <Header 

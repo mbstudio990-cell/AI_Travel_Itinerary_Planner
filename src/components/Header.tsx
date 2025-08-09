@@ -38,13 +38,15 @@ const Header: React.FC<HeaderProps> = ({ onViewSaved, savedCount, onShowAuth }) 
                   <UserMenu onViewSaved={onViewSaved} savedCount={savedCount} />
                 ) : (
                   <>
-                    <button
-                      onClick={onViewSaved}
-                      className="flex items-center space-x-2 px-4 py-2 text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
-                    >
-                      <Save className="h-5 w-5" />
-                      <span className="font-medium">My Saved Itinerary ({savedCount})</span>
-                    </button>
+                    {savedCount > 0 && (
+                      <button
+                        onClick={onViewSaved}
+                        className="flex items-center space-x-2 px-4 py-2 text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                      >
+                        <Save className="h-5 w-5" />
+                        <span className="font-medium">My Saved Itinerary ({savedCount})</span>
+                      </button>
+                    )}
                     <button
                       onClick={onShowAuth}
                       className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
