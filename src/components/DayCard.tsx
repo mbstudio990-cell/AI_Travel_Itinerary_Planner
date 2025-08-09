@@ -100,8 +100,8 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
                 <FileText className="h-4 w-4 text-gray-600 dark:text-gray-300" />
               </div>
               <div className="flex-1">
-                <h4 className="text-sm font-medium text-black dark:text-white mb-1">Your Experience</h4>
-                <p className="text-sm text-black dark:text-white line-clamp-2 leading-relaxed">
+                <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-1">Your Experience</h4>
+                <p className="text-sm text-gray-900 dark:text-white line-clamp-2 leading-relaxed">
                   {dayItinerary.notes.length > 150 
                     ? `${dayItinerary.notes.substring(0, 150)}...` 
                     : dayItinerary.notes
@@ -109,7 +109,7 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
                 </p>
                 <button
                   onClick={() => setIsNotesModalOpen(true)}
-                  className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white font-medium mt-1 hover:underline transition-all duration-200"
+                  className="text-xs text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-gray-200 font-medium mt-1 hover:underline transition-all duration-200"
                 >
                   {dayItinerary.notes.length > 150 ? 'Read more' : 'Edit notes'}
                 </button>
