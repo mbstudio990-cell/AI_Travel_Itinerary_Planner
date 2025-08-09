@@ -27,7 +27,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
           <span className="font-semibold">Shared Travel Itinerary</span>
         </div>
         <p className="text-sm opacity-90">
-          This itinerary was shared with you. Create your own personalized travel plan!
+          This is a preview of a shared itinerary. Create your own personalized travel plan with full details!
         </p>
       </div>
 
@@ -100,15 +100,40 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
       </div>
 
       {/* Daily Itineraries */}
-      <div className="space-y-6">
-        {itinerary.days.map((day) => (
-          <DayCard 
-            key={day.day} 
-            dayItinerary={day} 
-            currency={itinerary.currency || 'USD'}
-          />
-        ))}
-      </div>
+      {itinerary.days && itinerary.days.length > 0 ? (
+        <div className="space-y-6">
+          {itinerary.days.map((day) => (
+            <DayCard 
+              key={day.day} 
+              dayItinerary={day} 
+              currency={itinerary.currency || 'USD'}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
+            <span className="text-2xl">📋</span>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-4">Itinerary Preview</h3>
+          <p className="text-gray-600 mb-6">
+            This is a shared itinerary preview for <strong>{itinerary.destination}</strong>.
+            The full detailed itinerary with activities is available when you create your own plan.
+          </p>
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="font-medium text-gray-700">Duration:</span>
+                <span className="ml-2 text-gray-900">{itinerary.days?.length || 'Multiple'} days</span>
+              </div>
+              <div>
+                <span className="font-medium text-gray-700">Budget:</span>
+                <span className="ml-2 text-gray-900">{itinerary.preferences.budget}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
