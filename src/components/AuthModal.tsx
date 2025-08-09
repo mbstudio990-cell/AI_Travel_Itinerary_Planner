@@ -215,11 +215,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col"
+          className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md max-h-[90vh] overflow-hidden flex flex-col mx-4"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-white relative">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 sm:px-6 py-6 sm:py-8 text-white relative">
             <button
               onClick={handleClose}
               className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-lg transition-colors"
@@ -229,13 +229,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
             </button>
             
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4">
-                <User className="h-8 w-8" />
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-full mb-4">
+                <User className="h-6 w-6 sm:h-8 sm:w-8" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">
+              <h2 className="text-xl sm:text-2xl font-bold mb-2">
                 {mode === 'signin' ? 'Welcome Back!' : 'Join WanderAI'}
               </h2>
-              <p className="text-blue-100">
+              <p className="text-sm sm:text-base text-blue-100">
                 {mode === 'signin' 
                   ? 'Sign in to access your saved itineraries' 
                   : 'Create an account to save and sync your travel plans'
@@ -245,7 +245,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
           </div>
 
           {/* Form */}
-          <div className="p-6 overflow-y-auto flex-1">
+          <div className="p-4 sm:p-6 overflow-y-auto flex-1">
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Full Name (Sign Up only) */}
               {mode === 'signup' && (
@@ -259,7 +259,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-base"
                       placeholder="Enter your full name"
                       required={mode === 'signup'}
                     />
@@ -278,7 +278,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-base"
                     placeholder="Enter your email"
                     required
                   />
@@ -296,7 +296,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-base"
                     placeholder={mode === 'signup' ? 'Create a password (min 6 characters)' : 'Enter your password'}
                     required
                   />
@@ -322,7 +322,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                       type={showConfirmPassword ? 'text' : 'password'}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-base"
                       placeholder="Confirm your password"
                       required={mode === 'signup'}
                     />
@@ -339,14 +339,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
 
               {/* Error Message */}
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 break-words">
                   <p className="text-sm text-red-600">{error}</p>
                 </div>
               )}
 
               {/* Success Message */}
               {message && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 break-words">
                   <p className="text-sm text-green-600">{message}</p>
                 </div>
               )}
@@ -355,7 +355,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2 text-base"
               >
                 {loading ? (
                   <>
@@ -374,7 +374,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                     type="button"
                     onClick={handleForgotPassword}
                     disabled={resetLoading}
-                    className="text-sm text-blue-600 hover:text-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-1 mx-auto"
+                    className="text-sm text-blue-600 hover:text-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-1 mx-auto break-words"
                   >
                     {resetLoading ? (
                       <>
@@ -390,12 +390,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
             </form>
 
             {/* Switch Mode */}
-            <div className="mt-6 text-center">
+            <div className="mt-4 sm:mt-6 text-center">
               <p className="text-gray-600">
                 {mode === 'signin' ? "Don't have an account?" : "Already have an account?"}
                 <button
                   onClick={switchMode}
-                  className="ml-2 text-blue-600 hover:text-blue-700 font-medium"
+                  className="ml-2 text-blue-600 hover:text-blue-700 font-medium text-sm sm:text-base"
                 >
                   {mode === 'signin' ? 'Sign Up' : 'Sign In'}
                 </button>

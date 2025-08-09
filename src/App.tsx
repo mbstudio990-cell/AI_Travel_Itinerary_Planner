@@ -250,25 +250,25 @@ function App() {
         {appState === 'form' && (
           <div className="space-y-8">
             {!showMainContent && (
-              <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center z-50 px-4">
+              <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center z-50 px-6">
                 <div className="text-center max-w-sm sm:max-w-none">
-                  <h1 className={`text-4xl sm:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 sm:mb-6 transition-opacity duration-1000 ${fadeOutText ? 'opacity-0' : 'opacity-100'}`}>
+                  <h1 className={`text-3xl sm:text-5xl lg:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 sm:mb-6 transition-opacity duration-1000 ${fadeOutText ? 'opacity-0' : 'opacity-100'}`}>
                     <TypingText 
-                      className="text-4xl sm:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                      className="text-3xl sm:text-5xl lg:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
                       text="WanderAI"
                       cursor
-                      cursorClassName="h-8 sm:h-14 text-blue-600"
+                      cursorClassName="h-6 sm:h-10 lg:h-14 text-blue-600"
                       speed={100}
                       onComplete={() => setShowSubtitle(true)}
                     />
                   </h1>
                   {showSubtitle && (
-                    <p className={`text-xl sm:text-3xl text-gray-500 transition-opacity duration-1000 ${fadeOutText ? 'opacity-0' : 'opacity-100'}`}>
+                    <p className={`text-lg sm:text-2xl lg:text-3xl text-gray-500 transition-opacity duration-1000 ${fadeOutText ? 'opacity-0' : 'opacity-100'}`}>
                       <TypingText 
-                        className="text-xl sm:text-3xl text-gray-500"
+                        className="text-lg sm:text-2xl lg:text-3xl text-gray-500"
                         text="Your AI Travel Companion" 
                         cursor
-                        cursorClassName="h-6 sm:h-8 text-gray-400"
+                        cursorClassName="h-5 sm:h-6 lg:h-8 text-gray-400"
                         speed={100}
                         onComplete={() => {
                           setTimeout(() => {
@@ -285,15 +285,15 @@ function App() {
             
             {showMainContent && (
               <div className="text-center mb-8 sm:mb-12 animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards] px-4">
-                <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
                   WanderAI
                 </h1>
-                <p className="text-lg sm:text-xl text-gray-500 mb-6 sm:mb-8">Your AI Travel Companion</p>
-                <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
+                <p className="text-base sm:text-lg lg:text-xl text-gray-500 mb-6 sm:mb-8">Your AI Travel Companion</p>
+                <p className="text-sm sm:text-base lg:text-xl text-gray-600 max-w-2xl mx-auto px-4">
                   Intelligent itinerary planning for unforgettable adventures. Hidden gems and must-see spots, perfectly tailored
                 </p>
                 {!isAuthenticated && (
-                  <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg max-w-2xl mx-auto">
+                  <div className="mt-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg max-w-2xl mx-auto">
                     <p className="text-sm text-blue-700">
                       <strong>Guest Mode:</strong> You can generate one free itinerary. Sign in to create unlimited itineraries and save them for later.
                     </p>
@@ -325,7 +325,7 @@ function App() {
 
         {appState === 'itinerary' && currentItinerary && (
           <div className="space-y-8">
-            <div className="flex justify-center">
+            <div className="flex justify-center px-4">
               <button
                 onClick={handleBackToForm}
                 className="text-blue-600 hover:text-blue-700 font-medium text-sm sm:text-base px-4 py-2"
@@ -383,7 +383,7 @@ function App() {
       />
 
       <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto py-6 sm:py-8 px-4 text-center">
+        <div className="max-w-7xl mx-auto py-4 sm:py-6 lg:py-8 px-4 text-center">
           <p className="text-sm sm:text-base text-gray-600">
             Powered by AI • Made with ❤️ for travelers everywhere
           </p>
