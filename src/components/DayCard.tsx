@@ -59,15 +59,18 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
             {/* Notes Button */}
             <button
               onClick={() => setIsNotesModalOpen(true)}
-              className={`px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 flex items-center space-x-2 ${
+              className={`p-3 rounded-xl transition-all duration-200 hover:scale-110 ${
                 dayItinerary.notes 
-                  ? 'bg-yellow-400/30 hover:bg-yellow-400/40 text-white border border-yellow-400/50' 
-                  : 'hover:bg-white/20 text-white/80 hover:text-white border border-white/30'
+                  ? 'bg-yellow-400/30 hover:bg-yellow-400/40 text-white' 
+                  : 'hover:bg-white/20 text-white/80 hover:text-white'
               }`}
-              title={dayItinerary.notes ? 'View/Edit Notes' : 'Take Notes'}
+              title={dayItinerary.notes ? 'View/Edit Notes' : 'Add Notes'}
             >
-              <FileText className="h-4 w-4" />
-              <span className="text-sm font-medium">Take Notes</span>
+              {dayItinerary.notes ? (
+                <FileText className="h-5 w-5" />
+              ) : (
+                <Edit3 className="h-5 w-5" />
+              )}
             </button>
             
             <div className="text-right">
