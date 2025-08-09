@@ -34,6 +34,7 @@ export interface Itinerary {
   days: DayItinerary[];
   totalBudget: string;
   createdAt: string;
+  currency?: string;
 }
 
 export interface FormData {

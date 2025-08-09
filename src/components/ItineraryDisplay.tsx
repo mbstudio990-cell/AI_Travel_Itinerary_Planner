@@ -11,9 +11,10 @@ interface ItineraryDisplayProps {
   onSave: () => void;
   onEdit: () => void;
   onUpdate?: (updatedItinerary: Itinerary) => void;
+  currency?: string;
 }
 
-const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, onEdit, onUpdate }) => {
+const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, onEdit, onUpdate, currency = 'USD' }) => {
   const [showShareMenu, setShowShareMenu] = React.useState(false);
   const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
   const [showTravelSummary, setShowTravelSummary] = React.useState(false);

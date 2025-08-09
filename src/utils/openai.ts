@@ -193,7 +193,8 @@ const generateMockItinerary = async (formData: FormData): Promise<Itinerary> => 
     },
     days,
     totalBudget: calculateTotalBudget(formData.budget, diffDays, formData.currency),
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    currency: formData.currency
   };
 };
 

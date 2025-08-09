@@ -243,6 +243,7 @@ function App() {
               onSave={handleSaveItinerary}
               onEdit={() => handleEditPlan(currentItinerary)}
               onUpdate={setCurrentItinerary}
+              currency={currentItinerary.currency || 'USD'}
             />
           </div>
         )}
@@ -254,6 +255,7 @@ function App() {
             onView={handleViewItinerary}
             onEdit={handleEditItinerary}
             onUpdate={handleUpdateSaved}
+            defaultCurrency="USD"
           />
         )}
 
