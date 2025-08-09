@@ -65,7 +65,7 @@ export const EmailConfirmation: React.FC<EmailConfirmationProps> = ({ onClose, o
             <p className="text-gray-600 leading-relaxed">
               Your account is now active and ready to use. You can start creating unlimited personalized travel itineraries with our AI-powered planner.
             </p>
-          </div>
+          </motion.div>
 
           {/* Features List */}
           <motion.div
