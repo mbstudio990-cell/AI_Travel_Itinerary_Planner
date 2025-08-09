@@ -114,6 +114,10 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
       newErrors.interests = 'Please select at least one interest' as any;
     }
     
+    if (!formData.budget) {
+      newErrors.budget = 'Please select a budget level';
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -367,22 +371,32 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
               <motion.button
                 key={budget}
                 type="button"
-                onClick={() => setFormData(prev => ({ ...prev, budget: budget as any }))}
+                onClick={() => setFormData(prev => ({ 
+                  ...prev, 
+                  budget: prev.budget === budget ? '' : budget as any 
+                }))}
                 className={`budget-option p-3 rounded-lg border-2 text-center ${
                   formData.budget === budget
-                    ? 'border-blue-500 bg-blue-50 text-blue-700 selected'
-                    : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    ? 'border-blue-500 bg-blue-500 text-white font-medium shadow-md selected'
+                    : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700 hover:text-blue-600'
                 }`}
                 whileHover={{ 
                   scale: 1.05, 
-                  boxShadow: "0 8px 20px rgba(96, 165, 250, 0.2)", 
-                  backgroundColor: formData.budget === budget ? "rgba(219, 234, 254, 0.4)" : "rgba(248, 250, 252, 0.3)" 
+                  boxShadow: formData.budget === budget 
+                    ? "0 8px 25px rgba(59, 130, 246, 0.4)" 
+                    : "0 8px 20px rgba(96, 165, 250, 0.2)"
                 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                title={formData.budget === budget ? `Click to unselect ${budget}` : `Click to select ${budget}`}
               >
                 <div className="budget-content">
-                  <div className="font-medium">{budget}</div>
+                  <div className="font-medium flex items-center justify-center space-x-2">
+                    {formData.budget === budget && (
+                      <span className="text-sm">✓</span>
+                    )}
+                    <span>{budget}</span>
+                  </div>
                   <div className="text-sm text-gray-500 mt-1">
                     {getBudgetRanges(budget, formData.currency)}
                   </div>
@@ -390,6 +404,9 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
               </motion.button>
             ))}
           </div>
+          {errors.budget && (
+            <p className="mt-2 text-sm text-red-600">{errors.budget}</p>
+          )}
         </div>
 
         {/* Interests Selection */}
