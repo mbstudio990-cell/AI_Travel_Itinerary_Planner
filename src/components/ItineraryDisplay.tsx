@@ -292,6 +292,11 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   const handleDownloadPDF = async () => {
     try {
       await generatePDF(currentItinerary);
+      showDialog({
+        title: 'PDF Downloaded!',
+        message: 'Your travel itinerary has been successfully downloaded as a PDF file.',
+        type: 'success'
+      });
     } catch (error) {
       console.error('Error generating PDF:', error);
       showDialog({
