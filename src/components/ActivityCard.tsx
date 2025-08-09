@@ -6,16 +6,18 @@ interface ActivityCardProps {
   activity: Activity;
   isExpanded: boolean;
   onToggle: () => void;
-  onRemoveActivity?: (activity: Activity) => void;
-  showRemove?: boolean;
+  onToggleActivity?: (activity: Activity) => void;
+  showManage?: boolean;
+  isSelected?: boolean;
 }
 
 const ActivityCard: React.FC<ActivityCardProps> = ({ 
   activity, 
   isExpanded, 
   onToggle, 
-  onRemoveActivity,
-  showRemove = false
+  onToggleActivity,
+  showManage = false,
+  isSelected = true
 }) => {
   const getCategoryIcon = (category: string) => {
     const iconClass = "h-5 w-5 text-white";
@@ -38,25 +40,32 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
     }
   };
 
-  const handleRemoveActivity = (e: React.MouseEvent) => {
+  const handleToggleActivity = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onRemoveActivity) {
-      onRemoveActivity(activity);
+    if (onToggleActivity) {
+      onToggleActivity(activity);
     }
   };
 
-
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg hover:border-blue-300 hover:scale-105 transition-all duration-300 cursor-pointer">
+    <div className={`bg-white border rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer ${
+      isSelected 
+        ? 'border-green-300 hover:border-green-400 hover:scale-105' 
+        : 'border-gray-200 hover:border-blue-300 hover:scale-105 opacity-75'
+    }`}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-4">
-          {showRemove && (
+          {showManage && (
             <button
-              onClick={handleRemoveActivity}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-red-600 hover:bg-red-700 text-white transition-all duration-200 hover:scale-110"
-              title="Remove activity"
+              onClick={handleToggleActivity}
+              className={`flex items-center justify-center w-10 h-10 rounded-full text-white transition-all duration-200 hover:scale-110 font-bold text-lg ${
+                isSelected
+                  ? 'bg-red-500 hover:bg-red-600'
+                  : 'bg-green-500 hover:bg-green-600'
+              }`}
+              title={isSelected ? "Remove from itinerary" : "Add to itinerary"}
             >
-              <X className="h-4 w-4" />
+              {isSelected ? '−' : '+'}
             </button>
           )}
           <div className={`${getCategoryColor(activity.category)} p-3 rounded-xl shadow-sm`}>

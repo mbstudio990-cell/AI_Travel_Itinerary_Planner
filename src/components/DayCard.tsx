@@ -13,8 +13,7 @@ interface DayCardProps {
   budget?: string;
   currency?: string;
   onSaveNotes?: (dayNumber: number, notes: string) => void;
-  onAddActivity?: (dayNumber: number, activity: Activity) => void;
-  onRemoveActivity?: (dayNumber: number, activity: Activity) => void;
+  onToggleActivity?: (dayNumber: number, activity: Activity) => void;
   showManage?: boolean;
 }
 
@@ -25,8 +24,7 @@ const DayCard: React.FC<DayCardProps> = ({
   budget = 'Mid-range',
   currency = 'USD',
   onSaveNotes,
-  onAddActivity,
-  onRemoveActivity,
+  onToggleActivity,
   showManage = false 
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -54,8 +52,10 @@ const DayCard: React.FC<DayCardProps> = ({
     loadNotes();
   }, [itineraryId, dayItinerary.day]);
 
-  // Always show only selected activities (activities that haven't been removed)
-  const displayActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
+  // In manage mode, show all activities. In view mode, show only selected activities
+  const displayActivities = showManage 
+    ? dayItinerary.activities 
+    : dayItinerary.activities.filter(activity => activity.selected !== false);
   
   const toggleActivity = (index: number) => {
     const newExpanded = new Set(expandedActivities);
@@ -74,16 +74,9 @@ const DayCard: React.FC<DayCardProps> = ({
     }
   };
 
-  const handleAddNewActivity = (activity: Activity) => {
-    if (onAddActivity) {
-      onAddActivity(dayItinerary.day, activity);
-    }
-    setShowAddActivity(false);
-  };
-
-  const handleRemoveActivity = (activity: Activity) => {
-    if (onRemoveActivity) {
-      onRemoveActivity(dayItinerary.day, activity);
+  const handleToggleActivity = (activity: Activity) => {
+    if (onToggleActivity) {
+      onToggleActivity(dayItinerary.day, activity);
     }
   };
 
@@ -136,7 +129,10 @@ const DayCard: React.FC<DayCardProps> = ({
             <div className="text-right">
               <div className="text-sm text-white font-medium mb-1">Activities</div>
               <div className="text-xl font-bold text-white">
-                {displayActivities.length}
+                {showManage 
+                  ? `${dayItinerary.activities.filter(a => a.selected !== false).length}/${dayItinerary.activities.length}`
+                  : displayActivities.length
+                }
               </div>
             </div>
             <button
@@ -184,24 +180,30 @@ const DayCard: React.FC<DayCardProps> = ({
       {isExpanded && (
         <div className="p-6 bg-gray-50">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-indigo-600 font-semibold">
-              {displayActivities.length} activities planned for this day
-            </p>
-            {showManage && (
-              <button
-                onClick={() => setShowAddActivity(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
-              >
-                <Plus className="h-4 w-4" />
-                <span>Add Activity</span>
-              </button>
+            {showManage ? (
+              <div className="flex items-center justify-between w-full">
+                <p className="text-indigo-600 font-semibold">
+                  {dayItinerary.activities.filter(a => a.selected !== false).length} of {dayItinerary.activities.length} activities selected
+                </p>
+                <button
+                  onClick={() => setShowAddActivity(true)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Add New Activity</span>
+                </button>
+              </div>
+            ) : (
+              <p className="text-indigo-600 font-semibold">
+                {displayActivities.length} activities planned for this day
+              </p>
             )}
           </div>
           
           {showManage && (
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">
-                <strong>Management Mode:</strong> You can remove activities or add new ones to customize your day.
+                <strong>Management Mode:</strong> Use + to add activities to your itinerary, - to remove them. Green border = selected, gray = not selected.
               </p>
             </div>
           )}
@@ -210,7 +212,12 @@ const DayCard: React.FC<DayCardProps> = ({
           {showAddActivity && (
             <div className="mb-6">
               <AddActivityCard
-                onAddActivity={handleAddNewActivity}
+                onAddActivity={(activity) => {
+                  if (onToggleActivity) {
+                    onToggleActivity(dayItinerary.day, activity);
+                  }
+                  setShowAddActivity(false);
+                }}
                 onCancel={() => setShowAddActivity(false)}
                 dayNumber={dayItinerary.day}
                 destination={destination}
@@ -220,7 +227,7 @@ const DayCard: React.FC<DayCardProps> = ({
             </div>
           )}
           
-          {displayActivities.length === 0 ? (
+          {(showManage ? dayItinerary.activities : displayActivities).length === 0 ? (
             <div className="text-center py-8">
               <div className="text-gray-400 mb-4">
                 <Calendar className="h-12 w-12 mx-auto" />
@@ -239,14 +246,15 @@ const DayCard: React.FC<DayCardProps> = ({
             </div>
           ) : (
             <div className="space-y-4">
-              {displayActivities.map((activity, index) => (
+              {(showManage ? dayItinerary.activities : displayActivities).map((activity, index) => (
                 <ActivityCard
                   key={index}
                   activity={activity}
                   isExpanded={expandedActivities.has(index)}
                   onToggle={() => toggleActivity(index)}
-                  onRemoveActivity={handleRemoveActivity}
-                  showRemove={showManage}
+                  onToggleActivity={handleToggleActivity}
+                  showManage={showManage}
+                  isSelected={activity.selected !== false}
                 />
               ))}
             </div>

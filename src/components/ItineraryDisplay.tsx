@@ -79,70 +79,30 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     autoSaveItinerary(updatedItinerary);
   };
 
-  const handleAddActivity = (dayNumber: number, activity: Activity) => {
+  const handleToggleActivity = (dayNumber: number, activity: Activity) => {
     const updatedItinerary = {
       ...currentItinerary,
       days: currentItinerary.days.map(day => 
         day.day === dayNumber 
           ? {
               ...day,
-              activities: day.activities.map(act => 
-                act.title === activity.title && act.time === activity.time
-                  ? { ...act, selected: true }
-                  : act
-              )
-            }
-          : day
-      )
-    };
-    
-    setCurrentItinerary(updatedItinerary);
-    
-    // Notify parent component of the update
-    if (onUpdate) {
-      onUpdate(updatedItinerary);
-    }
-
-    // Auto-save the itinerary
-    autoSaveItinerary(updatedItinerary);
-  };
-
-  const handleRemoveActivity = (dayNumber: number, activity: Activity) => {
-    // Actually remove the activity from the array
-    const updatedItinerary = {
-      ...currentItinerary,
-      days: currentItinerary.days.map(day => 
-        day.day === dayNumber 
-          ? {
-              ...day,
-              activities: day.activities.filter(act => 
-                !(act.title === activity.title && act.time === activity.time)
-              )
-            }
-          : day
-      )
-    };
-    
-    setCurrentItinerary(updatedItinerary);
-    
-    // Notify parent component of the update
-    if (onUpdate) {
-      onUpdate(updatedItinerary);
-    }
-
-    // Auto-save the itinerary
-    autoSaveItinerary(updatedItinerary);
-  };
-
-  const handleAddActivity = (dayNumber: number, activity: Activity) => {
-    // Add new activity to the day
-    const updatedItinerary = {
-      ...currentItinerary,
-      days: currentItinerary.days.map(day => 
-        day.day === dayNumber 
-          ? {
-              ...day,
-              activities: [...day.activities, activity]
+              activities: (() => {
+                const existingActivityIndex = day.activities.findIndex(act => 
+                  act.title === activity.title && act.time === activity.time
+                );
+                
+                if (existingActivityIndex !== -1) {
+                  // Toggle existing activity
+                  return day.activities.map((act, index) => 
+                    index === existingActivityIndex
+                      ? { ...act, selected: act.selected === false ? true : false }
+                      : act
+                  );
+                } else {
+                  // Add new activity
+                  return [...day.activities, { ...activity, selected: true }];
+                }
+              })()
             }
           : day
       )
@@ -413,12 +373,12 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
               onClick={() => setShowAddRemove(!showAddRemove)}
               className={`flex items-center space-x-2 px-6 py-3 rounded-xl transition-colors font-medium ${
                 showAddRemove
-                  ? 'bg-orange-600 hover:bg-orange-700 text-white'
-                  : 'bg-orange-500 hover:bg-orange-600 text-white'
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
               }`}
             >
               <Settings className="h-5 w-5" />
-              <span>{showAddRemove ? 'Done Managing' : 'Manage Activities'}</span>
+              <span>{showAddRemove ? 'Done Customizing' : 'Customize Activities'}</span>
             </button>
             
             <button
@@ -531,8 +491,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             budget={currentItinerary.preferences.budget}
             currency="USD" // You might want to store this in the itinerary
             onSaveNotes={handleSaveNotes}
-            onAddActivity={handleAddActivity}
-            onRemoveActivity={handleRemoveActivity}
+            onToggleActivity={handleToggleActivity}
             showManage={showAddRemove}
           />
         ))}
