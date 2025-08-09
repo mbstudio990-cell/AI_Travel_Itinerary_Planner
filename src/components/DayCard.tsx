@@ -14,7 +14,6 @@ interface DayCardProps {
   currency?: string;
   onSaveNotes?: (dayNumber: number, notes: string) => void;
   onToggleActivity?: (dayNumber: number, activity: Activity) => void;
-  isManageMode?: boolean;
 }
 
 const getLocationSpecificImage = (activity: Activity): string => {
@@ -228,7 +227,6 @@ const DayCard: React.FC<DayCardProps> = ({
   currency = 'USD',
   onSaveNotes,
   onToggleActivity,
-  isManageMode = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedActivities, setExpandedActivities] = useState<Set<number>>(new Set());
