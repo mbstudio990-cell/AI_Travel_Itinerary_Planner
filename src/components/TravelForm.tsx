@@ -85,6 +85,8 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
   const [errorMessage, setErrorMessage] = useState('');
   const [showDestinationAlert, setShowDestinationAlert] = useState(false);
   const [destinationAlertMessage, setDestinationAlertMessage] = useState('');
+  const [showDestinationAlert, setShowDestinationAlert] = useState(false);
+  const [destinationAlertMessage, setDestinationAlertMessage] = useState('');
 
   // Update form data when initialData changes (for editing)
   React.useEffect(() => {
@@ -93,6 +95,12 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
     }
   }, [initialData]);
 
+  // Validate destination input
+  const validateDestination = (destination: string): boolean => {
+    const trimmedDestination = destination.trim();
+    
+    // Check if empty
+    if (!trimmedDestination) {
   // Validate destination input
   const validateDestination = (destination: string): boolean => {
     const trimmedDestination = destination.trim();
