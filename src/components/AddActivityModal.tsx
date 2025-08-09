@@ -375,7 +375,7 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
                     value={customActivity.time}
                     onChange={(e) => setCustomActivity(prev => ({ ...prev, time: e.target.value }))}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="10:00 AM"
+                    placeholder="10:00 AM - 12:00 PM"
                   />
                 </div>
                 <div>
@@ -485,3 +485,5 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
     </Modal>
   );
 };
+
+export { AddActivityModal }
