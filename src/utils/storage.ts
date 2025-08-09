@@ -54,7 +54,7 @@ const saveToSupabaseAsync = async (itinerary: Itinerary) => {
       const { data: travelRequest, error: travelRequestError } = await supabase
         .from('travel_requests')
         .upsert({
-          id: `${itinerary.id}-request`,
+          id: crypto.randomUUID(),
           destinations: [itinerary.destination],
           start_date: itinerary.startDate,
           end_date: itinerary.endDate,
