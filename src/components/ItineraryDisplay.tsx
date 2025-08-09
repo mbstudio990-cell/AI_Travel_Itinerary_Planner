@@ -394,7 +394,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
               }`}
             >
               <Settings className="h-5 w-5" />
-              <span>{showAddRemove ? 'Done Managing' : 'Manage Activities'}</span>
+              <span>{showAddRemove ? 'Done Customizing' : 'Customize Activities'}</span>
             </button>
             
             <button

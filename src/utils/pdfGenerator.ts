@@ -94,7 +94,9 @@ export const generatePDF = async (itinerary: Itinerary): Promise<void> => {
     yPosition += 35;
 
     // Activities
-    for (const activity of day.activities) {
+    // Only include selected activities in PDF
+    const selectedActivities = day.activities.filter(activity => activity.selected !== false);
+    for (const activity of selectedActivities) {
       yPosition = checkNewPage(60);
       
       // Activity time and title

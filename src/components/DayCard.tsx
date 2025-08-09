@@ -46,12 +46,22 @@ const DayCard: React.FC<DayCardProps> = ({
     loadNotes();
   }, [itineraryId, dayItinerary.day]);
 
+  // Filter activities based on mode
+  const displayActivities = showAddRemove 
+    ? dayItinerary.activities // Show all activities in management mode
+    : dayItinerary.activities.filter(activity => activity.selected !== false); // Show only selected in view mode
   const toggleActivity = (index: number) => {
     const newExpanded = new Set(expandedActivities);
-    if (newExpanded.has(index)) {
-      newExpanded.delete(index);
+    // Find the original index in the full activities array
+    const activity = displayActivities[index];
+    const originalIndex = dayItinerary.activities.findIndex(act => 
+      act.title === activity.title && act.time === activity.time
+    );
+    
+    if (newExpanded.has(originalIndex)) {
+      newExpanded.delete(originalIndex);
     } else {
-      newExpanded.add(index);
+      newExpanded.add(originalIndex);
     }
     setExpandedActivities(newExpanded);
   };
@@ -78,7 +88,7 @@ const DayCard: React.FC<DayCardProps> = ({
   // Use current notes state instead of dayItinerary.notes
   const displayNotes = currentNotes || dayItinerary.notes;
 
-  const addedActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
+  const addedActivities = displayActivities;
   const totalActivities = dayItinerary.activities.length;
 
   return (
@@ -127,7 +137,7 @@ const DayCard: React.FC<DayCardProps> = ({
             <div className="text-right">
               <div className="text-sm text-white font-medium mb-1">Activities</div>
               <div className="text-xl font-bold text-white">
-                {showAddRemove ? `${addedActivities.length}/${totalActivities}` : dayItinerary.activities.length}
+                {showAddRemove ? `${addedActivities.length}/${totalActivities}` : addedActivities.length}
               </div>
             </div>
             <button
@@ -177,8 +187,8 @@ const DayCard: React.FC<DayCardProps> = ({
           <div className="mb-4">
             <p className="text-indigo-600 font-semibold text-center">
               {showAddRemove 
-                ? `${addedActivities.length} of ${totalActivities} activities added to this day`
-                : `${dayItinerary.activities.length} activities planned for this day`
+                ? `${addedActivities.length} of ${totalActivities} activities selected for this day`
+                : `${addedActivities.length} activities planned for this day`
               }
             </p>
             {showAddRemove && (
@@ -189,18 +199,25 @@ const DayCard: React.FC<DayCardProps> = ({
           </div>
           
           <div className="space-y-4">
-            {dayItinerary.activities.map((activity, index) => (
+            {displayActivities.map((activity, index) => {
+              // Find the original index for expanded state
+              const originalIndex = dayItinerary.activities.findIndex(act => 
+                act.title === activity.title && act.time === activity.time
+              );
+              
+              return (
               <ActivityCard
                 key={index}
                 activity={activity}
-                isExpanded={expandedActivities.has(index)}
+                isExpanded={expandedActivities.has(originalIndex)}
                 onToggle={() => toggleActivity(index)}
                 onAddActivity={handleAddActivity}
                 onRemoveActivity={handleRemoveActivity}
                 showAddRemove={showAddRemove}
                 isAdded={activity.selected !== false}
               />
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
