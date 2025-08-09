@@ -17,7 +17,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   const [showShareMenu, setShowShareMenu] = React.useState(false);
   const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
   const [showTravelSummary, setShowTravelSummary] = React.useState(false);
-  const [showAddRemove, setShowAddRemove] = React.useState(false);
   const [autoSaveStatus, setAutoSaveStatus] = React.useState<'idle' | 'saving' | 'saved'>('idle');
 
   // Update current itinerary when prop changes
@@ -370,18 +369,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             </button>
             
             <button
-              onClick={() => setShowAddRemove(!showAddRemove)}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-xl transition-colors font-medium ${
-                showAddRemove
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                  : 'bg-blue-500 hover:bg-blue-600 text-white'
-              }`}
-            >
-              <Settings className="h-5 w-5" />
-              <span>{showAddRemove ? 'Done Customizing' : 'Customize Activities'}</span>
-            </button>
-            
-            <button
               onClick={handleSave}
               className="flex items-center space-x-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors font-medium"
             >
@@ -492,7 +479,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             currency="USD" // You might want to store this in the itinerary
             onSaveNotes={handleSaveNotes}
             onToggleActivity={handleToggleActivity}
-            showManage={showAddRemove}
           />
         ))}
       </div>
