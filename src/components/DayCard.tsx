@@ -34,23 +34,23 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
     <>
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl hover:border-blue-200 hover:scale-[1.02] transition-all duration-300">
       {/* Day Header */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-8 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
             <div className="bg-white/20 rounded-2xl w-20 h-20 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-xs font-medium text-white/80 uppercase tracking-wide">Day</div>
+                <div className="text-xs font-bold text-white uppercase tracking-wide">Day</div>
                 <div className="text-2xl font-bold text-white">{dayItinerary.day}</div>
               </div>
             </div>
             <div>
               <div className="flex items-center space-x-2 mb-2">
-                <Calendar className="h-5 w-5 text-indigo-200" />
+                <Calendar className="h-5 w-5 text-white" />
                 <h3 className="text-xl font-bold text-white">{dayItinerary.date}</h3>
               </div>
               <div className="flex items-center space-x-2">
-                <DollarSign className="h-5 w-5 text-yellow-200" />
-                <span className="text-yellow-200 font-semibold">Est. {dayItinerary.totalEstimatedCost}</span>
+                <DollarSign className="h-5 w-5 text-white" />
+                <span className="text-white font-semibold">Est. {dayItinerary.totalEstimatedCost}</span>
               </div>
             </div>
           </div>
@@ -61,7 +61,7 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
               onClick={() => setIsNotesModalOpen(true)}
               className={`p-3 rounded-xl transition-all duration-200 hover:scale-110 ${
                 dayItinerary.notes 
-                  ? 'bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-200' 
+                  ? 'bg-yellow-400/30 hover:bg-yellow-400/40 text-white' 
                   : 'hover:bg-white/20 text-white/80 hover:text-white'
               }`}
               title={dayItinerary.notes ? 'View/Edit Notes' : 'Add Notes'}
@@ -74,7 +74,7 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
             </button>
             
             <div className="text-right">
-              <div className="text-sm text-white/80 mb-1">Activities</div>
+              <div className="text-sm text-white font-medium mb-1">Activities</div>
               <div className="text-xl font-bold text-white">{dayItinerary.activities.length}</div>
             </div>
             <button
