@@ -11,6 +11,20 @@ interface ActivityCardProps {
   isSelected?: boolean;
 }
 
+const getPlaceholderImage = (category: string): string => {
+  const images = {
+    'food': 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'culture': 'https://images.pexels.com/photos/2901209/pexels-photo-2901209.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'nature': 'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'adventure': 'https://images.pexels.com/photos/1365425/pexels-photo-1365425.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'shopping': 'https://images.pexels.com/photos/1488463/pexels-photo-1488463.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'history': 'https://images.pexels.com/photos/2901209/pexels-photo-2901209.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'art': 'https://images.pexels.com/photos/1839919/pexels-photo-1839919.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'default': 'https://images.pexels.com/photos/1008155/pexels-photo-1008155.jpeg?auto=compress&cs=tinysrgb&w=400'
+  };
+  
+  return images[category.toLowerCase() as keyof typeof images] || images.default;
+};
 const ActivityCard: React.FC<ActivityCardProps> = ({ 
   activity, 
   isExpanded, 
@@ -53,31 +67,29 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
         ? 'border-green-300 hover:border-green-400 hover:scale-105' 
         : 'border-gray-200 hover:border-blue-300 hover:scale-105 opacity-75'
     }`}>
-      <div className="flex flex-col space-y-3 mb-4">
-        <div className="flex items-center justify-between">
-          {showManage && (
-            <div
-              onClick={handleToggleActivity}
-              className="flex items-center justify-center cursor-pointer"
-              title={isSelected ? "Remove from itinerary" : "Add to itinerary"}
-            >
-              <div className={`w-6 h-6 border-2 rounded-md flex items-center justify-center transition-all duration-200 hover:scale-110 ${
-                isSelected
-                  ? 'bg-green-500 border-green-500 hover:bg-green-600 hover:border-green-600'
-                  : 'border-gray-300 hover:border-green-400 bg-white'
-              }`}>
-                {isSelected && (
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                )}
-              </div>
-            </div>
-          )}
-          <div className={`${getCategoryColor(activity.category)} p-2 rounded-lg shadow-sm`}>
+      {/* Activity Image */}
+      <div className="relative h-48 overflow-hidden">
+        <img
+          src={getPlaceholderImage(activity.category)}
+          alt={activity.title}
+          className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+          onError={(e) => {
+            // Fallback to default image if the category image fails to load
+            const target = e.target as HTMLImageElement;
+            target.src = getPlaceholderImage('default');
+          }}
+        />
+        
+        {/* Category Badge Overlay */}
+        <div className="absolute top-3 left-3">
+          <div className={`${getCategoryColor(activity.category)} p-2 rounded-lg shadow-lg backdrop-blur-sm bg-opacity-90`}>
             {getCategoryIcon(activity.category)}
           </div>
-          <div className="bg-green-50 px-3 py-1 rounded-lg border border-green-200">
+        </div>
+        
+        {/* Cost Badge Overlay */}
+        <div className="absolute top-3 right-3">
+          <div className="bg-white bg-opacity-95 backdrop-blur-sm px-3 py-1 rounded-lg border shadow-lg">
             <div className="flex items-center space-x-1 text-green-700 font-semibold text-sm">
               <Banknote className="h-3 w-3" />
               <span>{activity.costEstimate}</span>
@@ -85,19 +97,59 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
           </div>
         </div>
         
+        {/* Manage Toggle Overlay */}
+        {showManage && (
+          <div className="absolute bottom-3 right-3">
+            <div
+              onClick={handleToggleActivity}
+              className="flex items-center justify-center cursor-pointer"
+              title={isSelected ? "Remove from itinerary" : "Add to itinerary"}
+            >
+              <div className={`w-8 h-8 border-2 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 backdrop-blur-sm ${
+                isSelected
+                  ? 'bg-green-500 bg-opacity-95 border-green-500 hover:bg-green-600 hover:border-green-600 shadow-lg'
+                  : 'border-white bg-white bg-opacity-90 hover:border-green-400 hover:bg-green-50'
+              }`}>
+                {isSelected && (
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      {/* Activity Content */}
+      <div className="p-4">
+        {/* Time Badge */}
+        <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
           <div className="bg-blue-100 px-2 py-1 rounded-full">
             <Clock className="h-3 w-3 text-blue-600 inline mr-1" />
             <span className="text-xs font-semibold text-blue-700">{activity.time}</span>
           </div>
+            <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+              activity.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
+              activity.category === 'Food' ? 'bg-orange-100 text-orange-700' :
+              activity.category === 'Nature' ? 'bg-green-100 text-green-700' :
+              activity.category === 'Adventure' ? 'bg-red-100 text-red-700' :
+              activity.category === 'Shopping' ? 'bg-pink-100 text-pink-700' :
+              'bg-blue-100 text-blue-700'
+            }`}>
+              {activity.category}
+            </span>
+        </div>
         </div>
         
+        {/* Activity Title */}
         <h3 className="font-bold text-gray-900 text-base leading-tight">{activity.title}</h3>
-      </div>
 
-      <div className="space-y-4">
+        {/* Activity Description */}
         <p className="text-gray-700 leading-relaxed text-sm">{activity.description}</p>
         
+        {/* Location */}
         <div className="flex items-center space-x-2 bg-gray-50 px-3 py-2 rounded-lg">
           <a
             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activity.location)}`}
@@ -111,6 +163,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
           </a>
         </div>
 
+        {/* Show Details Button */}
         <button
           onClick={onToggle}
           className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-semibold transition-all duration-200 bg-blue-50 hover:bg-blue-100 hover:scale-105 px-3 py-2 rounded-lg text-sm w-full justify-center"
@@ -123,6 +176,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
           )}
         </button>
 
+        {/* Expanded Details */}
         {isExpanded && (
           <div className="mt-4 pt-4 border-t border-gray-200">
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
