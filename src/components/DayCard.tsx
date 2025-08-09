@@ -74,7 +74,7 @@ const DayCard: React.FC<DayCardProps> = ({
 
     activities.forEach(activity => {
       const time = activity.time.toLowerCase();
-      if (time.includes('6:') || time.includes('7:') || (time.includes('8:') && time.includes('am'))) {
+      if ((time.includes('6:') || time.includes('7:') || (time.includes('8:') && time.includes('am'))) && time.includes('am')) {
         timeRanges['Early Morning (6:00-9:00 AM)'].push(activity);
       } else if (time.includes('9:') || time.includes('10:') || (time.includes('11:') && time.includes('am'))) {
         timeRanges['Morning (9:00 AM-12:00 PM)'].push(activity);
@@ -84,8 +84,15 @@ const DayCard: React.FC<DayCardProps> = ({
         timeRanges['Afternoon (2:00-5:00 PM)'].push(activity);
       } else if (time.includes('5:') || time.includes('6:') || (time.includes('7:') && time.includes('pm'))) {
         timeRanges['Evening (5:00-8:00 PM)'].push(activity);
-      } else {
+      } else if (time.includes('8:') || time.includes('9:') || time.includes('10:') || time.includes('11:') || time.includes('12:') || time.includes('am') === false) {
         timeRanges['Night (8:00 PM-Late)'].push(activity);
+      } else {
+        // Fallback: if we can't categorize, put in the most appropriate slot based on PM/AM
+        if (time.includes('pm')) {
+          timeRanges['Night (8:00 PM-Late)'].push(activity);
+        } else {
+          timeRanges['Morning (9:00 AM-12:00 PM)'].push(activity);
+        }
       }
     });
 
