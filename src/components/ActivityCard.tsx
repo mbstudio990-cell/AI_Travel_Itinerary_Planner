@@ -1,14 +1,22 @@
 import React from 'react';
-import { Clock, MapPin, DollarSign, Lightbulb, Camera, Utensils, Mountain, Palette, ChevronDown, ChevronUp } from 'lucide-react';
+import { Clock, MapPin, DollarSign, Lightbulb, Camera, Utensils, Mountain, Palette, ChevronDown, ChevronUp, Check } from 'lucide-react';
 import { Activity } from '../types';
 
 interface ActivityCardProps {
   activity: Activity;
   isExpanded: boolean;
   onToggle: () => void;
+  onActivityToggle?: (activity: Activity) => void;
+  showSelection?: boolean;
 }
 
-const ActivityCard: React.FC<ActivityCardProps> = ({ activity, isExpanded, onToggle }) => {
+const ActivityCard: React.FC<ActivityCardProps> = ({ 
+  activity, 
+  isExpanded, 
+  onToggle, 
+  onActivityToggle,
+  showSelection = false 
+}) => {
   const getCategoryIcon = (category: string) => {
     const iconClass = "h-5 w-5 text-white";
     switch (category.toLowerCase()) {
@@ -30,10 +38,38 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ activity, isExpanded, onTog
     }
   };
 
+  const handleActivityToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onActivityToggle) {
+      onActivityToggle({ ...activity, selected: !activity.selected });
+    }
+  };
+
+  const isSelected = activity.selected !== false; // Default to true if not specified
+
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg hover:border-blue-300 hover:scale-105 transition-all duration-300 cursor-pointer">
+    <div className={`bg-white border rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer ${
+      showSelection 
+        ? isSelected 
+          ? 'border-blue-300 bg-blue-50' 
+          : 'border-gray-300 bg-gray-50 opacity-75'
+        : 'border-gray-200 hover:border-blue-300 hover:scale-105'
+    }`}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-4">
+          {showSelection && (
+            <button
+              onClick={handleActivityToggle}
+              className={`flex items-center justify-center w-6 h-6 rounded-full border-2 transition-all duration-200 ${
+                isSelected
+                  ? 'bg-blue-600 border-blue-600 text-white'
+                  : 'border-gray-300 hover:border-blue-400 bg-white'
+              }`}
+              title={isSelected ? 'Click to remove from itinerary' : 'Click to add to itinerary'}
+            >
+              {isSelected && <Check className="h-3 w-3" />}
+            </button>
+          )}
           <div className={`${getCategoryColor(activity.category)} p-3 rounded-xl shadow-sm`}>
             {getCategoryIcon(activity.category)}
           </div>

@@ -252,7 +252,7 @@ const generateMockActivities = (formData: FormData, day: number): Activity[] => 
       tips: 'Arrive 30 minutes before sunset for the best photos.',
       category: 'Nature'
     }
-  ];
+  ].map(activity => ({ ...activity, selected: true })); // Default all activities to selected
   
   return activities.slice(0, day === 1 ? 4 : 3);
 };

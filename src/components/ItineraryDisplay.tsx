@@ -1,5 +1,5 @@
 import React from 'react';
-import { Share2, Save, Download, MapPin, Calendar, DollarSign, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown, BookOpen } from 'lucide-react';
+import { Share2, Save, Download, MapPin, Calendar, DollarSign, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown, BookOpen, Settings } from 'lucide-react';
 import { Itinerary } from '../types';
 import DayCard from './DayCard';
 import { saveItinerary, shareItinerary, updateItineraryNotes } from '../utils/storage';
@@ -17,6 +17,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   const [showShareMenu, setShowShareMenu] = React.useState(false);
   const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
   const [showTravelSummary, setShowTravelSummary] = React.useState(false);
+  const [showActivitySelection, setShowActivitySelection] = React.useState(false);
 
   // Update current itinerary when prop changes
   React.useEffect(() => {
@@ -46,6 +47,31 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
       console.error('Error saving notes:', error);
       // You might want to show a user-friendly error message here
     });
+    
+    // Notify parent component of the update
+    if (onUpdate) {
+      onUpdate(updatedItinerary);
+    }
+  };
+
+  const handleActivityToggle = (dayNumber: number, activity: Activity) => {
+    const updatedItinerary = {
+      ...currentItinerary,
+      days: currentItinerary.days.map(day => 
+        day.day === dayNumber 
+          ? {
+              ...day,
+              activities: day.activities.map(act => 
+                act.title === activity.title && act.time === activity.time
+                  ? { ...act, selected: activity.selected }
+                  : act
+              )
+            }
+          : day
+      )
+    };
+    
+    setCurrentItinerary(updatedItinerary);
     
     // Notify parent component of the update
     if (onUpdate) {
@@ -281,6 +307,18 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             </button>
             
             <button
+              onClick={() => setShowActivitySelection(!showActivitySelection)}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-xl transition-colors font-medium ${
+                showActivitySelection
+                  ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                  : 'bg-purple-500 hover:bg-purple-600 text-white'
+              }`}
+            >
+              <Settings className="h-5 w-5" />
+              <span>{showActivitySelection ? 'Done Customizing' : 'Customize Activities'}</span>
+            </button>
+            
+            <button
               onClick={handleSave}
               className="flex items-center space-x-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors font-medium"
             >
@@ -387,6 +425,8 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             dayItinerary={day} 
             itineraryId={currentItinerary.id}
             onSaveNotes={handleSaveNotes}
+            onActivityToggle={handleActivityToggle}
+            showActivitySelection={showActivitySelection}
           />
         ))}
       </div>

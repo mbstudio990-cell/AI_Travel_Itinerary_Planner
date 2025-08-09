@@ -11,6 +11,7 @@ export interface Activity {
   costEstimate: string;
   tips: string;
   category: string;
+  selected?: boolean;
 }
 
 export interface DayItinerary {

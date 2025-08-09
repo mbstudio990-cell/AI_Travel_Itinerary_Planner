@@ -9,9 +9,17 @@ interface DayCardProps {
   dayItinerary: DayItinerary;
   itineraryId?: string;
   onSaveNotes?: (dayNumber: number, notes: string) => void;
+  onActivityToggle?: (dayNumber: number, activity: Activity) => void;
+  showActivitySelection?: boolean;
 }
 
-const DayCard: React.FC<DayCardProps> = ({ dayItinerary, itineraryId, onSaveNotes }) => {
+const DayCard: React.FC<DayCardProps> = ({ 
+  dayItinerary, 
+  itineraryId, 
+  onSaveNotes,
+  onActivityToggle,
+  showActivitySelection = false 
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedActivities, setExpandedActivities] = useState<Set<number>>(new Set());
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
@@ -53,8 +61,17 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, itineraryId, onSaveNote
     }
   };
 
+  const handleActivityToggle = (activity: Activity) => {
+    if (onActivityToggle) {
+      onActivityToggle(dayItinerary.day, activity);
+    }
+  };
+
   // Use current notes state instead of dayItinerary.notes
   const displayNotes = currentNotes || dayItinerary.notes;
+
+  const selectedActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
+  const totalActivities = dayItinerary.activities.length;
 
   return (
     <>
@@ -101,7 +118,9 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, itineraryId, onSaveNote
             
             <div className="text-right">
               <div className="text-sm text-white font-medium mb-1">Activities</div>
-              <div className="text-xl font-bold text-white">{dayItinerary.activities.length}</div>
+              <div className="text-xl font-bold text-white">
+                {showActivitySelection ? `${selectedActivities.length}/${totalActivities}` : dayItinerary.activities.length}
+              </div>
             </div>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
@@ -149,8 +168,16 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, itineraryId, onSaveNote
         <div className="p-6 bg-gray-50">
           <div className="mb-4">
             <p className="text-indigo-600 font-semibold text-center">
-              {dayItinerary.activities.length} activities planned for this day
+              {showActivitySelection 
+                ? `${selectedActivities.length} of ${totalActivities} activities selected for this day`
+                : `${dayItinerary.activities.length} activities planned for this day`
+              }
             </p>
+            {showActivitySelection && (
+              <p className="text-sm text-gray-600 text-center mt-1">
+                Click the circles to add/remove activities from your itinerary
+              </p>
+            )}
           </div>
           
           <div className="space-y-4">
@@ -160,6 +187,8 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, itineraryId, onSaveNote
                 activity={activity}
                 isExpanded={expandedActivities.has(index)}
                 onToggle={() => toggleActivity(index)}
+                onActivityToggle={handleActivityToggle}
+                showSelection={showActivitySelection}
               />
             ))}
           </div>
