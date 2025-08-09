@@ -14,6 +14,7 @@ import { getItineraries } from './utils/storage';
 import SharedItineraryView from './components/SharedItineraryView';
 import { Dialog } from './components/ui/Dialog';
 import { useDialog } from './hooks/useDialog';
+import { EmailConfirmation } from './components/EmailConfirmation';
 
 type AppState = 'form' | 'loading' | 'itinerary' | 'saved' | 'shared';
 
@@ -31,9 +32,22 @@ function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [hasGeneratedItinerary, setHasGeneratedItinerary] = useState(false);
   const { dialogState, showDialog, closeDialog } = useDialog();
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
 
   useEffect(() => {
     setSavedItineraries(getItineraries());
+    
+    // Check for email confirmation
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get('access_token');
+    const type = urlParams.get('type');
+    
+    if (accessToken && type === 'signup') {
+      setShowEmailConfirmation(true);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
     
     // Check if this is a shared itinerary URL
     const path = window.location.pathname;
@@ -400,6 +414,17 @@ function App() {
               onPlanNewTrip={handleBackToForm}
             />
           </div>
+        )}
+
+        {/* Email Confirmation Success */}
+        {showEmailConfirmation && (
+          <EmailConfirmation
+            onClose={() => setShowEmailConfirmation(false)}
+            onContinue={() => {
+              setShowEmailConfirmation(false);
+              setAppState('form');
+            }}
+          />
         )}
       </main>
 
