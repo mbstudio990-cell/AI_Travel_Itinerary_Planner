@@ -86,14 +86,14 @@ export const TravelSummaryModal: React.FC<TravelSummaryModalProps> = ({
                 </div>
 
                 {/* User Notes */}
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-4 shadow-sm">
                   <div className="flex items-start space-x-3">
-                    <div className="bg-yellow-100 p-2 rounded-lg mt-1">
-                      <FileText className="h-4 w-4 text-yellow-600" />
+                    <div className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg mt-1 shadow-sm">
+                      <FileText className="h-4 w-4 text-gray-600 dark:text-gray-300" />
                     </div>
                     <div className="flex-1">
-                      <h6 className="text-sm font-medium text-yellow-800 mb-2">Your Experience</h6>
-                      <div className="text-sm text-yellow-700 whitespace-pre-wrap leading-relaxed">
+                      <h6 className="text-sm font-bold text-gray-900 dark:text-white mb-2">Your Experience</h6>
+                      <div className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap leading-relaxed">
                         {day.notes}
                       </div>
                     </div>
