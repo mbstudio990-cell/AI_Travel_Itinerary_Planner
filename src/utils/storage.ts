@@ -91,10 +91,11 @@ const saveToSupabaseAsync = async (itinerary: Itinerary) => {
 
       // Save day itineraries and activities
       for (const day of itinerary.days) {
+        const dayId = day.id || crypto.randomUUID();
         const { data: dayItinerary, error: dayError } = await supabase
           .from('day_itineraries')
           .upsert({
-            id: `${itinerary.id}-day-${day.day}`,
+            id: dayId,
             itinerary_id: savedItinerary.id,
             day: day.day,
             date: day.date,
@@ -112,10 +113,11 @@ const saveToSupabaseAsync = async (itinerary: Itinerary) => {
         // Save activities
         for (let i = 0; i < day.activities.length; i++) {
           const activity = day.activities[i];
+          const activityId = activity.id || crypto.randomUUID();
           const { error: activityError } = await supabase
             .from('activities')
             .upsert({
-              id: `${itinerary.id}-day-${day.day}-activity-${i}`,
+              id: activityId,
               day_itinerary_id: dayItinerary.id,
               time: activity.time,
               title: activity.title,
@@ -194,6 +196,7 @@ export const loadItinerariesFromSupabase = async (): Promise<Itinerary[]> => {
       days: itinerary.day_itineraries
         .sort((a: any, b: any) => a.day - b.day)
         .map((day: any) => ({
+          id: day.id,
           day: day.day,
           date: day.date,
           totalEstimatedCost: day.total_estimated_cost,
@@ -201,6 +204,7 @@ export const loadItinerariesFromSupabase = async (): Promise<Itinerary[]> => {
           activities: day.activities
             .sort((a: any, b: any) => a.order_index - b.order_index)
             .map((activity: any) => ({
+              id: activity.id,
               time: activity.time,
               title: activity.title,
               description: activity.description,

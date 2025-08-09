@@ -168,6 +168,7 @@ const generateMockItinerary = async (formData: FormData): Promise<Itinerary> => 
     currentDate.setDate(startDate.getDate() + i);
     
     days.push({
+      id: crypto.randomUUID(),
       day: i + 1,
       date: currentDate.toLocaleDateString('en-US', { 
         weekday: 'long', 
@@ -175,7 +176,10 @@ const generateMockItinerary = async (formData: FormData): Promise<Itinerary> => 
         month: 'long', 
         day: 'numeric' 
       }),
-      activities: generateMockActivities(formData, i + 1),
+      activities: generateMockActivities(formData, i + 1).map(activity => ({
+        ...activity,
+        id: crypto.randomUUID()
+      })),
       totalEstimatedCost: formData.budget === 'Budget' ? convertCurrencyRange(50, 80, formData.currency) : 
                          formData.budget === 'Mid-range' ? convertCurrencyRange(100, 150, formData.currency) : 
                          convertCurrencyRange(200, 300, formData.currency)

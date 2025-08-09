@@ -4,6 +4,7 @@ export interface TravelPreferences {
 }
 
 export interface Activity {
+  id?: string;
   time: string;
   title: string;
   description: string;
@@ -18,6 +19,7 @@ export interface Activity {
 }
 
 export interface DayItinerary {
+  id?: string;
   day: number;
   date: string;
   activities: Activity[];
