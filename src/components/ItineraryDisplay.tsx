@@ -195,48 +195,55 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   };
 
   const createShareableLink = (itinerary: Itinerary): string => {
-    // Create a very minimal shareable link to avoid URL length limits
+    // Create a comprehensive but optimized shareable link
     const minimalData = {
-      d: itinerary.destination.substring(0, 30), // Limit destination length
+      id: itinerary.id,
+      destination: itinerary.destination,
       s: itinerary.startDate,
       e: itinerary.endDate,
-      b: itinerary.preferences.budget,
-      i: itinerary.preferences.interests.slice(0, 2), // Only 2 interests
-      dc: itinerary.days.length, // Just day count
-      tb: itinerary.totalBudget.substring(0, 20), // Limit budget text
-      id: itinerary.id.substring(0, 8) // Short ID for reference
+      budget: itinerary.preferences.budget,
+      interests: itinerary.preferences.interests,
+      days: itinerary.days.map(day => ({
+        day: day.day,
+        date: day.date,
+        activities: day.activities.filter(activity => activity.selected !== false).map(activity => ({
+          time: activity.time,
+          title: activity.title,
+          description: activity.description,
+          location: activity.location,
+          costEstimate: activity.costEstimate,
+          tips: activity.tips,
+          category: activity.category
+        })),
+        totalEstimatedCost: day.totalEstimatedCost,
+        notes: day.notes || ''
+      })),
+      totalBudget: itinerary.totalBudget,
+      currency: itinerary.currency || 'USD'
     };
     
     try {
       const jsonString = JSON.stringify(minimalData);
       
-      // Use a simple base64 encoding without URL encoding to keep it shorter
-      const encodedData = btoa(jsonString);
+      // Use base64 encoding with URL-safe characters
+      const encodedData = btoa(jsonString).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
       const baseUrl = window.location.origin;
       
-      // Check if URL is too long (most browsers/services limit to ~2000 chars)
       const fullUrl = `${baseUrl}/share/${encodedData}`;
-      if (fullUrl.length > 1800) {
-        // Fallback to even more minimal data
-        const ultraMinimal = {
-          d: itinerary.destination.substring(0, 20),
-          days: itinerary.days.length,
-          b: itinerary.preferences.budget.charAt(0) // Just first letter
-        };
-        const ultraEncoded = btoa(JSON.stringify(ultraMinimal));
-        return `${baseUrl}/share/${ultraEncoded}`;
-      }
       
       return fullUrl;
     } catch (error) {
       console.error('Error creating shareable link:', error);
-      // Ultimate fallback - just basic info
+      // Fallback to basic info
       const fallbackData = {
-        d: itinerary.destination.substring(0, 15),
-        days: itinerary.days.length,
-        b: itinerary.preferences.budget.charAt(0)
+        destination: itinerary.destination,
+        startDate: itinerary.startDate,
+        endDate: itinerary.endDate,
+        budget: itinerary.preferences.budget,
+        interests: itinerary.preferences.interests,
+        totalBudget: itinerary.totalBudget
       };
-      const encodedData = btoa(JSON.stringify(fallbackData));
+      const encodedData = btoa(JSON.stringify(fallbackData)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
       const baseUrl = window.location.origin;
       return `${baseUrl}/share/${encodedData}`;
     }
@@ -244,8 +251,8 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
   const handleWhatsAppShare = () => {
     const shareableLink = createShareableLink(currentItinerary);
-    // Create a very short message for WhatsApp to avoid issues
-    const shareText = `🌍 ${currentItinerary.destination} travel plan: ${shareableLink}`;
+    // Create a compelling message for WhatsApp
+    const shareText = `🌍✈️ Check out my ${currentItinerary.destination} travel itinerary!\n\n📅 ${currentItinerary.days.length} days of amazing activities\n💰 ${currentItinerary.preferences.budget} budget\n🎯 ${currentItinerary.preferences.interests.slice(0, 2).join(', ')} and more\n\n👆 Click the link to see the full itinerary:\n${shareableLink}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, '_blank');
     setShowShareMenu(false);

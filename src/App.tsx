@@ -40,18 +40,50 @@ function App() {
     if (path.startsWith('/share/')) {
       const encodedData = path.replace('/share/', '');
       try {
-        // Try simple base64 decoding first
+        // Decode URL-safe base64
         let decodedData;
         try {
-          decodedData = atob(encodedData);
+          // Convert URL-safe base64 back to regular base64
+          let base64Data = encodedData.replace(/-/g, '+').replace(/_/g, '/');
+          // Add padding if needed
+          while (base64Data.length % 4) {
+            base64Data += '=';
+          }
+          decodedData = atob(base64Data);
         } catch {
-          // Fallback to URL decoding if needed
-          decodedData = decodeURIComponent(atob(encodedData));
+          // Fallback for old format
+          decodedData = atob(encodedData);
         }
         
         const itineraryData = JSON.parse(decodedData);
         
-        // Convert minimal data back to full itinerary format
+        // Check if it's the new format with full data
+        if (itineraryData.days && Array.isArray(itineraryData.days)) {
+          // New format with full itinerary data
+          const reconstructedItinerary = {
+            id: itineraryData.id || 'shared-' + Date.now(),
+            destination: itineraryData.destination || 'Unknown Destination',
+            startDate: itineraryData.s || itineraryData.startDate || '',
+            endDate: itineraryData.e || itineraryData.endDate || '',
+            preferences: {
+              budget: itineraryData.budget || itineraryData.b || 'Mid-range',
+              interests: itineraryData.interests || itineraryData.i || []
+            },
+            days: itineraryData.days.map((day: any) => ({
+              day: day.day,
+              date: day.date,
+              activities: day.activities || [],
+              totalEstimatedCost: day.totalEstimatedCost || 'Varies',
+              notes: day.notes || ''
+            })),
+            totalBudget: itineraryData.totalBudget || itineraryData.tb || 'Contact for details',
+            createdAt: new Date().toISOString(),
+            currency: itineraryData.currency || 'USD'
+          };
+          
+          setSharedItinerary(reconstructedItinerary);
+        } else {
+          // Legacy format - convert minimal data back to full itinerary format
         const reconstructedItinerary = {
           id: itineraryData.id || 'shared-' + Date.now(),
           destination: itineraryData.d || itineraryData.destination || 'Unknown Destination',
@@ -79,6 +111,7 @@ function App() {
         };
         
         setSharedItinerary(reconstructedItinerary);
+        }
         setAppState('shared');
         setShowMainContent(true); // Skip the typing animation for shared links
       } catch (error) {
