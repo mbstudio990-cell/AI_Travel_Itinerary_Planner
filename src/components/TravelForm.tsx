@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { format, isValid } from 'date-fns';
-import { MapPin, DollarSign, Heart, Search, Banknote } from 'lucide-react';
+import { MapPin, DollarSign, Heart, Search, Banknote, AlertCircle, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { FormData } from '../types';
 import { DatePicker } from './DatePicker';
@@ -83,6 +83,8 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [currentDestination, setCurrentDestination] = useState('');
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Update form data when initialData changes (for editing)
   React.useEffect(() => {
@@ -95,33 +97,49 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
+    let firstError = '';
     
     if (formData.destinations.length === 0) {
       newErrors.destinations = 'At least one destination is required' as any;
+      if (!firstError) firstError = 'Please add at least one destination to your trip';
     }
     
     if (!formData.startDate) {
       newErrors.startDate = 'Start date is required';
+      if (!firstError) firstError = 'Please select a start date for your trip';
     }
     
     if (!formData.endDate) {
       newErrors.endDate = 'End date is required';
+      if (!firstError) firstError = 'Please select an end date for your trip';
     }
     
     if (formData.startDate && formData.endDate && formData.startDate >= formData.endDate) {
       newErrors.endDate = 'End date must be after start date';
+      if (!firstError) firstError = 'End date must be after the start date';
     }
     
     if (formData.interests.length === 0) {
       newErrors.interests = 'Please select at least one interest' as any;
+      if (!firstError) firstError = 'Please select at least one interest to personalize your trip';
     }
     
     if (!formData.budget) {
       newErrors.budget = 'Please select a budget level';
+      if (!firstError) firstError = 'Please select a budget level for your trip';
     }
     
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const isValid = Object.keys(newErrors).length === 0;
+    
+    if (!isValid && firstError) {
+      setErrorMessage(firstError);
+      setShowErrorPopup(true);
+      // Auto-hide popup after 5 seconds
+      setTimeout(() => setShowErrorPopup(false), 5000);
+    }
+    
+    return isValid;
   };
 
   const addDestination = () => {
@@ -236,7 +254,33 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
   }, [formData.startDate]);
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-2xl mx-auto">
+    <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-2xl mx-auto relative">
+      {/* Error Popup */}
+      {showErrorPopup && (
+        <motion.div
+          initial={{ opacity: 0, y: -20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -20, scale: 0.95 }}
+          className="absolute top-4 left-4 right-4 z-50 bg-red-50 border border-red-200 rounded-xl p-4 shadow-lg"
+        >
+          <div className="flex items-start space-x-3">
+            <div className="bg-red-100 p-2 rounded-full">
+              <AlertCircle className="h-5 w-5 text-red-600" />
+            </div>
+            <div className="flex-1">
+              <h4 className="text-sm font-semibold text-red-800 mb-1">Missing Required Information</h4>
+              <p className="text-sm text-red-700">{errorMessage}</p>
+            </div>
+            <button
+              onClick={() => setShowErrorPopup(false)}
+              className="p-1 hover:bg-red-100 rounded-full transition-colors"
+            >
+              <X className="h-4 w-4 text-red-600" />
+            </button>
+          </div>
+        </motion.div>
+      )}
+
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Plan Your Perfect Trip</h2>
         <p className="text-gray-600">Tell us about your travel dreams and we'll create a personalized itinerary</p>
