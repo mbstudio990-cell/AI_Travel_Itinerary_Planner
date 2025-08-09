@@ -302,7 +302,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
         {/* Trip Stats */}
         <div className="px-4 sm:px-8 py-4 sm:py-6 bg-gray-50 border-b border-gray-100">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-xl mb-2 sm:mb-3">
                 <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
@@ -326,6 +326,17 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
                 {currentItinerary.preferences.interests.length > 2 && ` +${currentItinerary.preferences.interests.length - 2} more`}
               </div>
               <div className="text-xs sm:text-sm text-gray-600">Selected Interests</div>
+            </div>
+            <div className="text-center">
+              <button
+                onClick={() => setShowTravelSummary(true)}
+                className="flex flex-col items-center justify-center w-full h-full p-3 sm:p-4 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-xl transition-all duration-200 hover:shadow-md group"
+              >
+                <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 group-hover:bg-blue-200 rounded-xl mb-2 sm:mb-3 transition-colors">
+                  <BookOpen className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+                </div>
+                <div className="text-xs sm:text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors">Travel Summary</div>
+              </button>
             </div>
           </div>
         </div>
@@ -443,14 +454,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             >
               <FileDown className="h-4 w-4 sm:h-5 sm:w-5" />
               <span>Download PDF</span>
-            </button>
-            <button
-              onClick={() => setShowTravelSummary(true)}
-              className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-3 sm:px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 group"
-              title="View Travel Summary"
-            >
-              <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-white group-hover:scale-110 transition-transform" />
-              <span className="text-sm sm:text-base font-medium">Travel Summary</span>
             </button>
           </div>
         </div>
