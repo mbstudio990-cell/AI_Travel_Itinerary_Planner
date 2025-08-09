@@ -326,17 +326,6 @@ const DayCard: React.FC<DayCardProps> = ({
             </div>
           )}
           
-          {!isInManageMode && (
-            {isInManageMode ? (
-          
-          {isInManageMode && (
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
-                <strong>Customize Mode:</strong> Check the boxes to add activities to your itinerary, uncheck to remove them. Green border = selected, gray = not selected.
-              </p>
-            </div>
-          )}
-          
           {(isInManageMode ? dayItinerary.activities : displayActivities).length === 0 ? (
             <div className="text-center py-8">
               <div className="text-gray-400 mb-4">
