@@ -119,6 +119,8 @@ export const generateItinerary = async (formData: FormData): Promise<Itinerary> 
         console.error('1. OPEN_API_KEY is set in Supabase Edge Functions environment variables');
         console.error('2. The API key is valid and starts with "sk-"');
         console.error('3. The Edge Function has been redeployed after adding the key');
+        console.warn('Falling back to mock data due to missing OpenAI API key...');
+        return generateMockItinerary(formData);
       }
       
       if (response.status >= 500) {
