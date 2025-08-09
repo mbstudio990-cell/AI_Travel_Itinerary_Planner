@@ -66,7 +66,7 @@ export const NotesModal: React.FC<NotesModalProps> = ({
                 Day {dayItinerary.day} - {dayItinerary.date}
               </h3>
               <p className="text-sm text-white/90">
-                {dayItinerary.activities.length} activities planned • Est. {dayItinerary.totalEstimatedCost}
+                {dayItinerary.activities.filter(activity => activity.selected !== false).length} activities planned • Est. {dayItinerary.totalEstimatedCost}
               </p>
             </div>
           </div>
@@ -79,7 +79,7 @@ export const NotesModal: React.FC<NotesModalProps> = ({
             Today's Activities
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {dayItinerary.activities.map((activity, index) => (
+            {dayItinerary.activities.filter(activity => activity.selected !== false).map((activity, index) => (
               <div key={index} className="bg-gray-50 rounded-lg p-3">
                 <div className="flex items-center space-x-2 mb-1">
                   <span className="activity-time-badge text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
@@ -92,6 +92,11 @@ export const NotesModal: React.FC<NotesModalProps> = ({
               </div>
             ))}
           </div>
+          {dayItinerary.activities.filter(activity => activity.selected !== false).length === 0 && (
+            <div className="text-center py-4">
+              <p className="text-gray-500 text-sm">No activities selected for this day</p>
+            </div>
+          )}
         </div>
 
         {/* Notes Section */}
