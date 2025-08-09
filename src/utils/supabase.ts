@@ -69,6 +69,7 @@ export interface DayItineraryRecord {
   total_estimated_cost: string;
   notes?: string;
   created_at?: string;
+  updated_at?: string;
 }
 
 export interface ActivityRecord {
