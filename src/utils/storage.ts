@@ -3,6 +3,12 @@ import { supabase } from './supabase';
 
 const STORAGE_KEY = 'travel_itineraries';
 
+// Helper function to validate if a string is a valid UUID
+const isValidUUID = (str: string): boolean => {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(str);
+};
+
 // Check if user is authenticated
 const isAuthenticated = async (): Promise<boolean> => {
   const { data: { user } } = await supabase.auth.getUser();
@@ -146,7 +152,28 @@ export const getItineraries = (): Itinerary[] => {
     // Always return localStorage data for immediate access
     // TODO: In a future update, we could sync with Supabase data
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    if (!stored) return [];
+    
+    const itineraries: Itinerary[] = JSON.parse(stored);
+    
+    // Validate and fix UUID format for all itineraries
+    const validatedItineraries = itineraries.map(itinerary => {
+      if (!isValidUUID(itinerary.id)) {
+        console.log(`Converting invalid ID "${itinerary.id}" to valid UUID`);
+        return {
+          ...itinerary,
+          id: crypto.randomUUID()
+        };
+      }
+      return itinerary;
+    });
+    
+    // If any IDs were changed, update localStorage
+    if (validatedItineraries.some((itinerary, index) => itinerary.id !== itineraries[index].id)) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(validatedItineraries));
+    }
+    
+    return validatedItineraries;
   } catch (error) {
     console.error('Error getting itineraries:', error);
     return [];
