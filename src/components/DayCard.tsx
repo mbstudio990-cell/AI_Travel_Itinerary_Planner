@@ -193,30 +193,30 @@ const DayCard: React.FC<DayCardProps> = ({
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl hover:border-blue-200 hover:scale-[1.02] transition-all duration-300">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl hover:border-blue-200 sm:hover:scale-[1.02] transition-all duration-300">
       {/* Day Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 sm:px-6 py-6 sm:py-8 text-white">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-6">
-            <div className="bg-white/20 rounded-2xl w-20 h-20 flex items-center justify-center">
+          <div className="flex items-center space-x-3 sm:space-x-6">
+            <div className="bg-white/20 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-xs font-bold text-white uppercase tracking-wide">Day</div>
-                <div className="text-2xl font-bold text-white">{dayItinerary.day}</div>
+                <div className="text-xs font-bold text-white uppercase tracking-wide hidden sm:block">Day</div>
+                <div className="text-xl sm:text-2xl font-bold text-white">{dayItinerary.day}</div>
               </div>
             </div>
             <div>
               <div className="flex items-center space-x-2 mb-2">
                 <Calendar className="h-5 w-5 text-white" />
-                <h3 className="text-xl font-bold text-white">{dayItinerary.date}</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-white">{dayItinerary.date}</h3>
               </div>
               <div className="flex items-center space-x-2">
                 <Banknote className="h-5 w-5 text-white" />
-                <span className="text-white font-semibold">Est. {dayItinerary.totalEstimatedCost}</span>
+                <span className="text-sm sm:text-base text-white font-semibold">Est. {dayItinerary.totalEstimatedCost}</span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Notes Button */}
             <TooltipProvider delay={500} closeDelay={200}>
               <Tooltip>
@@ -224,16 +224,16 @@ const DayCard: React.FC<DayCardProps> = ({
                   render={
                     <button
                       onClick={() => setIsNotesModalOpen(true)}
-                      className={`p-3 rounded-xl transition-all duration-200 hover:scale-110 ${
+                      className={`p-2 sm:p-3 rounded-xl transition-all duration-200 hover:scale-110 ${
                         displayNotes 
                           ? 'bg-yellow-400/30 hover:bg-yellow-400/40 text-white' 
                           : 'hover:bg-white/20 text-white/80 hover:text-white'
                       }`}
                     >
                       {displayNotes ? (
-                        <FileText className="h-5 w-5" />
+                        <FileText className="h-4 w-4 sm:h-5 sm:w-5" />
                       ) : (
-                        <Edit3 className="h-5 w-5" />
+                        <Edit3 className="h-4 w-4 sm:h-5 sm:w-5" />
                       )}
                     </button>
                   }
@@ -244,9 +244,9 @@ const DayCard: React.FC<DayCardProps> = ({
               </Tooltip>
             </TooltipProvider>
             
-            <div className="text-right">
-              <div className="text-sm text-white font-medium mb-1">Activities</div>
-              <div className="text-xl font-bold text-white">
+            <div className="text-right hidden sm:block">
+              <div className="text-xs sm:text-sm text-white font-medium mb-1">Activities</div>
+              <div className="text-lg sm:text-xl font-bold text-white">
                 {isInManageMode 
                   ? `${dayItinerary.activities.filter(a => a.selected !== false).length}/${dayItinerary.activities.length}`
                   : displayActivities.length
@@ -255,13 +255,13 @@ const DayCard: React.FC<DayCardProps> = ({
             </div>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-3 hover:bg-white/20 rounded-xl transition-all duration-200 hover:scale-110"
+              className="p-2 sm:p-3 hover:bg-white/20 rounded-xl transition-all duration-200 hover:scale-110"
               aria-label={isExpanded ? "Collapse activities" : "Expand activities"}
             >
               {isExpanded ? (
-                <ChevronUp className="h-6 w-6 text-white" />
+                <ChevronUp className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               ) : (
-                <ChevronDown className="h-6 w-6 text-white" />
+                <ChevronDown className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
               )}
             </button>
           </div>
@@ -270,14 +270,14 @@ const DayCard: React.FC<DayCardProps> = ({
 
         {/* Notes Preview */}
         {displayNotes && (
-          <div className="px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600">
+          <div className="px-4 sm:px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600">
             <div className="flex items-start space-x-3">
               <div className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg mt-1 shadow-sm">
                 <FileText className="h-4 w-4 text-gray-600 dark:text-gray-300" />
               </div>
               <div className="flex-1">
-                <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-1">Your Experience</h4>
-                <p className="text-sm text-gray-900 dark:text-white line-clamp-2 leading-relaxed">
+                <h4 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white mb-1">Your Experience</h4>
+                <p className="text-xs sm:text-sm text-gray-900 dark:text-white line-clamp-2 leading-relaxed">
                   {displayNotes.length > 150 
                     ? `${displayNotes.substring(0, 150)}...` 
                     : displayNotes
@@ -296,10 +296,10 @@ const DayCard: React.FC<DayCardProps> = ({
 
       {/* Activities List */}
       {isExpanded && (
-        <div className="p-6 bg-gray-50">
+        <div className="p-4 sm:p-6 bg-gray-50">
           <div className="flex items-center justify-between mb-4">
             {/* Activities Count Text */}
-            <p className="text-indigo-600 font-semibold">
+            <p className="text-xs sm:text-sm text-indigo-600 font-semibold">
               {isInManageMode 
                 ? `${dayItinerary.activities.filter(a => a.selected !== false).length} of ${dayItinerary.activities.length} activities selected`
                 : `${displayActivities.length} activities planned for this day`
@@ -309,30 +309,31 @@ const DayCard: React.FC<DayCardProps> = ({
             {/* Customize Activities Button */}
             <button
               onClick={handleToggleLocalManage}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 font-medium text-sm ${
+              className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 font-medium text-xs sm:text-sm ${
                 isInManageMode
                   ? 'bg-green-600 hover:bg-green-700 text-white'
                   : 'bg-blue-600 hover:bg-blue-700 text-white'
               }`}
               title={isInManageMode ? "Done Customizing" : "Customize Activities"}
             >
-              <span>{isInManageMode ? 'Done Customizing' : 'Customize Activities'}</span>
+              <span className="hidden sm:inline">{isInManageMode ? 'Done Customizing' : 'Customize Activities'}</span>
+              <span className="sm:hidden">{isInManageMode ? 'Done' : 'Edit'}</span>
             </button>
           </div>
           
           {isInManageMode && (
-            <div className="mb-4 flex items-center justify-between">
-              <div className="p-3 bg-white dark:bg-blue-600 border border-blue-600 dark:border-white rounded-lg flex-1 mr-4">
-                <p className="text-sm text-blue-600 dark:!text-white">
+            <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
+              <div className="p-3 bg-white dark:bg-blue-600 border border-blue-600 dark:border-white rounded-lg flex-1 sm:mr-4">
+                <p className="text-xs sm:text-sm text-blue-600 dark:!text-white">
                   <strong>Customize Mode:</strong> Check the boxes to add activities to your itinerary, uncheck to remove them. Green border = selected, gray = not selected.
                 </p>
               </div>
               <button
                 onClick={() => setShowAddActivityModal(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium whitespace-nowrap"
+                className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium whitespace-nowrap text-xs sm:text-sm w-full sm:w-auto justify-center"
               >
-                <Plus className="h-4 w-4" />
-                <span>Add New Activity</span>
+                <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span>Add Activity</span>
               </button>
             </div>
           )}
@@ -342,12 +343,12 @@ const DayCard: React.FC<DayCardProps> = ({
               <div className="text-gray-400 mb-4">
                 <Calendar className="h-12 w-12 mx-auto" />
               </div>
-              <h4 className="text-lg font-medium text-gray-900 mb-2">No activities planned</h4>
-              <p className="text-gray-600 mb-4">Add some activities to make this day amazing!</p>
+              <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No activities planned</h4>
+              <p className="text-sm sm:text-base text-gray-600 mb-4">Add some activities to make this day amazing!</p>
               {isInManageMode && (
                 <button
                   onClick={() => setShowAddActivityModal(true)}
-                  className="flex items-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium mx-auto"
+                  className="flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium mx-auto text-sm sm:text-base"
                 >
                   <Plus className="h-5 w-5" />
                   <span>Add First Activity</span>
@@ -355,21 +356,21 @@ const DayCard: React.FC<DayCardProps> = ({
               )}
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {/* Time Range Groups */}
               {Object.entries(activitiesByTimeRange).map(([timeRange, activities], rangeIndex) => (
-                <div key={timeRange} className="mb-8">
+                <div key={timeRange} className="mb-6 sm:mb-8">
                   {/* Time Range Header */}
-                  <div className="flex items-center space-x-3 mb-4">
+                  <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
                     <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-lg shadow-sm">
-                      <Clock className="h-5 w-5 text-white" />
+                      <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-lg font-bold text-gray-900">{timeRange}</h4>
+                      <h4 className="text-base sm:text-lg font-bold text-gray-900">{timeRange}</h4>
                       <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-sm text-gray-600">{activities.length} {activities.length === 1 ? 'activity' : 'activities'}</span>
+                        <span className="text-xs sm:text-sm text-gray-600">{activities.length} {activities.length === 1 ? 'activity' : 'activities'}</span>
                         <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                        <span className="text-sm text-blue-600 font-medium">
+                        <span className="text-xs sm:text-sm text-blue-600 font-medium">
                           {activities.reduce((total, activity) => {
                             const cost = activity.costEstimate.toLowerCase();
                             if (cost.includes('free')) return total;
@@ -377,7 +378,7 @@ const DayCard: React.FC<DayCardProps> = ({
                             return total + (match ? parseInt(match[0]) : 0);
                           }, 0) > 0 ? (
                             <div className="flex items-center space-x-1">
-                              <Banknote className="h-3 w-3" />
+                              <Banknote className="h-2 w-2 sm:h-3 sm:w-3" />
                               <span>₹{activities.reduce((total, activity) => {
                                 const cost = activity.costEstimate.toLowerCase();
                                 if (cost.includes('free')) return total;
@@ -393,13 +394,13 @@ const DayCard: React.FC<DayCardProps> = ({
                   </div>
 
                   {/* Activities in this time range */}
-                  <div className="space-y-3 ml-4 border-l-2 border-gray-200 pl-6">
+                  <div className="space-y-2 sm:space-y-3 ml-2 sm:ml-4 border-l-2 border-gray-200 pl-3 sm:pl-6">
                     {activities.map((activity, activityIndex) => {
                       const globalIndex = rangeIndex * 100 + activityIndex; // Create unique index
                       return (
                         <div key={globalIndex} className="relative">
                           {/* Timeline Dot */}
-                          <div className="absolute -left-8 top-4">
+                          <div className="absolute -left-5 sm:-left-8 top-3 sm:top-4">
                             <div className={`w-4 h-4 rounded-full border-2 ${
                               activity.selected !== false 
                                 ? 'bg-blue-600 border-blue-600 shadow-sm' 
@@ -408,18 +409,18 @@ const DayCard: React.FC<DayCardProps> = ({
                           </div>
 
                           {/* Activity Card */}
-                          <div className={`bg-white border rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300 ${
+                          <div className={`bg-white border rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-300 ${
                             activity.selected !== false 
-                              ? 'border-blue-200 hover:border-blue-300 hover:scale-[1.02] hover:bg-blue-50' 
+                              ? 'border-blue-200 hover:border-blue-300 sm:hover:scale-[1.02] hover:bg-blue-50' 
                               : 'border-gray-200 opacity-75 hover:opacity-90 hover:border-gray-300'
                           }`}>
                             {/* Activity Header */}
-                            <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-start justify-between mb-2 sm:mb-3">
                               <div className="flex-1">
                                 {/* Time and Category */}
-                                <div className="flex items-center space-x-2 mb-2">
-                                  <div className="bg-blue-100 px-3 py-1 rounded-full">
-                                    <span className="text-sm font-semibold text-blue-700">{activity.time}</span>
+                                <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-2">
+                                  <div className="bg-blue-100 px-2 sm:px-3 py-1 rounded-full">
+                                    <span className="text-xs sm:text-sm font-semibold text-blue-700">{activity.time}</span>
                                   </div>
                                   <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                                     activity.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
@@ -434,7 +435,7 @@ const DayCard: React.FC<DayCardProps> = ({
                                 </div>
 
                                 {/* Activity Title */}
-                                <h5 className="font-bold text-gray-900 text-lg mb-2">{activity.title}</h5>
+                                <h5 className="font-bold text-gray-900 text-base sm:text-lg mb-2 leading-tight">{activity.title}</h5>
                                 
                                 {/* Location */}
                                 <div className="flex items-center space-x-2 text-gray-600 mb-2">
@@ -445,17 +446,17 @@ const DayCard: React.FC<DayCardProps> = ({
                                     className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors group"
                                     title="Open in Google Maps"
                                   >
-                                    <MapPin className="h-4 w-4 group-hover:text-blue-600" />
-                                    <span className="text-sm group-hover:text-blue-600">{activity.location}</span>
+                                    <MapPin className="h-3 w-3 sm:h-4 sm:w-4 group-hover:text-blue-600 flex-shrink-0" />
+                                    <span className="text-xs sm:text-sm group-hover:text-blue-600 break-words">{activity.location}</span>
                                   </a>
                                 </div>
                               </div>
 
                               {/* Cost and Manage Controls */}
-                              <div className="flex items-center space-x-3">
+                              <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 ml-2">
                                 {/* Cost Badge */}
-                                <div className="bg-green-50 px-3 py-1 rounded-lg border border-green-200">
-                                  <span className="text-sm font-semibold text-green-700">{activity.costEstimate}</span>
+                                <div className="bg-green-50 px-2 sm:px-3 py-1 rounded-lg border border-green-200">
+                                  <span className="text-xs sm:text-sm font-semibold text-green-700">{activity.costEstimate}</span>
                                 </div>
 
                                 {/* Manage Checkbox */}
@@ -468,13 +469,13 @@ const DayCard: React.FC<DayCardProps> = ({
                                     className="flex items-center justify-center cursor-pointer"
                                     title={activity.selected !== false ? "Remove from itinerary" : "Add to itinerary"}
                                   >
-                                    <div className={`w-6 h-6 border-2 rounded-md flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+                                    <div className={`w-5 h-5 sm:w-6 sm:h-6 border-2 rounded-md flex items-center justify-center transition-all duration-200 hover:scale-110 ${
                                       activity.selected !== false
                                         ? 'bg-green-500 border-green-500 hover:bg-green-600 hover:border-green-600'
                                         : 'border-gray-300 hover:border-green-400 bg-white'
                                     }`}>
                                       {activity.selected !== false && (
-                                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                         </svg>
                                       )}
@@ -485,32 +486,32 @@ const DayCard: React.FC<DayCardProps> = ({
                             </div>
 
                             {/* Activity Description */}
-                            <p className="text-gray-700 text-sm mb-3 leading-relaxed">{activity.description}</p>
+                            <p className="text-gray-700 text-xs sm:text-sm mb-3 leading-relaxed">{activity.description}</p>
 
                             {/* Expand/Collapse Button */}
                             <button
                               onClick={() => toggleActivity(globalIndex)}
-                              className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium transition-all duration-200 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg text-sm"
+                              className="inline-flex items-center space-x-1 sm:space-x-2 text-blue-600 hover:text-blue-700 font-medium transition-all duration-200 bg-blue-50 hover:bg-blue-100 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm w-full sm:w-auto justify-center"
                             >
                               <span>{expandedActivities.has(globalIndex) ? 'Hide Details' : 'Show Tips & Details'}</span>
                               {expandedActivities.has(globalIndex) ? (
-                                <ChevronUp className="h-4 w-4" />
+                                <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4" />
                               ) : (
-                                <ChevronDown className="h-4 w-4" />
+                                <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
                               )}
                             </button>
 
                             {/* Expanded Details */}
                             {expandedActivities.has(globalIndex) && (
-                              <div className="mt-4 pt-4 border-t border-gray-200">
-                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                              <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200">
+                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4">
                                   <div className="flex items-start space-x-3">
                                     <div className="bg-amber-100 p-2 rounded-lg">
-                                      <Lightbulb className="h-4 w-4 text-amber-600" />
+                                      <Lightbulb className="h-3 w-3 sm:h-4 sm:w-4 text-amber-600" />
                                     </div>
                                     <div>
-                                      <h6 className="font-semibold text-amber-800 mb-2 text-sm">💡 Pro Tip</h6>
-                                      <p className="text-amber-700 leading-relaxed text-sm">{activity.tips}</p>
+                                      <h6 className="font-semibold text-amber-800 mb-2 text-xs sm:text-sm">💡 Pro Tip</h6>
+                                      <p className="text-amber-700 leading-relaxed text-xs sm:text-sm">{activity.tips}</p>
                                     </div>
                                   </div>
                                 </div>
@@ -530,8 +531,8 @@ const DayCard: React.FC<DayCardProps> = ({
                   <div className="text-gray-400 mb-4">
                     <Calendar className="h-12 w-12 mx-auto" />
                   </div>
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">No activities scheduled</h4>
-                  <p className="text-gray-600">All activities have been removed or none are selected.</p>
+                  <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No activities scheduled</h4>
+                  <p className="text-sm sm:text-base text-gray-600">All activities have been removed or none are selected.</p>
                 </div>
               )}
             </div>

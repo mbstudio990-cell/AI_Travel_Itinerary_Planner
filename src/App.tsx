@@ -187,7 +187,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-25 via-white to-indigo-25" style={{
+    <div className="min-h-screen bg-gradient-to-br from-blue-25 via-white to-indigo-25 overflow-x-hidden" style={{
       background: 'linear-gradient(to bottom right, rgba(239, 246, 255, 0.9), #ffffff, rgba(238, 242, 255, 0.9))'
     }}>
       <Header 
@@ -196,29 +196,29 @@ function App() {
         onShowAuth={handleShowAuth}
       />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         {appState === 'form' && (
           <div className="space-y-8">
             {!showMainContent && (
-              <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center z-50">
-                <div className="text-center">
-                  <h1 className={`text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6 transition-opacity duration-1000 ${fadeOutText ? 'opacity-0' : 'opacity-100'}`}>
+              <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center z-50 px-4">
+                <div className="text-center max-w-sm sm:max-w-none">
+                  <h1 className={`text-4xl sm:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 sm:mb-6 transition-opacity duration-1000 ${fadeOutText ? 'opacity-0' : 'opacity-100'}`}>
                     <TypingText 
-                      className="text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                      className="text-4xl sm:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
                       text="WanderAI"
                       cursor
-                      cursorClassName="h-14 text-blue-600"
+                      cursorClassName="h-8 sm:h-14 text-blue-600"
                       speed={100}
                       onComplete={() => setShowSubtitle(true)}
                     />
                   </h1>
                   {showSubtitle && (
-                    <p className={`text-3xl text-gray-500 transition-opacity duration-1000 ${fadeOutText ? 'opacity-0' : 'opacity-100'}`}>
+                    <p className={`text-xl sm:text-3xl text-gray-500 transition-opacity duration-1000 ${fadeOutText ? 'opacity-0' : 'opacity-100'}`}>
                       <TypingText 
-                        className="text-3xl text-gray-500"
+                        className="text-xl sm:text-3xl text-gray-500"
                         text="Your AI Travel Companion" 
                         cursor
-                        cursorClassName="h-8 text-gray-400"
+                        cursorClassName="h-6 sm:h-8 text-gray-400"
                         speed={100}
                         onComplete={() => {
                           setTimeout(() => {
@@ -234,12 +234,12 @@ function App() {
             )}
             
             {showMainContent && (
-              <div className="text-center mb-12 animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]">
-                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+              <div className="text-center mb-8 sm:mb-12 animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards] px-4">
+                <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
                   WanderAI
                 </h1>
-                <p className="text-xl text-gray-500 mb-8">Your AI Travel Companion</p>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                <p className="text-lg sm:text-xl text-gray-500 mb-6 sm:mb-8">Your AI Travel Companion</p>
+                <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
                   Intelligent itinerary planning for unforgettable adventures. Hidden gems and must-see spots, perfectly tailored
                 </p>
               </div>
@@ -271,7 +271,7 @@ function App() {
             <div className="flex justify-center">
               <button
                 onClick={handleBackToForm}
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                className="text-blue-600 hover:text-blue-700 font-medium text-sm sm:text-base px-4 py-2"
               >
                 ← Plan Another Trip
               </button>
@@ -313,8 +313,8 @@ function App() {
       />
 
       <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto py-8 px-4 text-center">
-          <p className="text-gray-600">
+        <div className="max-w-7xl mx-auto py-6 sm:py-8 px-4 text-center">
+          <p className="text-sm sm:text-base text-gray-600">
             Powered by AI • Made with ❤️ for travelers everywhere
           </p>
         </div>

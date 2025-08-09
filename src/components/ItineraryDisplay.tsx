@@ -274,26 +274,26 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       {/* Header Section */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-12 text-white">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mx-4 sm:mx-0">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-4 sm:px-8 py-8 sm:py-12 text-white">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-6">
-              <MapPin className="h-8 w-8 text-white" />
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-full mb-4 sm:mb-6">
+              <MapPin className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold mb-4">{currentItinerary.destination}</h1>
-            <p className="text-xl text-blue-100 mb-8">Your Perfect Travel Itinerary</p>
+            <h1 className="text-2xl sm:text-4xl font-bold mb-4">{currentItinerary.destination}</h1>
+            <p className="text-lg sm:text-xl text-blue-100 mb-6 sm:mb-8">Your Perfect Travel Itinerary</p>
             
-            <div className="flex flex-wrap justify-center gap-8 text-blue-100">
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-8 text-blue-100 text-sm sm:text-base">
               <div className="flex items-center space-x-2">
-                <Calendar className="h-5 w-5" />
+                <Calendar className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>{new Date(currentItinerary.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} - {new Date(currentItinerary.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Clock className="h-5 w-5" />
+                <Clock className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>{currentItinerary.days.length} Days</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Banknote className="h-5 w-5" />
+                <Banknote className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>{currentItinerary.totalBudget}</span>
               </div>
             </div>
@@ -301,61 +301,61 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
         </div>
 
         {/* Trip Stats */}
-        <div className="px-8 py-6 bg-gray-50 border-b border-gray-100">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="px-4 sm:px-8 py-4 sm:py-6 bg-gray-50 border-b border-gray-100">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl mb-3">
-                <Calendar className="h-6 w-6 text-blue-600" />
+              <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-xl mb-2 sm:mb-3">
+                <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
               </div>
-              <div className="text-2xl font-bold text-gray-900">{currentItinerary.days.length}</div>
-              <div className="text-sm text-gray-600">Days</div>
+              <div className="text-xl sm:text-2xl font-bold text-gray-900">{currentItinerary.days.length}</div>
+              <div className="text-xs sm:text-sm text-gray-600">Days</div>
             </div>
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl mb-3">
-                <Banknote className="h-6 w-6 text-green-600" />
+              <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-xl mb-2 sm:mb-3">
+                <Banknote className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
               </div>
-              <div className="text-2xl font-bold text-gray-900">{currentItinerary.preferences.budget}</div>
-              <div className="text-sm text-gray-600">Budget Level</div>
+              <div className="text-lg sm:text-2xl font-bold text-gray-900">{currentItinerary.preferences.budget}</div>
+              <div className="text-xs sm:text-sm text-gray-600">Budget Level</div>
             </div>
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl mb-3">
-                <Heart className="h-6 w-6 text-purple-600" />
+              <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-xl mb-2 sm:mb-3">
+                <Heart className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
               </div>
-              <div className="text-2xl font-bold text-gray-900">{currentItinerary.preferences.interests.length}</div>
-              <div className="text-sm text-gray-600">Interests</div>
+              <div className="text-xl sm:text-2xl font-bold text-gray-900">{currentItinerary.preferences.interests.length}</div>
+              <div className="text-xs sm:text-sm text-gray-600">Interests</div>
             </div>
             <div className="text-center">
               <button
                 onClick={() => setShowTravelSummary(true)}
-                className="flex flex-col items-center justify-center w-full h-full p-4 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-xl transition-all duration-200 hover:shadow-md group"
+                className="flex flex-col items-center justify-center w-full h-full p-3 sm:p-4 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-xl transition-all duration-200 hover:shadow-md group"
               >
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 group-hover:bg-blue-200 rounded-xl mb-3 transition-colors">
-                  <BookOpen className="h-6 w-6 text-blue-600" />
+                <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 group-hover:bg-blue-200 rounded-xl mb-2 sm:mb-3 transition-colors">
+                  <BookOpen className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                 </div>
-                <div className="text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors">Travel Summary</div>
+                <div className="text-xs sm:text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors">Travel Summary</div>
               </button>
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="px-8 py-6">
+        <div className="px-4 sm:px-8 py-4 sm:py-6">
           {/* Auto-save Status */}
           {autoSaveStatus !== 'idle' && (
             <div className="flex justify-center mb-4">
-              <div className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium ${
+              <div className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium ${
                 autoSaveStatus === 'saving' 
                   ? 'bg-yellow-100 text-yellow-800' 
                   : 'bg-green-100 text-green-800'
               }`}>
                 {autoSaveStatus === 'saving' ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-600"></div>
+                    <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-yellow-600"></div>
                     <span>Auto-saving...</span>
                   </>
                 ) : (
                   <>
-                    <CheckCircle className="h-4 w-4" />
+                    <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span>Auto-saved!</span>
                   </>
                 )}
@@ -363,35 +363,35 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             </div>
           )}
 
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
             <button
               onClick={onEdit}
-              className="flex items-center space-x-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl transition-colors font-medium"
+              className="flex items-center space-x-1 sm:space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl transition-colors font-medium text-sm sm:text-base"
             >
-              <Edit className="h-5 w-5" />
+              <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
               <span>Edit Plan</span>
             </button>
             
             <button
               onClick={handleSave}
-              className="flex items-center space-x-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors font-medium"
+              className="flex items-center space-x-1 sm:space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors font-medium text-sm sm:text-base"
             >
-              <Save className="h-5 w-5" />
+              <Save className="h-4 w-4 sm:h-5 sm:w-5" />
               <span>Save</span>
             </button>
 
             <div className="relative">
               <button
                 onClick={() => setShowShareMenu(!showShareMenu)}
-                className="flex items-center space-x-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors font-medium relative z-10"
+                className="flex items-center space-x-1 sm:space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors font-medium relative z-10 text-sm sm:text-base"
               >
-                <Share2 className="h-5 w-5" />
+                <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>Share</span>
               </button>
 
               {showShareMenu && (
                 <div 
-                  className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 z-[99999] overflow-hidden"
+                  className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-48 sm:w-56 bg-white rounded-xl shadow-2xl border border-gray-200 z-[99999] overflow-hidden"
                   style={{ 
                     position: 'fixed',
                     top: '50%',
@@ -403,40 +403,40 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
                   <div className="py-2">
                     <button
                       onClick={handleWhatsAppShare}
-                     className="w-full px-4 py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02]"
+                     className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-2 sm:space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02] text-sm sm:text-base"
                     >
-                      <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
-                        <MessageCircle className="h-4 w-4 text-white" />
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                        <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                       </div>
                       <span>WhatsApp</span>
                     </button>
                     
                     <button
                       onClick={handleTelegramShare}
-                     className="w-full px-4 py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02]"
+                     className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-2 sm:space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02] text-sm sm:text-base"
                     >
-                      <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                        <Send className="h-4 w-4 text-white" />
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <Send className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                       </div>
                       <span>Telegram</span>
                     </button>
                     
                     <button
                       onClick={handleEmailShare}
-                     className="w-full px-4 py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02]"
+                     className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-2 sm:space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02] text-sm sm:text-base"
                     >
-                      <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
-                        <Mail className="h-4 w-4 text-white" />
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-red-500 rounded-lg flex items-center justify-center">
+                        <Mail className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                       </div>
                       <span>Email</span>
                     </button>
                     
                     <button
                       onClick={handleCopyLink}
-                     className="w-full px-4 py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02]"
+                     className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-2 sm:space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02] text-sm sm:text-base"
                     >
-                      <div className="w-8 h-8 bg-gray-500 rounded-lg flex items-center justify-center">
-                        <Share2 className="h-4 w-4 text-white" />
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-500 rounded-lg flex items-center justify-center">
+                        <Share2 className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                       </div>
                       <span>Copy Link</span>
                     </button>
@@ -447,9 +447,9 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             
             <button
               onClick={handleDownloadPDF}
-              className="flex items-center space-x-2 px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors font-medium"
+              className="flex items-center space-x-1 sm:space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors font-medium text-sm sm:text-base"
             >
-              <FileDown className="h-5 w-5" />
+              <FileDown className="h-4 w-4 sm:h-5 sm:w-5" />
               <span>Download PDF</span>
             </button>
           </div>
@@ -472,7 +472,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
       />
 
       {/* Daily Itineraries */}
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 px-4 sm:px-0">
         {currentItinerary.days.map((day) => (
           <DayCard 
             key={day.day} 
@@ -488,12 +488,12 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
       </div>
 
       {/* Footer */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 text-center mx-4 sm:mx-0">
+        <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full mb-4 sm:mb-6">
           <span className="text-2xl">🌟</span>
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-4">Have an Amazing Trip!</h3>
-        <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
+        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Have an Amazing Trip!</h3>
+        <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
           Your personalized AI-generated itinerary is ready. Don't forget to save it and share with your travel companions for an unforgettable adventure!
         </p>
       </div>

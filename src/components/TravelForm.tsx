@@ -230,13 +230,13 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-2xl mx-auto relative">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Plan Your Perfect Trip</h2>
-          <p className="text-gray-600">Tell us about your travel dreams and we'll create a personalized itinerary</p>
+      <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 w-full max-w-2xl mx-auto relative">
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Plan Your Perfect Trip</h2>
+          <p className="text-sm sm:text-base text-gray-600">Tell us about your travel dreams and we'll create a personalized itinerary</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Destination Input */}
           <div>
             <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
@@ -250,14 +250,14 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
                 value={currentDestination}
                 onChange={(e) => setCurrentDestination(e.target.value)}
                 onKeyPress={handleDestinationKeyPress}
-                placeholder="Enter destination and press Enter (e.g., Paris, Tokyo, New York)"
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                placeholder="Enter destination and press Enter"
+                className="w-full pl-10 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm sm:text-base"
               />
               {currentDestination.trim() && (
                 <button
                   type="button"
                   onClick={addDestination}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors"
+                  className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm hover:bg-blue-700 transition-colors"
                 >
                   Add
                 </button>
@@ -272,13 +272,13 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
                   {formData.destinations.map((destination, index) => (
                     <div
                       key={index}
-                      className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm flex items-center space-x-2 font-medium"
+                      className="bg-blue-600 text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm flex items-center space-x-1 sm:space-x-2 font-medium"
                     >
                       <span>{destination}</span>
                       <button
                         type="button"
                         onClick={() => removeDestination(index)}
-                        className="text-white hover:text-gray-200 font-bold ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-blue-700 transition-colors"
+                        className="text-white hover:text-gray-200 font-bold ml-1 sm:ml-2 w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center rounded-full hover:bg-blue-700 transition-colors text-xs"
                       >
                         ×
                       </button>
@@ -290,7 +290,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
           </div>
 
           {/* Date Inputs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Start Date
@@ -330,7 +330,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
               <select
                 value={formData.currency}
                 onChange={(e) => setFormData(prev => ({ ...prev, currency: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none bg-white"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none bg-white text-sm sm:text-base"
               >
                 {CURRENCY_OPTIONS.map((currency) => (
                   <option key={currency.code} value={currency.code}>
@@ -352,7 +352,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
               <Banknote className="h-4 w-4 mr-2" />
               Budget Level
             </label>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {['Budget', 'Mid-range', 'Luxury'].map((budget) => (
                 <motion.button
                   key={budget}
@@ -361,7 +361,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
                     ...prev, 
                     budget: prev.budget === budget ? '' : budget as any 
                   }))}
-                  className={`budget-option p-3 rounded-lg border-2 text-center ${
+                  className={`budget-option p-2.5 sm:p-3 rounded-lg border-2 text-center ${
                     formData.budget === budget
                       ? 'border-blue-500 bg-blue-500 text-white font-medium shadow-md selected'
                       : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700 hover:text-blue-600'
@@ -377,13 +377,13 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
                   title={formData.budget === budget ? `Click to unselect ${budget}` : `Click to select ${budget}`}
                 >
                   <div className="budget-content">
-                    <div className="font-medium flex items-center justify-center space-x-2">
+                    <div className="font-medium flex items-center justify-center space-x-1 sm:space-x-2 text-sm sm:text-base">
                       {formData.budget === budget && (
                         <span className="text-sm">✓</span>
                       )}
                       <span>{budget}</span>
                     </div>
-                    <div className="text-sm text-gray-500 mt-1">
+                    <div className="text-xs sm:text-sm text-gray-500 mt-1">
                       {getBudgetRanges(budget, formData.currency)}
                     </div>
                   </div>
@@ -398,13 +398,13 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
               <Heart className="h-4 w-4 mr-2" />
               What interests you? (Select all that apply)
             </label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
               {INTEREST_OPTIONS.map((interest) => (
                 <motion.button
                   key={interest}
                   type="button"
                   onClick={() => toggleInterest(interest)}
-                  className={`interest-option p-3 rounded-lg border-2 text-center transition-all duration-200 cursor-pointer ${
+                  className={`interest-option p-2 sm:p-3 rounded-lg border-2 text-center transition-all duration-200 cursor-pointer ${
                     formData.interests.includes(interest)
                       ? 'border-blue-500 bg-blue-500 text-white font-medium shadow-md'
                       : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700 hover:text-blue-600'
@@ -420,9 +420,9 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
                   title={formData.interests.includes(interest) ? `Click to unselect ${interest}` : `Click to select ${interest}`}
                 >
                   <div className="interest-content">
-                    <span className="flex items-center justify-center space-x-2">
+                    <span className="flex items-center justify-center space-x-1 text-xs sm:text-sm">
                       {formData.interests.includes(interest) && (
-                        <span className="text-sm">✓</span>
+                        <span className="text-xs sm:text-sm">✓</span>
                       )}
                       <span>{interest}</span>
                     </span>
@@ -436,7 +436,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-700 hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-4 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
+            className="w-full bg-blue-700 hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 sm:py-4 px-4 sm:px-6 rounded-lg transition-colors flex items-center justify-center space-x-2 text-sm sm:text-base"
             onClick={(e) => {
               console.log('Generate button clicked');
               console.log('Form data at click:', formData);
@@ -446,10 +446,10 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
             {loading ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                <span>AI is crafting your perfect trip...</span>
+                <span className="text-sm sm:text-base">AI is crafting your perfect trip...</span>
               </>
             ) : (
-              <span>{initialData ? 'Update AI Itinerary' : 'Generate AI Itinerary'}</span>
+              <span className="text-sm sm:text-base">{initialData ? 'Update AI Itinerary' : 'Generate AI Itinerary'}</span>
             )}
           </button>
         </form>

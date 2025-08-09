@@ -463,6 +463,66 @@ input::placeholder, textarea::placeholder {
   overflow: hidden;
 }
 
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Improve touch targets */
+  button, .cursor-pointer {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better text readability on mobile */
+  .text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  /* Improve form inputs on mobile */
+  input, textarea, select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Better spacing for mobile cards */
+  .space-y-2 > * + * {
+    margin-top: 0.5rem;
+  }
+  
+  /* Improve modal sizing on mobile */
+  .max-w-md {
+    max-width: calc(100vw - 2rem);
+  }
+  
+  /* Better button spacing on mobile */
+  .gap-2 {
+    gap: 0.5rem;
+  }
+  
+  /* Improve grid layouts on mobile */
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  /* Better text wrapping */
+  .break-words {
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+}
+
+/* Tablet-specific improvements */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Optimize for tablet layouts */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 /* Fade-in animation */
 @keyframes fadeIn {
   from {
