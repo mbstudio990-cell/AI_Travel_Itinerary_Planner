@@ -54,16 +54,16 @@ export const NotesModal: React.FC<NotesModalProps> = ({
     >
       <div className="p-6">
         {/* Day Info Header */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-4 mb-6">
           <div className="flex items-center space-x-4">
-            <div className="bg-blue-100 p-3 rounded-xl">
-              <Calendar className="h-6 w-6 text-blue-600" />
+            <div className="bg-white/20 p-3 rounded-xl">
+              <Calendar className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-white">
                 Day {dayItinerary.day} - {dayItinerary.date}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-white/90">
                 {dayItinerary.activities.length} activities planned • Est. {dayItinerary.totalEstimatedCost}
               </p>
             </div>
