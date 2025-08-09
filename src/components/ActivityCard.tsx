@@ -67,69 +67,16 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
         ? 'border-green-300 hover:border-green-400 hover:scale-105' 
         : 'border-gray-200 hover:border-blue-300 hover:scale-105 opacity-75'
     }`}>
-      {/* Activity Image */}
-      <div className="relative h-48 overflow-hidden">
-        <img
-          src={getPlaceholderImage(activity.category)}
-          alt={activity.title}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-          onError={(e) => {
-            // Fallback to default image if the category image fails to load
-            const target = e.target as HTMLImageElement;
-            target.src = getPlaceholderImage('default');
-          }}
-        />
-        
-        {/* Category Badge Overlay */}
-        <div className="absolute top-3 left-3">
-          <div className={`${getCategoryColor(activity.category)} p-2 rounded-lg shadow-lg backdrop-blur-sm bg-opacity-90`}>
-            {getCategoryIcon(activity.category)}
-          </div>
-        </div>
-        
-        {/* Cost Badge Overlay */}
-        <div className="absolute top-3 right-3">
-          <div className="bg-white bg-opacity-95 backdrop-blur-sm px-3 py-1 rounded-lg border shadow-lg">
-            <div className="flex items-center space-x-1 text-green-700 font-semibold text-sm">
-              <Banknote className="h-3 w-3" />
-              <span>{activity.costEstimate}</span>
-            </div>
-          </div>
-        </div>
-        
-        {/* Manage Toggle Overlay */}
-        {showManage && (
-          <div className="absolute bottom-3 right-3">
-            <div
-              onClick={handleToggleActivity}
-              className="flex items-center justify-center cursor-pointer"
-              title={isSelected ? "Remove from itinerary" : "Add to itinerary"}
-            >
-              <div className={`w-8 h-8 border-2 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 backdrop-blur-sm ${
-                isSelected
-                  ? 'bg-green-500 bg-opacity-95 border-green-500 hover:bg-green-600 hover:border-green-600 shadow-lg'
-                  : 'border-white bg-white bg-opacity-90 hover:border-green-400 hover:bg-green-50'
-              }`}>
-                {isSelected && (
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
       
       {/* Activity Content */}
       <div className="p-4">
         {/* Time Badge */}
         <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center space-x-2">
-          <div className="bg-blue-100 px-2 py-1 rounded-full">
-            <Clock className="h-3 w-3 text-blue-600 inline mr-1" />
-            <span className="text-xs font-semibold text-blue-700">{activity.time}</span>
-          </div>
+          <div className="flex items-center space-x-2">
+            <div className="bg-blue-100 px-2 py-1 rounded-full">
+              <Clock className="h-3 w-3 text-blue-600 inline mr-1" />
+              <span className="text-xs font-semibold text-blue-700">{activity.time}</span>
+            </div>
             <span className={`text-xs px-2 py-1 rounded-full font-medium ${
               activity.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
               activity.category === 'Food' ? 'bg-orange-100 text-orange-700' :
@@ -140,7 +87,37 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
             }`}>
               {activity.category}
             </span>
-        </div>
+          </div>
+          
+          {/* Cost and Manage Toggle moved to header */}
+          <div className="flex items-center space-x-2">
+            <div className="bg-white border px-3 py-1 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-1 text-green-700 font-semibold text-sm">
+                <Banknote className="h-3 w-3" />
+                <span>{activity.costEstimate}</span>
+              </div>
+            </div>
+            
+            {showManage && (
+              <div
+                onClick={handleToggleActivity}
+                className="flex items-center justify-center cursor-pointer"
+                title={isSelected ? "Remove from itinerary" : "Add to itinerary"}
+              >
+                <div className={`w-8 h-8 border-2 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+                  isSelected
+                    ? 'bg-green-500 border-green-500 hover:bg-green-600 hover:border-green-600 shadow-lg'
+                    : 'border-gray-300 bg-white hover:border-green-400 hover:bg-green-50'
+                }`}>
+                  {isSelected && (
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         
         {/* Activity Title */}
