@@ -83,8 +83,6 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
   const [currentDestination, setCurrentDestination] = useState('');
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [showDestinationDialog, setShowDestinationDialog] = useState(false);
-  const [destinationErrorMessage, setDestinationErrorMessage] = useState('');
 
   // Update form data when initialData changes (for editing)
   React.useEffect(() => {
@@ -92,49 +90,6 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
       setFormData(initialData);
     }
   }, [initialData]);
-
-  // Validate destination input
-  const validateDestination = (destination: string): boolean => {
-    const trimmedDestination = destination.trim();
-    
-    // Check if empty
-    if (!trimmedDestination) {
-      setDestinationErrorMessage('Please enter a destination name.');
-      setShowDestinationDialog(true);
-      return false;
-    }
-    
-    // Check minimum length
-    if (trimmedDestination.length < 2) {
-      setDestinationErrorMessage('Destination name must be at least 2 characters long.');
-      setShowDestinationDialog(true);
-      return false;
-    }
-    
-    // Check for invalid characters (only letters, spaces, hyphens, apostrophes, and commas allowed)
-    const validDestinationRegex = /^[a-zA-Z\s\-',\.]+$/;
-    if (!validDestinationRegex.test(trimmedDestination)) {
-      setDestinationErrorMessage('Destination name can only contain letters, spaces, hyphens, apostrophes, and commas.');
-      setShowDestinationDialog(true);
-      return false;
-    }
-    
-    // Check if destination already exists
-    if (formData.destinations.some(dest => dest.toLowerCase() === trimmedDestination.toLowerCase())) {
-      setDestinationErrorMessage('This destination has already been added to your trip.');
-      setShowDestinationDialog(true);
-      return false;
-    }
-    
-    // Check maximum destinations limit
-    if (formData.destinations.length >= 5) {
-      setDestinationErrorMessage('You can add a maximum of 5 destinations per trip.');
-      setShowDestinationDialog(true);
-      return false;
-    }
-    
-    return true;
-  };
 
   const validateForm = (): boolean => {
     if (formData.destinations.length === 0) {
@@ -181,13 +136,8 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
     setErrorMessage('');
   };
 
-  const closeDestinationDialog = () => {
-    setShowDestinationDialog(false);
-    setDestinationErrorMessage('');
-  };
-
   const addDestination = () => {
-    if (validateDestination(currentDestination)) {
+    if (currentDestination.trim() && !formData.destinations.includes(currentDestination.trim())) {
       setFormData(prev => ({
         ...prev,
         destinations: [...prev.destinations, currentDestination.trim()]
@@ -544,51 +494,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Destination Validation Error Dialog */}
-      <AnimatePresence>
-        {showDestinationDialog && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md overflow-hidden mx-4"
-            >
-              {/* Header */}
-              <div className="bg-orange-500 px-4 sm:px-6 py-4 text-white">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-white/20 p-2 rounded-full">
-                    <MapPin className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-base sm:text-lg font-bold">Invalid Destination</h3>
-                    <p className="text-sm text-orange-100">Please check your destination entry</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-4 sm:p-6">
-                <p className="text-gray-700 mb-6 leading-relaxed">
-                  {destinationErrorMessage}
-                </p>
-                
-                <div className="flex justify-end">
-                  <button
-                    onClick={closeDestinationDialog}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 rounded-lg transition-colors font-medium text-sm sm:text-base"
-                  >
-                    Okay
-                  </button>
-                </div>
-              </div>
-            </div>
+            </motion.div>
           </div>
         )}
       </AnimatePresence>
