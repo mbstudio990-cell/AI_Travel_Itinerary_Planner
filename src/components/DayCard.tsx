@@ -510,7 +510,6 @@ const DayCard: React.FC<DayCardProps> = ({
                   <h4 className="text-lg font-medium text-gray-900 mb-2">No activities scheduled</h4>
                   <p className="text-gray-600">All activities have been removed or none are selected.</p>
                 </div>
-              </div>
             </div>
           )}
         </div>
