@@ -1,31 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3 } from 'lucide-react';
+import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus } from 'lucide-react';
 import { DayItinerary, Activity } from '../types';
 import ActivityCard from './ActivityCard';
+import { AddActivityCard } from './AddActivityCard';
 import { NotesModal } from './NotesModal';
 import { loadItineraryNotes } from '../utils/storage';
 
 interface DayCardProps {
   dayItinerary: DayItinerary;
   itineraryId?: string;
+  destination?: string;
+  budget?: string;
+  currency?: string;
   onSaveNotes?: (dayNumber: number, notes: string) => void;
   onAddActivity?: (dayNumber: number, activity: Activity) => void;
   onRemoveActivity?: (dayNumber: number, activity: Activity) => void;
-  showAddRemove?: boolean;
+  showManage?: boolean;
 }
 
 const DayCard: React.FC<DayCardProps> = ({ 
   dayItinerary, 
   itineraryId, 
+  destination = '',
+  budget = 'Mid-range',
+  currency = 'USD',
   onSaveNotes,
   onAddActivity,
   onRemoveActivity,
-  showAddRemove = false 
+  showManage = false 
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedActivities, setExpandedActivities] = useState<Set<number>>(new Set());
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
   const [currentNotes, setCurrentNotes] = useState(dayItinerary.notes || '');
+  const [showAddActivity, setShowAddActivity] = useState(false);
 
   // Load notes from Supabase when component mounts
   useEffect(() => {
@@ -46,22 +54,15 @@ const DayCard: React.FC<DayCardProps> = ({
     loadNotes();
   }, [itineraryId, dayItinerary.day]);
 
-  // Filter activities based on mode
-  const displayActivities = showAddRemove 
-    ? dayItinerary.activities // Show all activities in management mode
-    : dayItinerary.activities.filter(activity => activity.selected !== false); // Show only selected in view mode
+  // Always show only selected activities (activities that haven't been removed)
+  const displayActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
+  
   const toggleActivity = (index: number) => {
     const newExpanded = new Set(expandedActivities);
-    // Find the original index in the full activities array
-    const activity = displayActivities[index];
-    const originalIndex = dayItinerary.activities.findIndex(act => 
-      act.title === activity.title && act.time === activity.time
-    );
-    
-    if (newExpanded.has(originalIndex)) {
-      newExpanded.delete(originalIndex);
+    if (newExpanded.has(index)) {
+      newExpanded.delete(index);
     } else {
-      newExpanded.add(originalIndex);
+      newExpanded.add(index);
     }
     setExpandedActivities(newExpanded);
   };
@@ -73,10 +74,11 @@ const DayCard: React.FC<DayCardProps> = ({
     }
   };
 
-  const handleAddActivity = (activity: Activity) => {
+  const handleAddNewActivity = (activity: Activity) => {
     if (onAddActivity) {
       onAddActivity(dayItinerary.day, activity);
     }
+    setShowAddActivity(false);
   };
 
   const handleRemoveActivity = (activity: Activity) => {
@@ -87,9 +89,6 @@ const DayCard: React.FC<DayCardProps> = ({
 
   // Use current notes state instead of dayItinerary.notes
   const displayNotes = currentNotes || dayItinerary.notes;
-
-  const addedActivities = displayActivities;
-  const totalActivities = dayItinerary.activities.length;
 
   return (
     <>
@@ -137,7 +136,7 @@ const DayCard: React.FC<DayCardProps> = ({
             <div className="text-right">
               <div className="text-sm text-white font-medium mb-1">Activities</div>
               <div className="text-xl font-bold text-white">
-                {showAddRemove ? `${addedActivities.length}/${totalActivities}` : addedActivities.length}
+                {displayActivities.length}
               </div>
             </div>
             <button
@@ -184,41 +183,74 @@ const DayCard: React.FC<DayCardProps> = ({
       {/* Activities List */}
       {isExpanded && (
         <div className="p-6 bg-gray-50">
-          <div className="mb-4">
-            <p className="text-indigo-600 font-semibold text-center">
-              {showAddRemove 
-                ? `${addedActivities.length} of ${totalActivities} activities selected for this day`
-                : `${addedActivities.length} activities planned for this day`
-              }
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-indigo-600 font-semibold">
+              {displayActivities.length} activities planned for this day
             </p>
-            {showAddRemove && (
-              <p className="text-sm text-gray-600 text-center mt-1">
-                Use the + and - buttons to add/remove activities from your itinerary
-              </p>
+            {showManage && (
+              <button
+                onClick={() => setShowAddActivity(true)}
+                className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Add Activity</span>
+              </button>
             )}
           </div>
           
-          <div className="space-y-4">
-            {displayActivities.map((activity, index) => {
-              // Find the original index for expanded state
-              const originalIndex = dayItinerary.activities.findIndex(act => 
-                act.title === activity.title && act.time === activity.time
-              );
-              
-              return (
-              <ActivityCard
-                key={index}
-                activity={activity}
-                isExpanded={expandedActivities.has(originalIndex)}
-                onToggle={() => toggleActivity(index)}
-                onAddActivity={handleAddActivity}
-                onRemoveActivity={handleRemoveActivity}
-                showAddRemove={showAddRemove}
-                isAdded={activity.selected !== false}
+          {showManage && (
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <strong>Management Mode:</strong> You can remove activities or add new ones to customize your day.
+              </p>
+            </div>
+          )}
+          
+          {/* Add Activity Card */}
+          {showAddActivity && (
+            <div className="mb-6">
+              <AddActivityCard
+                onAddActivity={handleAddNewActivity}
+                onCancel={() => setShowAddActivity(false)}
+                dayNumber={dayItinerary.day}
+                destination={destination}
+                budget={budget}
+                currency={currency}
               />
-              );
-            })}
-          </div>
+            </div>
+          )}
+          
+          {displayActivities.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-gray-400 mb-4">
+                <Calendar className="h-12 w-12 mx-auto" />
+              </div>
+              <h4 className="text-lg font-medium text-gray-900 mb-2">No activities planned</h4>
+              <p className="text-gray-600 mb-4">Add some activities to make this day amazing!</p>
+              {showManage && (
+                <button
+                  onClick={() => setShowAddActivity(true)}
+                  className="flex items-center space-x-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium mx-auto"
+                >
+                  <Plus className="h-5 w-5" />
+                  <span>Add First Activity</span>
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {displayActivities.map((activity, index) => (
+                <ActivityCard
+                  key={index}
+                  activity={activity}
+                  isExpanded={expandedActivities.has(index)}
+                  onToggle={() => toggleActivity(index)}
+                  onRemoveActivity={handleRemoveActivity}
+                  showRemove={showManage}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
