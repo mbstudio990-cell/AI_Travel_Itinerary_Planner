@@ -311,7 +311,7 @@ const DayCard: React.FC<DayCardProps> = ({
           
           {isInManageMode && (
             <div className="mb-4 flex items-center justify-between">
-              <div className="p-3 bg-blue-600 border border-blue-600 rounded-lg flex-1 mr-4">
+              <div className="p-3 bg-white dark:bg-blue-600 border border-gray-200 dark:border-blue-600 rounded-lg flex-1 mr-4">
                 <p className="text-sm text-white">
                   <strong>Customize Mode:</strong> Check the boxes to add activities to your itinerary, uncheck to remove them. Green border = selected, gray = not selected.
                 </p>
