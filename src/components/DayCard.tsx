@@ -366,12 +366,18 @@ const DayCard: React.FC<DayCardProps> = ({
                             if (cost.includes('free')) return total;
                             const match = cost.match(/[\d,]+/);
                             return total + (match ? parseInt(match[0]) : 0);
-                          }, 0) > 0 ? `~$${activities.reduce((total, activity) => {
-                            const cost = activity.costEstimate.toLowerCase();
-                            if (cost.includes('free')) return total;
-                            const match = cost.match(/[\d,]+/);
-                            return total + (match ? parseInt(match[0]) : 0);
-                          }, 0)}` : 'Free activities'}
+                          }, 0) > 0 ? (
+                            <div className="flex items-center space-x-1">
+                              <DollarSign className="h-3 w-3" />
+                              <span>{activities.reduce((total, activity) => {
+                                const cost = activity.costEstimate.toLowerCase();
+                                if (cost.includes('free')) return total;
+                                const match = cost.match(/[\d,]+/);
+                                return total + (match ? parseInt(match[0]) : 0);
+                              }, 0)}</span>
+                            </div>
+                          ) : 'Free activities'
+                        }
                         </span>
                       </div>
                     </div>
