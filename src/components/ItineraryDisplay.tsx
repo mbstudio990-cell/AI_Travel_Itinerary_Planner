@@ -186,26 +186,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     setShowShareMenu(false);
   };
 
-  const handleCopyLink = async () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `🌍 Check out my ${currentItinerary.destination} travel plan!\n${shareableLink}`;
-    try {
-      await navigator.clipboard.writeText(shareText);
-      alert('Itinerary link copied to clipboard!');
-    } catch (err) {
-      console.error('Failed to copy:', err);
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = shareText;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      alert('Itinerary link copied to clipboard!');
-    }
-    setShowShareMenu(false);
-  };
-
   const handleWhatsAppShare = () => {
     const shareableLink = createShareableLink(currentItinerary);
     // Create a shorter message for WhatsApp
