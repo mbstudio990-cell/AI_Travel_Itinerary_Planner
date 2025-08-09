@@ -215,6 +215,7 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
               </p>
             </div>
 
+            {availableTimeSlots.length === 0 ? (
               <div className="text-center py-8">
                 <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                   <Clock className="h-8 w-8 text-blue-600" />
@@ -306,6 +307,7 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
                   })}
                 </div>
               </>
+            )}
             )}
             
             {/* Custom Activity Button */}
