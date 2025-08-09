@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus } from 'lucide-react';
+import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus, Lightbulb } from 'lucide-react';
 import { DayItinerary, Activity } from '../types';
 import ActivityCard from './ActivityCard';
 import { AddActivityModal } from './AddActivityModal';
