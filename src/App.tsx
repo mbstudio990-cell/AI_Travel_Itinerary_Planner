@@ -27,6 +27,7 @@ function App() {
   const [fadeOutText, setFadeOutText] = useState(false);
   const [sharedItinerary, setSharedItinerary] = useState<Itinerary | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [hasGeneratedItinerary, setHasGeneratedItinerary] = useState(false);
 
   useEffect(() => {
     setSavedItineraries(getItineraries());
@@ -87,6 +88,14 @@ function App() {
 
   const handleFormSubmit = async (formData: FormData) => {
     console.log('handleFormSubmit called with:', formData);
+    
+    // Check if guest user has already generated an itinerary
+    if (!isAuthenticated && hasGeneratedItinerary) {
+      alert('You can only generate one itinerary as a guest. Please sign in to generate more itineraries and save them.');
+      setShowAuthModal(true);
+      return;
+    }
+    
     setLoading(true);
     setAppState('loading');
     
@@ -110,6 +119,7 @@ function App() {
       } : itinerary;
       
       setCurrentItinerary(finalItinerary);
+      setHasGeneratedItinerary(true);
       setAppState('itinerary');
     } catch (error) {
       console.error('Error generating itinerary:', error);
@@ -121,11 +131,23 @@ function App() {
   };
 
   const handleSaveItinerary = () => {
+    // Show auth modal if user is not authenticated
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    
     // Refresh the saved itineraries list to update the count
     setSavedItineraries(getItineraries());
   };
 
   const handleViewSaved = () => {
+    // Show auth modal if user is not authenticated
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    
     setSavedItineraries(getItineraries());
     setAppState('saved');
   };
@@ -144,6 +166,8 @@ function App() {
   const handleBackToForm = () => {
     // Clear current itinerary when going back to form for a new trip
     setCurrentItinerary(null);
+    // Reset the generation flag when going back to form
+    setHasGeneratedItinerary(false);
     setAppState('form');
   };
 
@@ -191,6 +215,8 @@ function App() {
   const handleAuthSuccess = () => {
     // Refresh saved itineraries after successful auth
     setSavedItineraries(getItineraries());
+    // Close the auth modal
+    setShowAuthModal(false);
   };
 
   return (
@@ -249,6 +275,13 @@ function App() {
                 <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
                   Intelligent itinerary planning for unforgettable adventures. Hidden gems and must-see spots, perfectly tailored
                 </p>
+                {!isAuthenticated && (
+                  <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg max-w-2xl mx-auto">
+                    <p className="text-sm text-blue-700">
+                      <strong>Guest Mode:</strong> You can generate one free itinerary. Sign in to create unlimited itineraries and save them for later.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
             

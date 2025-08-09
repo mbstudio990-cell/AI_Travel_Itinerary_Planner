@@ -5,6 +5,7 @@ import DayCard from './DayCard';
 import { saveItinerary, shareItinerary, updateItineraryNotes, getItineraries } from '../utils/storage';
 import { generatePDF } from '../utils/pdfGenerator';
 import { TravelSummaryModal } from './TravelSummaryModal';
+import { useAuth } from '../hooks/useAuth';
 
 interface ItineraryDisplayProps {
   itinerary: Itinerary;
@@ -15,6 +16,7 @@ interface ItineraryDisplayProps {
 }
 
 const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, onEdit, onUpdate, currency }) => {
+  const { isAuthenticated } = useAuth();
   const [showShareMenu, setShowShareMenu] = React.useState(false);
   const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
   const [showTravelSummary, setShowTravelSummary] = React.useState(false);
@@ -47,6 +49,12 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     }
   }, []);
   const handleSave = () => {
+    // Check if user is authenticated before saving
+    if (!isAuthenticated) {
+      alert('Please sign in to save your itinerary.');
+      return;
+    }
+    
     saveItinerary(currentItinerary);
     onSave();
     alert('Itinerary saved successfully!');
