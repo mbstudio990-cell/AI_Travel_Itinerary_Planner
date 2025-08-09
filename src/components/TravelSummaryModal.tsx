@@ -36,7 +36,7 @@ export const TravelSummaryModal: React.FC<TravelSummaryModalProps> = ({
                 {itinerary.destination}
               </h3>
               <p className="text-sm text-white/90">
-                {new Date(itinerary.startDate).toLocaleDateString()} - {new Date(itinerary.endDate).toLocaleDateString()}
+                {new Date(itinerary.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} - {new Date(itinerary.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
               <p className="text-sm text-white/90">
                 {itinerary.days.length} days • {totalNotes} days with notes

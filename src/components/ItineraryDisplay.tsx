@@ -294,7 +294,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             <div className="flex flex-wrap justify-center gap-8 text-blue-100">
               <div className="flex items-center space-x-2">
                 <Calendar className="h-5 w-5" />
-                <span>{new Date(currentItinerary.startDate).toLocaleDateString()} - {new Date(currentItinerary.endDate).toLocaleDateString()}</span>
+                <span>{new Date(currentItinerary.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} - {new Date(currentItinerary.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="h-5 w-5" />

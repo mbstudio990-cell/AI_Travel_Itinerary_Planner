@@ -44,7 +44,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
             <div className="flex flex-wrap justify-center gap-8 text-blue-100">
               <div className="flex items-center space-x-2">
                 <Calendar className="h-5 w-5" />
-                <span>{new Date(itinerary.startDate).toLocaleDateString()} - {new Date(itinerary.endDate).toLocaleDateString()}</span>
+                <span>{new Date(itinerary.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} - {new Date(itinerary.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="h-5 w-5" />

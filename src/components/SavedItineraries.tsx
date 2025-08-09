@@ -75,8 +75,8 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
                     <div className="flex items-center space-x-2">
                       <Calendar className="h-4 w-4" />
                       <span className="text-sm">
-                        {new Date(itinerary.startDate).toLocaleDateString()} - 
-                        {new Date(itinerary.endDate).toLocaleDateString()}
+                        {new Date(itinerary.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} - 
+                        {new Date(itinerary.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                       </span>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -94,7 +94,7 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
                   </p>
 
                   <p className="text-xs text-gray-500">
-                    Created: {new Date(itinerary.createdAt).toLocaleDateString()}
+                    Created: {new Date(itinerary.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                   </p>
                 </div>
 
