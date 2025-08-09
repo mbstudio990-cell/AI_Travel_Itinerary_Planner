@@ -6,6 +6,8 @@ import { saveItinerary, shareItinerary, updateItineraryNotes, getItineraries } f
 import { generatePDF } from '../utils/pdfGenerator';
 import { TravelSummaryModal } from './TravelSummaryModal';
 import { useAuth } from '../hooks/useAuth';
+import { Dialog } from './ui/Dialog';
+import { useDialog } from '../hooks/useDialog';
 
 interface ItineraryDisplayProps {
   itinerary: Itinerary;
@@ -21,6 +23,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
   const [showTravelSummary, setShowTravelSummary] = React.useState(false);
   const [autoSaveStatus, setAutoSaveStatus] = React.useState<'idle' | 'saving' | 'saved'>('idle');
+  const { dialogState, showDialog, showConfirm, closeDialog } = useDialog();
 
   // Update current itinerary when prop changes
   React.useEffect(() => {
@@ -61,7 +64,11 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     if (typeof onSave === 'function') {
       onSave();
     }
-    alert('Itinerary saved successfully!');
+    showDialog({
+      title: 'Success!',
+      message: 'Itinerary saved successfully!',
+      type: 'success'
+    });
   };
 
   const handleSaveNotes = (dayNumber: number, notes: string) => {
@@ -243,7 +250,11 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     const shareText = `🌍 ${currentItinerary.destination} travel itinerary: ${shareableLink}`;
     try {
       await navigator.clipboard.writeText(shareText);
-      alert('Itinerary link copied to clipboard!');
+      showDialog({
+        title: 'Link Copied!',
+        message: 'Itinerary link copied to clipboard!',
+        type: 'success'
+      });
     } catch (err) {
       console.error('Failed to copy:', err);
       // Fallback for older browsers
@@ -253,7 +264,11 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      alert('Itinerary link copied to clipboard!');
+      showDialog({
+        title: 'Link Copied!',
+        message: 'Itinerary link copied to clipboard!',
+        type: 'success'
+      });
     }
     setShowShareMenu(false);
   };
@@ -279,7 +294,11 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
       await generatePDF(currentItinerary);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Sorry, there was an error generating the PDF. Please try again.');
+      showDialog({
+        title: 'PDF Generation Error',
+        message: 'Sorry, there was an error generating the PDF. Please try again.',
+        type: 'error'
+      });
     }
   };
 
@@ -484,6 +503,19 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
         isOpen={showTravelSummary}
         onClose={() => setShowTravelSummary(false)}
         itinerary={currentItinerary}
+      />
+
+      {/* Dialog Modal */}
+      <Dialog
+        isOpen={dialogState.isOpen}
+        onClose={closeDialog}
+        title={dialogState.title}
+        message={dialogState.message}
+        type={dialogState.type}
+        confirmText={dialogState.confirmText}
+        cancelText={dialogState.cancelText}
+        showCancel={dialogState.showCancel}
+        onConfirm={dialogState.onConfirm}
       />
 
       {/* Daily Itineraries */}

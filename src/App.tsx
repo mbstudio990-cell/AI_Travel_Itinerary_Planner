@@ -12,6 +12,8 @@ import { FormData, Itinerary } from './types';
 import { generateItinerary } from './utils/openai';
 import { getItineraries } from './utils/storage';
 import SharedItineraryView from './components/SharedItineraryView';
+import { Dialog } from './components/ui/Dialog';
+import { useDialog } from './hooks/useDialog';
 
 type AppState = 'form' | 'loading' | 'itinerary' | 'saved' | 'shared';
 
@@ -28,6 +30,7 @@ function App() {
   const [sharedItinerary, setSharedItinerary] = useState<Itinerary | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [hasGeneratedItinerary, setHasGeneratedItinerary] = useState(false);
+  const { dialogState, showDialog, closeDialog } = useDialog();
 
   useEffect(() => {
     setSavedItineraries(getItineraries());
@@ -91,7 +94,11 @@ function App() {
     
     // Check if guest user has already generated an itinerary
     if (!isAuthenticated && hasGeneratedItinerary) {
-      alert('You can only generate one itinerary as a guest. Please sign in to generate more itineraries and save them.');
+      showDialog({
+        title: 'Sign In Required',
+        message: 'You can only generate one itinerary as a guest. Please sign in to generate more itineraries and save them.',
+        type: 'warning'
+      });
       setShowAuthModal(true);
       return;
     }
@@ -123,7 +130,11 @@ function App() {
       setAppState('itinerary');
     } catch (error) {
       console.error('Error generating itinerary:', error);
-      alert('Sorry, there was an error generating your itinerary. Please try again.');
+      showDialog({
+        title: 'Generation Error',
+        message: 'Sorry, there was an error generating your itinerary. Please try again.',
+        type: 'error'
+      });
       setAppState('form');
     } finally {
       setLoading(false);
@@ -350,6 +361,19 @@ function App() {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         onAuthSuccess={handleAuthSuccess}
+      />
+
+      {/* Dialog Modal */}
+      <Dialog
+        isOpen={dialogState.isOpen}
+        onClose={closeDialog}
+        title={dialogState.title}
+        message={dialogState.message}
+        type={dialogState.type}
+        confirmText={dialogState.confirmText}
+        cancelText={dialogState.cancelText}
+        showCancel={dialogState.showCancel}
+        onConfirm={dialogState.onConfirm}
       />
 
       <footer className="bg-white border-t border-gray-200 mt-16">

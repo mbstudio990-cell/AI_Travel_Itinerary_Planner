@@ -2,6 +2,8 @@ import React from 'react';
 import { ArrowLeft, MapPin, Calendar, Trash2, Eye } from 'lucide-react';
 import { Itinerary } from '../types';
 import { deleteItinerary } from '../utils/storage';
+import { Dialog } from './ui/Dialog';
+import { useDialog } from '../hooks/useDialog';
 
 interface SavedItinerariesProps {
   itineraries: Itinerary[];
@@ -20,18 +22,32 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
   onUpdate,
   defaultCurrency = 'USD'
 }) => {
+  const { dialogState, showDialog, showConfirm, closeDialog } = useDialog();
+
   const handleDelete = (id: string, event: React.MouseEvent) => {
     // Prevent any event bubbling
     event.preventDefault();
     event.stopPropagation();
     
-    if (window.confirm('Are you sure you want to delete this itinerary? This action cannot be undone.')) {
-      deleteItinerary(id);
-      onUpdate();
-      
-      // Show success message
-      alert('Itinerary deleted successfully!');
-    }
+    showConfirm({
+      title: 'Delete Itinerary',
+      message: 'Are you sure you want to delete this itinerary? This action cannot be undone.',
+      type: 'confirm',
+      confirmText: 'Delete',
+      cancelText: 'Cancel'
+    }).then((confirmed) => {
+      if (confirmed) {
+        deleteItinerary(id);
+        onUpdate();
+        
+        // Show success message
+        showDialog({
+          title: 'Deleted Successfully',
+          message: 'Itinerary deleted successfully!',
+          type: 'success'
+        });
+      }
+    });
   };
 
   return (
@@ -121,6 +137,19 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
           ))}
         </div>
       )}
+
+      {/* Dialog Modal */}
+      <Dialog
+        isOpen={dialogState.isOpen}
+        onClose={closeDialog}
+        title={dialogState.title}
+        message={dialogState.message}
+        type={dialogState.type}
+        confirmText={dialogState.confirmText}
+        cancelText={dialogState.cancelText}
+        showCancel={dialogState.showCancel}
+        onConfirm={dialogState.onConfirm}
+      />
     </div>
   );
 };
