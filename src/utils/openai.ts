@@ -27,6 +27,15 @@ export const generateItinerary = async (
 
     if (error) {
       console.error('Supabase function error:', error);
+      
+      // Check if it's a connection error
+      if (error.message?.includes('Please connect to Supabase first')) {
+        return {
+          success: false,
+          error: 'Please connect to Supabase to use AI itinerary generation. Click "Connect to Supabase" in the top right corner.'
+        };
+      }
+      
       return {
         success: false,
         error: error.message || 'Failed to generate itinerary'
@@ -39,6 +48,15 @@ export const generateItinerary = async (
     };
   } catch (error) {
     console.error('Error calling generate-itinerary function:', error);
+    
+    // Check if it's a connection error
+    if (error instanceof Error && error.message?.includes('Please connect to Supabase first')) {
+      return {
+        success: false,
+        error: 'Please connect to Supabase to use AI itinerary generation. Click "Connect to Supabase" in the top right corner.'
+      };
+    }
+    
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred'

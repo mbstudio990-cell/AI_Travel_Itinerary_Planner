@@ -11,14 +11,24 @@ const isValidUUID = (str: string): boolean => {
 
 // Check if user is authenticated
 const isAuthenticated = async (): Promise<boolean> => {
-  const { data: { user } } = await supabase.auth.getUser();
-  return !!user;
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    return !!user;
+  } catch (error) {
+    console.warn('Authentication check failed - Supabase not connected:', error);
+    return false;
+  }
 };
 
 // Get current user ID
 const getCurrentUserId = async (): Promise<string | null> => {
-  const { data: { user } } = await supabase.auth.getUser();
-  return user?.id || null;
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    return user?.id || null;
+  } catch (error) {
+    console.warn('Failed to get user ID - Supabase not connected:', error);
+    return null;
+  }
 };
 
 // Save itinerary to Supabase if authenticated, otherwise localStorage
