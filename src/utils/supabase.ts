@@ -4,8 +4,12 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = 'https://oagjtgnviejwvbrpiuxw.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZ2p0Z252aWVqd3ZicnBpdXh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1NzY1MDIsImV4cCI6MjA3MDE1MjUwMn0.OpfD2kPelT-IZlOz_rT9G_4-VCAYB_iXT54df1qJx1s';
 
-// Create Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Create Supabase client with auth configuration
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    redirectTo: 'https://darling-fenglisu-95b8df.netlify.app'
+  }
+});
 
 
 // Database types
