@@ -436,6 +436,25 @@ input::placeholder, textarea::placeholder {
   );
 }
 
+/* Notes Modal Activity Timings - Dark Mode Only */
+.dark-theme .activity-time-badge {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.dark-theme .activity-category {
+  color: #e0e0e0 !important;
+}
+
+.dark-theme .activity-title {
+  color: #ffffff !important;
+}
+
+.dark-theme .activity-location {
+  color: #e0e0e0 !important;
+}
+
 /* Line clamp utility for notes preview */
 .line-clamp-2 {
   display: -webkit-box;

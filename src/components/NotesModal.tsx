@@ -80,13 +80,13 @@ export const NotesModal: React.FC<NotesModalProps> = ({
             {dayItinerary.activities.map((activity, index) => (
               <div key={index} className="bg-gray-50 rounded-lg p-3">
                 <div className="flex items-center space-x-2 mb-1">
-                  <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                  <span className="activity-time-badge text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
                     {activity.time}
                   </span>
-                  <span className="text-xs text-gray-500 capitalize">{activity.category}</span>
+                  <span className="activity-category text-xs text-gray-500 capitalize">{activity.category}</span>
                 </div>
-                <h5 className="font-medium text-gray-900 text-sm">{activity.title}</h5>
-                <p className="text-xs text-gray-600 mt-1">{activity.location}</p>
+                <h5 className="activity-title font-medium text-gray-900 text-sm">{activity.title}</h5>
+                <p className="activity-location text-xs text-gray-600 mt-1">{activity.location}</p>
               </div>
             ))}
           </div>
