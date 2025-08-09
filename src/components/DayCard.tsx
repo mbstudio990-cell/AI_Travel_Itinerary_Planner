@@ -73,16 +73,52 @@ const DayCard: React.FC<DayCardProps> = ({
     };
 
     activities.forEach(activity => {
-      const time = activity.time.toLowerCase();
-      if (time.includes('6:') || time.includes('7:') || (time.includes('8:') && time.includes('am'))) {
+      const timeStr = activity.time.toLowerCase();
+      
+      // Extract the start time from ranges like "9:00 AM - 11:30 AM" or single times like "9:00 AM"
+      const startTime = timeStr.split(' - ')[0].trim();
+      
+      // Parse the time to get hour in 24-hour format
+      const timeMatch = startTime.match(/(\d{1,2}):(\d{2})\s*(am|pm)/);
+      if (!timeMatch) {
+        // If we can't parse the time, try to categorize by keywords
+        if (timeStr.includes('morning') || timeStr.includes('sunrise') || timeStr.includes('breakfast')) {
+          timeRanges['Morning (9:00 AM-12:00 PM)'].push(activity);
+        } else if (timeStr.includes('lunch') || timeStr.includes('noon')) {
+          timeRanges['Lunch Time (12:00-2:00 PM)'].push(activity);
+        } else if (timeStr.includes('afternoon')) {
+          timeRanges['Afternoon (2:00-5:00 PM)'].push(activity);
+        } else if (timeStr.includes('evening') || timeStr.includes('sunset')) {
+          timeRanges['Evening (5:00-8:00 PM)'].push(activity);
+        } else if (timeStr.includes('dinner') || timeStr.includes('night')) {
+          timeRanges['Night (8:00 PM-Late)'].push(activity);
+        } else {
+          // Default to morning if we can't determine
+          timeRanges['Morning (9:00 AM-12:00 PM)'].push(activity);
+        }
+        return;
+      }
+      
+      let hour = parseInt(timeMatch[1]);
+      const period = timeMatch[3];
+      
+      // Convert to 24-hour format
+      if (period === 'pm' && hour !== 12) {
+        hour += 12;
+      } else if (period === 'am' && hour === 12) {
+        hour = 0;
+      }
+      
+      // Categorize based on 24-hour time
+      if (hour >= 6 && hour < 9) {
         timeRanges['Early Morning (6:00-9:00 AM)'].push(activity);
-      } else if (time.includes('9:') || time.includes('10:') || (time.includes('11:') && time.includes('am'))) {
+      } else if (hour >= 9 && hour < 12) {
         timeRanges['Morning (9:00 AM-12:00 PM)'].push(activity);
-      } else if (time.includes('12:') || (time.includes('1:') && time.includes('pm'))) {
+      } else if (hour >= 12 && hour < 14) {
         timeRanges['Lunch Time (12:00-2:00 PM)'].push(activity);
-      } else if (time.includes('2:') || time.includes('3:') || (time.includes('4:') && time.includes('pm'))) {
+      } else if (hour >= 14 && hour < 17) {
         timeRanges['Afternoon (2:00-5:00 PM)'].push(activity);
-      } else if (time.includes('5:') || time.includes('6:') || (time.includes('7:') && time.includes('pm'))) {
+      } else if (hour >= 17 && hour < 20) {
         timeRanges['Evening (5:00-8:00 PM)'].push(activity);
       } else {
         timeRanges['Night (8:00 PM-Late)'].push(activity);
