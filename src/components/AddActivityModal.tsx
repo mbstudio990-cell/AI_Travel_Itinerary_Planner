@@ -113,10 +113,8 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
       'Night (8:00 PM-Late)'
     ];
 
-    // Find time slots that have selected activities
-    const occupiedSlots = new Set(existingActivities
-      .filter(activity => activity.selected !== false)
-      .map(activity => {
+    // Find time slots that have ANY activities (selected or not)
+    const occupiedSlots = new Set(existingActivities.map(activity => {
       const time = activity.time.toLowerCase();
       if (time.includes('6:') || time.includes('7:') || (time.includes('8:') && time.includes('am'))) {
         return 'Early Morning (6:00-9:00 AM)';
@@ -133,7 +131,7 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
       }
     }));
 
-    // Return unoccupied slots (time ranges without selected activities)
+    // Return unoccupied slots (time ranges without any activities)
     const unoccupiedSlots = allTimeSlots.filter(slot => !occupiedSlots.has(slot));
     return unoccupiedSlots;
   };
@@ -220,15 +218,15 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
                 <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                   <Clock className="h-8 w-8 text-blue-600" />
                 </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">All Time Slots Filled!</h4>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">All Time Slots Are Equipped!</h4>
                 <p className="text-gray-600 mb-4">
-                  You have activities scheduled for all time ranges. Great planning!
+                  You have activities scheduled for all time ranges throughout the day. Your itinerary is fully equipped!
                 </p>
                 <button
                   onClick={() => setShowCustomForm(true)}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
                 >
-                  Add Custom Activity
+                  Add Custom Activity Anyway
                 </button>
               </div>
             ) : (
