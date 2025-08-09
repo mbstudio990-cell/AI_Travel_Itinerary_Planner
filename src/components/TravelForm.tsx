@@ -367,7 +367,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
         {/* Budget Selection */}
         <div>
           <label className="flex items-center text-sm font-medium text-gray-700 mb-3">
-            <Banknote className="h-4 w-4 mr-2" />
+            <span className="text-base mr-2">💸</span>
             Budget Level
           </label>
           <div className="grid grid-cols-3 gap-3">

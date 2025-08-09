@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, MapPin, Banknote, Lightbulb, Camera, Utensils, Mountain, Palette, ChevronDown, ChevronUp, Plus, Minus, X } from 'lucide-react';
+import { Clock, MapPin, Lightbulb, Camera, Utensils, Mountain, Palette, ChevronDown, ChevronUp, Plus, Minus, X } from 'lucide-react';
 import { Activity } from '../types';
 
 interface ActivityCardProps {
@@ -79,7 +79,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
           </div>
           <div className="bg-green-50 px-3 py-1 rounded-lg border border-green-200">
             <div className="flex items-center space-x-1 text-green-700 font-semibold text-sm">
-              <Banknote className="h-3 w-3" />
+              <span className="text-sm">💸</span>
               <span>{activity.costEstimate}</span>
             </div>
           </div>

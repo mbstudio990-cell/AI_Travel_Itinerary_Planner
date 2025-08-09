@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Calendar, Banknote, Clock, Heart, Plane } from 'lucide-react';
+import { MapPin, Calendar, Clock, Heart, Plane } from 'lucide-react';
 import { Itinerary } from '../types';
 import DayCard from './DayCard';
 
@@ -51,7 +51,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
                 <span>{itinerary.days.length} Days</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Banknote className="h-5 w-5" />
+                <span className="text-lg">💸</span>
                 <span>{itinerary.totalBudget}</span>
               </div>
             </div>
@@ -70,7 +70,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl mb-3">
-                <Banknote className="h-6 w-6 text-green-600" />
+                <span className="text-xl">💸</span>
               </div>
               <div className="text-2xl font-bold text-gray-900">{itinerary.preferences.budget}</div>
               <div className="text-sm text-gray-600">Budget Level</div>
