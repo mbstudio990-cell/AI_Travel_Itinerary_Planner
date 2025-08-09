@@ -34,10 +34,10 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
     <>
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl hover:border-blue-200 hover:scale-[1.02] transition-all duration-300">
       {/* Day Header */}
-      <div className="bg-gradient-to-r from-slate-800 to-gray-900 px-6 py-8 text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
-            <div className="bg-white/10 rounded-2xl w-20 h-20 flex items-center justify-center border border-white/20">
+            <div className="bg-white/20 rounded-2xl w-20 h-20 flex items-center justify-center">
               <div className="text-center">
                 <div className="text-xs font-bold text-white uppercase tracking-wide">Day</div>
                 <div className="text-2xl font-bold text-white">{dayItinerary.day}</div>
