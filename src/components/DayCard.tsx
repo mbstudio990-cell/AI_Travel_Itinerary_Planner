@@ -490,8 +490,20 @@ const DayCard: React.FC<DayCardProps> = ({
       {isExpanded && (
         <div className="p-6 bg-gray-50">
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <h3 className="text-lg font-semibold text-gray-900">Daily Activities</h3>
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center space-x-4">
+                <h3 className="text-lg font-semibold text-gray-900">Daily Activities</h3>
+                {isInManageMode ? (
+                  <p className="text-indigo-600 font-semibold">
+                    {dayItinerary.activities.filter(a => a.selected !== false).length} of {dayItinerary.activities.length} activities selected
+                  </p>
+                ) : (
+                  <p className="text-indigo-600 font-semibold">
+                    {displayActivities.length} activities planned for this day
+                  </p>
+                )}
+              </div>
+              
               {/* Customize Activities Button */}
               <button
                 onClick={handleToggleLocalManage}
@@ -505,20 +517,6 @@ const DayCard: React.FC<DayCardProps> = ({
                 {isInManageMode ? '✓ Done' : '⚙️ Customize'}
               </button>
             </div>
-            
-            {isInManageMode ? (
-              <div className="text-right">
-                <p className="text-indigo-600 font-semibold">
-                  {dayItinerary.activities.filter(a => a.selected !== false).length} of {dayItinerary.activities.length} activities selected
-                </p>
-              </div>
-            ) : (
-              <div className="text-right">
-                <p className="text-indigo-600 font-semibold">
-                  {displayActivities.length} activities planned for this day
-                </p>
-              </div>
-            )}
           </div>
           
           {/* Add Activity Button - Only show in manage mode */}
