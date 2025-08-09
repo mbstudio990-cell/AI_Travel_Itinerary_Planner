@@ -92,7 +92,14 @@ function App() {
     
     try {
       console.log('Calling generateItinerary...');
-      const itinerary = await generateItinerary(formData);
+      const response = await generateItinerary(formData);
+      console.log('Response received:', response);
+      
+      if (!response.success || !response.data) {
+        throw new Error(response.error || 'Failed to generate itinerary');
+      }
+      
+      const itinerary = response.data;
       console.log('Itinerary generated successfully:', itinerary);
       
       // If we're editing an existing itinerary, preserve the original ID

@@ -1,5 +1,7 @@
 import { supabase } from './supabase';
 
+import { Itinerary } from '../types';
+
 export interface GenerateItineraryRequest {
   destinations: string[];
   startDate: string;
@@ -11,7 +13,7 @@ export interface GenerateItineraryRequest {
 
 export interface GenerateItineraryResponse {
   success: boolean;
-  data?: any;
+  data?: Itinerary;
   error?: string;
 }
 
