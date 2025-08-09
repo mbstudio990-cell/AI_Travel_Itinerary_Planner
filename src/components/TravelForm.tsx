@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { format, isValid } from 'date-fns';
-import { MapPin, DollarSign, Heart, Search, Banknote, AlertCircle, X } from 'lucide-react';
+import { MapPin, DollarSign, Heart, Search, Banknote, AlertCircle, X, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { FormData } from '../types';
 import { DatePicker } from './DatePicker';
@@ -83,6 +83,8 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [currentDestination, setCurrentDestination] = useState('');
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Update form data when initialData changes (for editing)
   React.useEffect(() => {
@@ -124,7 +126,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
     const isValid = Object.keys(newErrors).length === 0;
     
     if (!isValid) {
-      // Show alert popup with the first error
+      // Show dialog popup with the first error
       let alertMessage = '';
       if (newErrors.destinations) {
         alertMessage = 'Please add at least one destination to your trip';
@@ -139,11 +141,17 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
       }
       
       if (alertMessage) {
-        alert(alertMessage);
+        setErrorMessage(alertMessage);
+        setShowErrorDialog(true);
       }
     }
     
     return isValid;
+  };
+
+  const closeErrorDialog = () => {
+    setShowErrorDialog(false);
+    setErrorMessage('');
   };
 
   const addDestination = () => {
