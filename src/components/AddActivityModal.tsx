@@ -118,15 +118,15 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
       .filter(activity => activity.selected !== false)
       .map(activity => {
       const time = activity.time.toLowerCase();
-      if (time.includes('6:') || time.includes('7:') || time.includes('8:') && time.includes('am')) {
+      if (time.includes('6:') || time.includes('7:') || (time.includes('8:') && time.includes('am'))) {
         return 'Early Morning (6:00-9:00 AM)';
-      } else if (time.includes('9:') || time.includes('10:') || time.includes('11:') && time.includes('am')) {
+      } else if ((time.includes('9:') || time.includes('10:') || time.includes('11:')) && time.includes('am')) {
         return 'Morning (9:00 AM-12:00 PM)';
-      } else if (time.includes('12:') || time.includes('1:') && time.includes('pm')) {
+      } else if ((time.includes('12:') || time.includes('1:')) && time.includes('pm')) {
         return 'Lunch Time (12:00-2:00 PM)';
-      } else if (time.includes('2:') || time.includes('3:') || time.includes('4:') && time.includes('pm')) {
+      } else if ((time.includes('2:') || time.includes('3:') || time.includes('4:')) && time.includes('pm')) {
         return 'Afternoon (2:00-5:00 PM)';
-      } else if (time.includes('5:') || time.includes('6:') || time.includes('7:') && time.includes('pm')) {
+      } else if ((time.includes('5:') || time.includes('6:') || time.includes('7:')) && time.includes('pm')) {
         return 'Evening (5:00-8:00 PM)';
       } else {
         return 'Night (8:00 PM-Late)';
@@ -265,37 +265,38 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
                               <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                               
                               <div className="relative z-10">
-                              <div className="flex items-start justify-between mb-2">
-                                <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                                  suggestion.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
-                                  suggestion.category === 'Food' ? 'bg-orange-100 text-orange-700' :
-                                  suggestion.category === 'Nature' ? 'bg-green-100 text-green-700' :
-                                  suggestion.category === 'Adventure' ? 'bg-red-100 text-red-700' :
-                                  suggestion.category === 'Shopping' ? 'bg-pink-100 text-pink-700' :
-                                  suggestion.category === 'History' ? 'bg-yellow-100 text-yellow-700' :
-                                  'bg-blue-100 text-blue-700'
-                                }`}>
-                                  {suggestion.category}
-                                </span>
-                                <div className="text-xs text-gray-500 group-hover:!text-black font-medium transition-colors duration-200">
-                                  {getBudgetRange(budget, currency)}
+                                <div className="flex items-start justify-between mb-2">
+                                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                    suggestion.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
+                                    suggestion.category === 'Food' ? 'bg-orange-100 text-orange-700' :
+                                    suggestion.category === 'Nature' ? 'bg-green-100 text-green-700' :
+                                    suggestion.category === 'Adventure' ? 'bg-red-100 text-red-700' :
+                                    suggestion.category === 'Shopping' ? 'bg-pink-100 text-pink-700' :
+                                    suggestion.category === 'History' ? 'bg-yellow-100 text-yellow-700' :
+                                    'bg-blue-100 text-blue-700'
+                                  }`}>
+                                    {suggestion.category}
+                                  </span>
+                                  <div className="text-xs text-gray-500 group-hover:!text-black font-medium transition-colors duration-200">
+                                    {getBudgetRange(budget, currency)}
+                                  </div>
                                 </div>
-                              </div>
-                              
-                              <div className="font-medium text-gray-900 group-hover:!text-black mb-1 transition-colors duration-200">
-                                {suggestion.title}
-                              </div>
-                              
-                              <div className="text-sm text-gray-600 group-hover:!text-black mb-2 transition-colors duration-200">
-                                {suggestion.description}
-                              </div>
-                              
-                              <div className="flex items-center justify-between mt-3">
-                                <div className="text-xs text-gray-500 group-hover:!text-black transition-colors duration-200">
-                                  📍 {destination}
+                                
+                                <div className="font-medium text-gray-900 group-hover:!text-black mb-1 transition-colors duration-200">
+                                  {suggestion.title}
                                 </div>
-                                <div className="text-xs text-blue-600 font-medium group-hover:!text-black transition-colors duration-200">
-                                  Add to schedule →
+                                
+                                <div className="text-sm text-gray-600 group-hover:!text-black mb-2 transition-colors duration-200">
+                                  {suggestion.description}
+                                </div>
+                                
+                                <div className="flex items-center justify-between mt-3">
+                                  <div className="text-xs text-gray-500 group-hover:!text-black transition-colors duration-200">
+                                    📍 {destination}
+                                  </div>
+                                  <div className="text-xs text-blue-600 font-medium group-hover:!text-black transition-colors duration-200">
+                                    Add to schedule →
+                                  </div>
                                 </div>
                               </div>
                             </button>
