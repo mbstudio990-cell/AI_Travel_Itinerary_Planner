@@ -69,7 +69,9 @@ const getBudgetRanges = (budget: string, currency: string) => {
 
   return `${symbol}${min.toLocaleString()}-${max.toLocaleString()}/day`;
 };
+
 const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData }) => {
+  const [formData, setFormData] = useState<FormData>({
     time: '10:00 AM - 12:00 PM',
     destinations: [],
     startDate: '',
@@ -149,6 +151,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
       addDestination();
     }
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted with data:', formData);
@@ -360,6 +363,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
             </div>
           </div>
         </div>
+
         {/* Budget Selection */}
         <div>
           <label className="flex items-center text-sm font-medium text-gray-700 mb-3">
