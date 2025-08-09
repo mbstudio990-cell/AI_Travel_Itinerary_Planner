@@ -93,7 +93,7 @@ export const EmailConfirmation: React.FC<EmailConfirmationProps> = ({ onClose, o
                 <span>Export professional PDF itineraries</span>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Action Buttons */}
           <motion.div
