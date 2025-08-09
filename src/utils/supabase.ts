@@ -1,30 +1,34 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Supabase configuration - will be set when connecting to new account
+const supabaseUrl = '';
+const supabaseAnonKey = '';
 
 // Create a mock client if environment variables are missing
 let supabase;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase environment variables not found. Using mock client. Some features may not work.');
+  console.warn('Supabase not configured. Click "Connect to Supabase" to set up your database connection.');
   
   // Create a mock client that won't cause initialization errors
   supabase = {
     auth: {
       getUser: () => Promise.resolve({ data: { user: null }, error: null }),
       getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-      signUp: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
-      signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      signUp: () => Promise.resolve({ data: null, error: new Error('Please connect to Supabase first') }),
+      signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Please connect to Supabase first') }),
       signOut: () => Promise.resolve({ error: null }),
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
     },
+    functions: {
+      invoke: () => Promise.resolve({ data: null, error: new Error('Please connect to Supabase first') })
+    },
     from: () => ({
       select: () => ({ data: [], error: null }),
-      insert: () => ({ data: null, error: new Error('Supabase not configured') }),
-      update: () => ({ data: null, error: new Error('Supabase not configured') }),
-      delete: () => ({ data: null, error: new Error('Supabase not configured') }),
-      upsert: () => ({ data: null, error: new Error('Supabase not configured') }),
+      insert: () => ({ data: null, error: new Error('Please connect to Supabase first') }),
+      update: () => ({ data: null, error: new Error('Please connect to Supabase first') }),
+      delete: () => ({ data: null, error: new Error('Please connect to Supabase first') }),
+      upsert: () => ({ data: null, error: new Error('Please connect to Supabase first') }),
       eq: function() { return this; },
       not: function() { return this; },
       single: function() { return this; },
