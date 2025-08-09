@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3 } from 'lucide-react';
 import { DayItinerary } from '../types';
 import ActivityCard from './ActivityCard';
