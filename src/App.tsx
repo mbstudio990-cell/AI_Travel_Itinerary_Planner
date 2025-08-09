@@ -88,6 +88,12 @@ function App() {
     setAppState('itinerary');
   };
 
+  const handleEditItinerary = (itinerary: Itinerary) => {
+    // Set the itinerary as current for editing
+    setCurrentItinerary(itinerary);
+    setAppState('form');
+  };
+
   const handleBackToForm = () => {
     // Clear current itinerary when going back to form for a new trip
     setCurrentItinerary(null);
@@ -232,6 +238,7 @@ function App() {
             itineraries={savedItineraries}
             onBack={handleBackToForm}
             onView={handleViewItinerary}
+            onEdit={handleEditItinerary}
             onUpdate={handleUpdateSaved}
           />
         )}

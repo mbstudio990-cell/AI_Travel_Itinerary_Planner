@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, MapPin, Calendar, Trash2, Eye } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Trash2, Eye, Edit } from 'lucide-react';
 import { Itinerary } from '../types';
 import { deleteItinerary } from '../utils/storage';
 
@@ -7,6 +7,7 @@ interface SavedItinerariesProps {
   itineraries: Itinerary[];
   onBack: () => void;
   onView: (itinerary: Itinerary) => void;
+  onEdit: (itinerary: Itinerary) => void;
   onUpdate: () => void;
 }
 
@@ -14,6 +15,7 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
   itineraries, 
   onBack, 
   onView, 
+  onEdit,
   onUpdate 
 }) => {
   const handleDelete = (id: string, event: React.MouseEvent) => {
@@ -97,6 +99,13 @@ const SavedItineraries: React.FC<SavedItinerariesProps> = ({
                 </div>
 
                 <div className="flex space-x-2">
+                  <button
+                    onClick={() => onEdit(itinerary)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors"
+                  >
+                    <Edit className="h-4 w-4" />
+                    <span>Edit</span>
+                  </button>
                   <button
                     onClick={() => onView(itinerary)}
                     className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"

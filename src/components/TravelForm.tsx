@@ -86,6 +86,8 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
   React.useEffect(() => {
     if (initialData) {
       setFormData(initialData);
+      // Clear any existing errors when loading initial data
+      setErrors({});
     }
   }, [initialData]);
 
