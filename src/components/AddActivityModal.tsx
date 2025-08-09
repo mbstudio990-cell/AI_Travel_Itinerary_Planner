@@ -308,7 +308,6 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
                 </div>
               </>
             )}
-            )}
             
             {/* Custom Activity Button */}
             <div className="pt-6 border-t border-gray-200">
