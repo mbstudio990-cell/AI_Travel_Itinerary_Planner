@@ -54,7 +54,7 @@ const saveToSupabaseAsync = async (itinerary: Itinerary) => {
       const { data: travelRequest, error: travelRequestError } = await supabase
         .from('travel_requests')
         .upsert({
-          id: `${itinerary.id}-request`,
+          id: crypto.randomUUID(),
           destinations: [itinerary.destination],
           start_date: itinerary.startDate,
           end_date: itinerary.endDate,
@@ -94,7 +94,7 @@ const saveToSupabaseAsync = async (itinerary: Itinerary) => {
         const { data: dayItinerary, error: dayError } = await supabase
           .from('day_itineraries')
           .upsert({
-            id: `${itinerary.id}-day-${day.day}`,
+            id: crypto.randomUUID(),
             itinerary_id: savedItinerary.id,
             day: day.day,
             date: day.date,
@@ -115,7 +115,7 @@ const saveToSupabaseAsync = async (itinerary: Itinerary) => {
           const { error: activityError } = await supabase
             .from('activities')
             .upsert({
-              id: `${itinerary.id}-day-${day.day}-activity-${i}`,
+              id: crypto.randomUUID(),
               day_itinerary_id: dayItinerary.id,
               time: activity.time,
               title: activity.title,

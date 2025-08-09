@@ -216,7 +216,7 @@ serve(async (req) => {
 
     // Transform AI response to our format
     const itinerary = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       destination: aiItinerary.destination,
       startDate: requestData.startDate,
       endDate: requestData.endDate,
