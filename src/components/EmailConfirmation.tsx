@@ -45,6 +45,7 @@ export const EmailConfirmation: React.FC<EmailConfirmationProps> = ({ onClose, o
             Your email has been successfully verified
           </motion.p>
         </motion.div>
+        </div>
 
         {/* Content */}
         <div className="p-6">
