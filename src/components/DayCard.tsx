@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus, Lightbulb } from 'lucide-react';
+import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3, Plus, Lightbulb, Clock } from 'lucide-react';
 import { DayItinerary, Activity } from '../types';
 import ActivityCard from './ActivityCard';
 import { AddActivityModal } from './AddActivityModal';
@@ -510,6 +510,7 @@ const DayCard: React.FC<DayCardProps> = ({
                   <h4 className="text-lg font-medium text-gray-900 mb-2">No activities scheduled</h4>
                   <p className="text-gray-600">All activities have been removed or none are selected.</p>
                 </div>
+              )}
             </div>
           )}
         </div>
