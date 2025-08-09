@@ -1,5 +1,5 @@
 import React from 'react';
-import { Share2, Save, Download, MapPin, Calendar, DollarSign, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown, BookOpen, Settings, CheckCircle } from 'lucide-react';
+import { Share2, Save, Download, MapPin, Calendar, Banknote, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown, BookOpen, Settings, CheckCircle } from 'lucide-react';
 import { Itinerary } from '../types';
 import DayCard from './DayCard';
 import { saveItinerary, shareItinerary, updateItineraryNotes, getItineraries } from '../utils/storage';
@@ -302,7 +302,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
                 <span>{currentItinerary.days.length} Days</span>
               </div>
               <div className="flex items-center space-x-2">
-                <DollarSign className="h-5 w-5" />
+                <Banknote className="h-5 w-5" />
                 <span>{currentItinerary.totalBudget}</span>
               </div>
             </div>
@@ -321,7 +321,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl mb-3">
-                <DollarSign className="h-6 w-6 text-green-600" />
+                <Banknote className="h-6 w-6 text-green-600" />
               </div>
               <div className="text-2xl font-bold text-gray-900">{currentItinerary.preferences.budget}</div>
               <div className="text-sm text-gray-600">Budget Level</div>
