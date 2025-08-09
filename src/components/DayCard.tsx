@@ -37,6 +37,29 @@ const DayCard: React.FC<DayCardProps> = ({
   const [localManageMode, setLocalManageMode] = useState(false);
   const [hasBeenCustomized, setHasBeenCustomized] = useState(false);
 
+  // Helper function to parse time and sort activities chronologically
+  const parseTimeForSorting = (timeString: string): number => {
+    // Extract the start time from ranges like "9:00 AM - 11:30 AM" or single times like "9:00 AM"
+    const startTime = timeString.split(' - ')[0].trim();
+    const [time, period] = startTime.split(' ');
+    const [hours, minutes] = time.split(':').map(Number);
+    
+    let hour24 = hours;
+    if (period === 'PM' && hours !== 12) hour24 += 12;
+    if (period === 'AM' && hours === 12) hour24 = 0;
+    
+    return hour24 * 60 + minutes; // Convert to minutes for easy sorting
+  };
+
+  // Sort activities by time
+  const sortActivitiesByTime = (activities: Activity[]) => {
+    return [...activities].sort((a, b) => {
+      const timeA = parseTimeForSorting(a.time);
+      const timeB = parseTimeForSorting(b.time);
+      return timeA - timeB;
+    });
+  };
+
   // Load notes from Supabase when component mounts
   useEffect(() => {
     const loadNotes = async () => {
@@ -68,6 +91,7 @@ const DayCard: React.FC<DayCardProps> = ({
   // In view mode, always show only selected activities
   const isInManageMode = showManage || localManageMode;
   const displayActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
+  const sortedDisplayActivities = sortActivitiesByTime(displayActivities);
   
   const toggleActivity = (index: number) => {
     const newExpanded = new Set(expandedActivities);
@@ -283,18 +307,139 @@ const DayCard: React.FC<DayCardProps> = ({
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {(isInManageMode ? dayItinerary.activities : displayActivities).map((activity, index) => (
-                <ActivityCard
-                  key={index}
-                  activity={activity}
-                  isExpanded={expandedActivities.has(index)}
-                  onToggle={() => toggleActivity(index)}
-                  onToggleActivity={handleToggleActivity}
-                  showManage={isInManageMode}
-                  isSelected={activity.selected !== false}
-                />
-              ))}
+            <div className="space-y-4">
+              {/* Timeline Header */}
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="bg-blue-100 p-2 rounded-lg">
+                  <Calendar className="h-5 w-5 text-blue-600" />
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900">Daily Schedule</h4>
+                <div className="flex-1 h-px bg-gray-200"></div>
+              </div>
+
+              {/* Timeline List */}
+              <div className="space-y-3">
+                {(isInManageMode ? sortActivitiesByTime(dayItinerary.activities) : sortedDisplayActivities).map((activity, index) => (
+                  <div key={index} className="flex items-start space-x-4 group">
+                    {/* Timeline Dot */}
+                    <div className="flex flex-col items-center">
+                      <div className={`w-4 h-4 rounded-full border-2 ${
+                        activity.selected !== false 
+                          ? 'bg-blue-600 border-blue-600' 
+                          : 'bg-gray-300 border-gray-300'
+                      }`}></div>
+                      {index < (isInManageMode ? dayItinerary.activities.length - 1 : sortedDisplayActivities.length - 1) && (
+                        <div className="w-px h-16 bg-gray-200 mt-2"></div>
+                      )}
+                    </div>
+
+                    {/* Activity Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className={`bg-white border rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300 ${
+                        activity.selected !== false 
+                          ? 'border-green-200 hover:border-green-300' 
+                          : 'border-gray-200 opacity-75'
+                      }`}>
+                        {/* Activity Header */}
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            {/* Time Badge */}
+                            <div className="inline-flex items-center space-x-2 mb-2">
+                              <div className="bg-blue-100 px-3 py-1 rounded-full">
+                                <span className="text-sm font-semibold text-blue-700">{activity.time}</span>
+                              </div>
+                              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                activity.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
+                                activity.category === 'Food' ? 'bg-orange-100 text-orange-700' :
+                                activity.category === 'Nature' ? 'bg-green-100 text-green-700' :
+                                activity.category === 'Adventure' ? 'bg-red-100 text-red-700' :
+                                activity.category === 'Shopping' ? 'bg-pink-100 text-pink-700' :
+                                'bg-blue-100 text-blue-700'
+                              }`}>
+                                {activity.category}
+                              </span>
+                            </div>
+
+                            {/* Activity Title */}
+                            <h5 className="font-bold text-gray-900 text-lg mb-2">{activity.title}</h5>
+                            
+                            {/* Location */}
+                            <div className="flex items-center space-x-2 text-gray-600 mb-2">
+                              <MapPin className="h-4 w-4" />
+                              <span className="text-sm">{activity.location}</span>
+                            </div>
+                          </div>
+
+                          {/* Cost and Manage Controls */}
+                          <div className="flex items-center space-x-3">
+                            {/* Cost Badge */}
+                            <div className="bg-green-50 px-3 py-1 rounded-lg border border-green-200">
+                              <span className="text-sm font-semibold text-green-700">{activity.costEstimate}</span>
+                            </div>
+
+                            {/* Manage Checkbox */}
+                            {isInManageMode && (
+                              <div
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleToggleActivity(activity);
+                                }}
+                                className="flex items-center justify-center cursor-pointer"
+                                title={activity.selected !== false ? "Remove from itinerary" : "Add to itinerary"}
+                              >
+                                <div className={`w-6 h-6 border-2 rounded-md flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+                                  activity.selected !== false
+                                    ? 'bg-green-500 border-green-500 hover:bg-green-600 hover:border-green-600'
+                                    : 'border-gray-300 hover:border-green-400 bg-white'
+                                }`}>
+                                  {activity.selected !== false && (
+                                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                    </svg>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Activity Description */}
+                        <p className="text-gray-700 text-sm mb-3 leading-relaxed">{activity.description}</p>
+
+                        {/* Expand/Collapse Button */}
+                        <button
+                          onClick={() => toggleActivity(index)}
+                          className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium transition-all duration-200 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg text-sm"
+                        >
+                          <span>{expandedActivities.has(index) ? 'Hide Details' : 'Show Tips & Details'}</span>
+                          {expandedActivities.has(index) ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4" />
+                          )}
+                        </button>
+
+                        {/* Expanded Details */}
+                        {expandedActivities.has(index) && (
+                          <div className="mt-4 pt-4 border-t border-gray-200">
+                            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                              <div className="flex items-start space-x-3">
+                                <div className="bg-amber-100 p-2 rounded-lg">
+                                  <Lightbulb className="h-4 w-4 text-amber-600" />
+                                </div>
+                                <div>
+                                  <h6 className="font-semibold text-amber-800 mb-2 text-sm">💡 Pro Tip</h6>
+                                  <p className="text-amber-700 leading-relaxed text-sm">{activity.tips}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
