@@ -27,6 +27,7 @@ function App() {
   const [fadeOutText, setFadeOutText] = useState(false);
   const [sharedItinerary, setSharedItinerary] = useState<Itinerary | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showAuthAfterAnimation, setShowAuthAfterAnimation] = useState(false);
 
   useEffect(() => {
     setSavedItineraries(getItineraries());
@@ -49,6 +50,16 @@ function App() {
     }
   }, []);
 
+  // Handle animation completion for non-authenticated users
+  const handleAnimationComplete = () => {
+    if (!authLoading && !isAuthenticated) {
+      // Show sign-in form for non-authenticated users
+      setShowAuthAfterAnimation(true);
+    } else {
+      // Show travel form for authenticated users
+      setShowMainContent(true);
+    }
+  };
   const handleFormSubmit = async (formData: FormData) => {
     console.log('handleFormSubmit called with:', formData);
     setLoading(true);
@@ -102,6 +113,10 @@ function App() {
     // Clear current itinerary when going back to form for a new trip
     setCurrentItinerary(null);
     setAppState('form');
+    setShowMainContent(false);
+    setShowAuthAfterAnimation(false);
+    setShowSubtitle(false);
+    setFadeOutText(false);
   };
 
   // Prevent page reload when print dialog is cancelled
@@ -148,6 +163,10 @@ function App() {
   const handleAuthSuccess = () => {
     // Refresh saved itineraries after successful auth
     setSavedItineraries(getItineraries());
+    // Close the auth modal that appeared after animation
+    setShowAuthAfterAnimation(false);
+    // Show the main travel form content
+    setShowMainContent(true);
   };
 
   // Clear saved itineraries when user signs out
@@ -155,6 +174,11 @@ function App() {
     if (!isAuthenticated && !authLoading) {
       // User has signed out, clear the saved itineraries from state
       setSavedItineraries([]);
+      // Reset animation states when user signs out
+      setShowMainContent(false);
+      setShowAuthAfterAnimation(false);
+      setShowSubtitle(false);
+      setFadeOutText(false);
     }
   }, [isAuthenticated, authLoading]);
 
@@ -169,7 +193,7 @@ function App() {
       <main className="container mx-auto px-4 py-8">
         {appState === 'form' && (
           <div className="space-y-8">
-            {!showMainContent && (
+            {!showMainContent && !showAuthAfterAnimation && (
               <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center z-50">
                 <div className="text-center">
                   <h1 className={`text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6 transition-opacity duration-1000 ${fadeOutText ? 'opacity-0' : 'opacity-100'}`}>
@@ -193,7 +217,7 @@ function App() {
                         onComplete={() => {
                           setTimeout(() => {
                             setFadeOutText(true);
-                            setTimeout(() => setShowMainContent(true), 1000);
+                            setTimeout(() => handleAnimationComplete(), 1000);
                           }, 2000);
                         }}
                       />
@@ -203,7 +227,28 @@ function App() {
               </div>
             )}
             
-            {showMainContent && (
+            {/* Show sign-in form after animation for non-authenticated users */}
+            {showAuthAfterAnimation && !authLoading && !isAuthenticated && (
+              <div className="animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]">
+                <div className="text-center mb-12">
+                  <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                    WanderAI
+                  </h1>
+                  <p className="text-xl text-gray-500 mb-8">Your AI Travel Companion</p>
+                  <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+                    Sign in to start planning your perfect trip with AI-powered recommendations
+                  </p>
+                  <button
+                    onClick={() => setShowAuthModal(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-4 px-8 rounded-xl transition-colors text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    Sign In to Start Planning
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {showMainContent && isAuthenticated && (
               <div className="text-center mb-12 animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]">
                 <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
                   WanderAI
@@ -215,7 +260,7 @@ function App() {
               </div>
             )}
             
-            {showMainContent && (
+            {showMainContent && isAuthenticated && (
               <div className="animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards] delay-300">
                 <TravelForm 
                   onSubmit={handleFormSubmit} 
@@ -277,7 +322,7 @@ function App() {
 
       {/* Auth Modal */}
       <AuthModal
-        isOpen={showAuthModal}
+        isOpen={showAuthModal || showAuthAfterAnimation}
         onClose={() => setShowAuthModal(false)}
         onAuthSuccess={handleAuthSuccess}
       />
