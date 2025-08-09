@@ -493,7 +493,8 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
           )}
         </button>
       </form>
-    </div>
+      </div>
+    </>
   );
 };
 
