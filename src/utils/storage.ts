@@ -18,7 +18,20 @@ const getCurrentUserId = async (): Promise<string | null> => {
 export const saveItinerary = (itinerary: Itinerary): void => {
   try {
     const existing = getItineraries();
-    const updated = [...existing, itinerary];
+    
+    // Check if itinerary with same ID already exists
+    const existingIndex = existing.findIndex(item => item.id === itinerary.id);
+    
+    let updated;
+    if (existingIndex !== -1) {
+      // Override existing itinerary
+      updated = [...existing];
+      updated[existingIndex] = itinerary;
+    } else {
+      // Add new itinerary
+      updated = [...existing, itinerary];
+    }
+    
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   } catch (error) {
     console.error('Error saving itinerary:', error);
