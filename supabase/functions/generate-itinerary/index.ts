@@ -112,11 +112,15 @@ serve(async (req) => {
 
   try {
     // Get OpenAI API key from environment variables
-    const openaiApiKey = Deno.env.get('OPEN_API_KEY')
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY') || Deno.env.get('OPEN_API_KEY')
     
     if (!openaiApiKey) {
-      throw new Error('OPEN_API_KEY not configured in Supabase Edge Functions environment variables')
+      console.error('OpenAI API key not found. Checked environment variables: OPENAI_API_KEY, OPEN_API_KEY')
+      throw new Error('OpenAI API key not configured in Supabase Edge Functions environment variables. Please set OPENAI_API_KEY or OPEN_API_KEY.')
     }
+
+    console.log('OpenAI API key found, length:', openaiApiKey.length)
+    console.log('API key starts with sk-:', openaiApiKey.startsWith('sk-'))
 
     // Parse request body
     const requestData: ItineraryRequest = await req.json()
@@ -130,6 +134,8 @@ serve(async (req) => {
 
     // Create the prompt
     const prompt = createPrompt(requestData)
+
+    console.log('Calling OpenAI API with model: gpt-4o')
 
     // Call OpenAI API
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
