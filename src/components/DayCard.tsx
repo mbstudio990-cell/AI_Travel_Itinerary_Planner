@@ -436,19 +436,6 @@ const DayCard: React.FC<DayCardProps> = ({
               )}
             </button>
             
-            {/* Customize Activities Button */}
-            <button
-              onClick={handleToggleLocalManage}
-              className={`px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 font-medium text-sm ${
-                isInManageMode
-                  ? 'bg-green-500/30 hover:bg-green-500/40 text-white border border-white/30'
-                  : 'bg-white/20 hover:bg-white/30 text-white border border-white/30'
-              }`}
-              title={isInManageMode ? "Done Customizing" : "Customize Activities"}
-            >
-              {isInManageMode ? 'Done' : 'Customize'}
-            </button>
-            
             <div className="text-right">
               <div className="text-sm text-white font-medium mb-1">Activities</div>
               <div className="text-xl font-bold text-white">
@@ -502,26 +489,50 @@ const DayCard: React.FC<DayCardProps> = ({
       {/* Activities List */}
       {isExpanded && (
         <div className="p-6 bg-gray-50">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-4">
+              <h3 className="text-lg font-semibold text-gray-900">Daily Activities</h3>
+              {/* Customize Activities Button */}
+              <button
+                onClick={handleToggleLocalManage}
+                className={`px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 font-medium text-sm ${
+                  isInManageMode
+                    ? 'bg-green-500 hover:bg-green-600 text-white shadow-md'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md'
+                }`}
+                title={isInManageMode ? "Done Customizing" : "Customize Activities"}
+              >
+                {isInManageMode ? '✓ Done' : '⚙️ Customize'}
+              </button>
+            </div>
+            
             {isInManageMode ? (
-              <div className="flex items-center justify-between w-full">
+              <div className="text-right">
                 <p className="text-indigo-600 font-semibold">
                   {dayItinerary.activities.filter(a => a.selected !== false).length} of {dayItinerary.activities.length} activities selected
                 </p>
-                <button
-                  onClick={() => setShowAddActivityModal(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Add New Activity</span>
-                </button>
               </div>
             ) : (
-              <p className="text-indigo-600 font-semibold">
-                {displayActivities.length} activities planned for this day
-              </p>
+              <div className="text-right">
+                <p className="text-indigo-600 font-semibold">
+                  {displayActivities.length} activities planned for this day
+                </p>
+              </div>
             )}
           </div>
+          
+          {/* Add Activity Button - Only show in manage mode */}
+          {isInManageMode && (
+            <div className="mb-6">
+              <button
+                onClick={() => setShowAddActivityModal(true)}
+                className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Add New Activity</span>
+              </button>
+            </div>
+          )}
           
           {isInManageMode && (
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
