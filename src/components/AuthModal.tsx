@@ -135,7 +135,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
       }
     } catch (error: any) {
       console.error('Sign in error:', error);
-      if (error.message === 'Invalid login credentials') {
+      if (error.message === 'Email not confirmed') {
+        showDialog({
+          title: 'Email Confirmation Required',
+          message: 'Please check your email and click the confirmation link to verify your account. If you didn\'t receive the email, we can send you a new one.',
+          type: 'confirm',
+          confirmText: 'Resend Email',
+          cancelText: 'Cancel',
+          showCancel: true,
+          onConfirm: () => handleResendConfirmationEmail()
+        });
+      } else if (error.message === 'Invalid login credentials') {
         showDialog({
           title: 'Sign In Error',
           message: 'Invalid email or password. Please check your credentials and try again.',
@@ -150,6 +160,39 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendConfirmationEmail = async () => {
+    if (!email) {
+      showDialog({
+        title: 'Email Required',
+        message: 'Please enter your email address first',
+        type: 'error'
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+      });
+
+      if (error) throw error;
+
+      showDialog({
+        title: 'Confirmation Email Sent',
+        message: 'We\'ve sent a new confirmation email to your inbox. Please check your email and click the confirmation link to verify your account.',
+        type: 'success'
+      });
+    } catch (error: any) {
+      console.error('Resend confirmation error:', error);
+      showDialog({
+        title: 'Resend Failed',
+        message: error.message || 'Failed to resend confirmation email. Please try again.',
+        type: 'error'
+      });
     }
   };
 
