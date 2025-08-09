@@ -18,46 +18,46 @@ interface AddActivityModalProps {
 const getTimeBasedSuggestions = (timeSlot: string, destination: string) => {
   const suggestions = {
     'Early Morning (6:00-9:00 AM)': [
-      { category: 'Nature', title: 'Sunrise Viewpoint Visit', description: 'Watch the sunrise from the best viewpoint in the city' },
-      { category: 'Adventure', title: 'Morning Jog in City Park', description: 'Start your day with a refreshing jog through local parks' },
-      { category: 'Culture', title: 'Early Morning Temple Visit', description: 'Experience peaceful morning prayers and rituals' },
-      { category: 'Food', title: 'Local Breakfast Market', description: 'Try authentic breakfast dishes at the local market' },
-      { category: 'Adventure', title: 'Morning Yoga Session', description: 'Join a local yoga class or practice in a scenic location' }
+      { category: 'Nature', title: 'Sunrise Viewpoint Visit', description: 'Watch the sunrise from the best viewpoint in the city', time: '6:00 AM - 7:30 AM' },
+      { category: 'Adventure', title: 'Morning Jog in City Park', description: 'Start your day with a refreshing jog through local parks', time: '6:30 AM - 8:00 AM' },
+      { category: 'Culture', title: 'Early Morning Temple Visit', description: 'Experience peaceful morning prayers and rituals', time: '7:00 AM - 8:30 AM' },
+      { category: 'Food', title: 'Local Breakfast Market', description: 'Try authentic breakfast dishes at the local market', time: '7:30 AM - 9:00 AM' },
+      { category: 'Adventure', title: 'Morning Yoga Session', description: 'Join a local yoga class or practice in a scenic location', time: '6:00 AM - 7:00 AM' }
     ],
     'Morning (9:00 AM-12:00 PM)': [
-      { category: 'Culture', title: 'Museum Visit', description: 'Explore the city\'s main museum with fewer crowds' },
-      { category: 'Culture', title: 'Historic Walking Tour', description: 'Join a guided tour of the historic district' },
-      { category: 'Adventure', title: 'City Bike Tour', description: 'Explore the city on two wheels with a guided tour' },
-      { category: 'Nature', title: 'Botanical Garden Visit', description: 'Stroll through beautiful gardens and green spaces' },
-      { category: 'Shopping', title: 'Local Artisan Market', description: 'Browse handmade crafts and local products' }
+      { category: 'Culture', title: 'Museum Visit', description: 'Explore the city\'s main museum with fewer crowds', time: '9:00 AM - 11:30 AM' },
+      { category: 'Culture', title: 'Historic Walking Tour', description: 'Join a guided tour of the historic district', time: '9:30 AM - 12:00 PM' },
+      { category: 'Adventure', title: 'City Bike Tour', description: 'Explore the city on two wheels with a guided tour', time: '9:00 AM - 12:00 PM' },
+      { category: 'Nature', title: 'Botanical Garden Visit', description: 'Stroll through beautiful gardens and green spaces', time: '9:30 AM - 11:30 AM' },
+      { category: 'Shopping', title: 'Local Artisan Market', description: 'Browse handmade crafts and local products', time: '10:00 AM - 12:00 PM' }
     ],
     'Lunch Time (12:00-2:00 PM)': [
-      { category: 'Food', title: 'Traditional Restaurant Experience', description: 'Enjoy authentic local cuisine at a recommended restaurant' },
-      { category: 'Food', title: 'Street Food Tour', description: 'Sample various street foods with a local guide' },
-      { category: 'Food', title: 'Rooftop Dining', description: 'Lunch with a view at a rooftop restaurant' },
-      { category: 'Food', title: 'Food Market Exploration', description: 'Discover local ingredients and try fresh foods' },
-      { category: 'Culture', title: 'Cooking Class', description: 'Learn to prepare local dishes in a hands-on class' }
+      { category: 'Food', title: 'Traditional Restaurant Experience', description: 'Enjoy authentic local cuisine at a recommended restaurant', time: '12:00 PM - 1:30 PM' },
+      { category: 'Food', title: 'Street Food Tour', description: 'Sample various street foods with a local guide', time: '12:30 PM - 2:00 PM' },
+      { category: 'Food', title: 'Rooftop Dining', description: 'Lunch with a view at a rooftop restaurant', time: '12:00 PM - 1:30 PM' },
+      { category: 'Food', title: 'Food Market Exploration', description: 'Discover local ingredients and try fresh foods', time: '12:00 PM - 2:00 PM' },
+      { category: 'Culture', title: 'Cooking Class', description: 'Learn to prepare local dishes in a hands-on class', time: '12:30 PM - 2:30 PM' }
     ],
     'Afternoon (2:00-5:00 PM)': [
-      { category: 'Culture', title: 'Art Gallery Visit', description: 'Explore contemporary and traditional art collections' },
-      { category: 'Adventure', title: 'Photography Walk', description: 'Capture the city\'s beauty with a photography tour' },
-      { category: 'Shopping', title: 'Shopping District Tour', description: 'Browse local shops and boutiques' },
-      { category: 'Culture', title: 'Cultural Center Visit', description: 'Learn about local traditions and history' },
-      { category: 'Nature', title: 'Scenic City Walk', description: 'Explore scenic neighborhoods and hidden gems' }
+      { category: 'Culture', title: 'Art Gallery Visit', description: 'Explore contemporary and traditional art collections', time: '2:00 PM - 4:00 PM' },
+      { category: 'Adventure', title: 'Photography Walk', description: 'Capture the city\'s beauty with a photography tour', time: '2:30 PM - 4:30 PM' },
+      { category: 'Shopping', title: 'Shopping District Tour', description: 'Browse local shops and boutiques', time: '2:00 PM - 5:00 PM' },
+      { category: 'Culture', title: 'Cultural Center Visit', description: 'Learn about local traditions and history', time: '2:30 PM - 4:30 PM' },
+      { category: 'Nature', title: 'Scenic City Walk', description: 'Explore scenic neighborhoods and hidden gems', time: '2:00 PM - 4:00 PM' }
     ],
     'Evening (5:00-8:00 PM)': [
-      { category: 'Nature', title: 'Sunset Viewpoint', description: 'Watch the sunset from the city\'s best vantage point' },
-      { category: 'Culture', title: 'Evening Cultural Show', description: 'Attend a traditional music or dance performance' },
-      { category: 'Adventure', title: 'River/Harbor Cruise', description: 'Enjoy the city from the water during golden hour' },
-      { category: 'Food', title: 'Happy Hour & Local Drinks', description: 'Try local beverages and appetizers' },
-      { category: 'Shopping', title: 'Evening Market Visit', description: 'Experience the vibrant atmosphere of evening markets' }
+      { category: 'Nature', title: 'Sunset Viewpoint', description: 'Watch the sunset from the city\'s best vantage point', time: '5:30 PM - 7:00 PM' },
+      { category: 'Culture', title: 'Evening Cultural Show', description: 'Attend a traditional music or dance performance', time: '6:00 PM - 8:00 PM' },
+      { category: 'Adventure', title: 'River/Harbor Cruise', description: 'Enjoy the city from the water during golden hour', time: '5:00 PM - 7:00 PM' },
+      { category: 'Food', title: 'Happy Hour & Local Drinks', description: 'Try local beverages and appetizers', time: '5:00 PM - 6:30 PM' },
+      { category: 'Shopping', title: 'Evening Market Visit', description: 'Experience the vibrant atmosphere of evening markets', time: '6:00 PM - 8:00 PM' }
     ],
     'Night (8:00 PM-Late)': [
-      { category: 'Food', title: 'Fine Dining Experience', description: 'Enjoy an upscale dinner at a renowned restaurant' },
-      { category: 'Culture', title: 'Night Walking Tour', description: 'Discover the city\'s nighttime charm and illuminated landmarks' },
-      { category: 'Adventure', title: 'Nightlife Experience', description: 'Experience local bars, clubs, or entertainment venues' },
-      { category: 'Culture', title: 'Night Market Visit', description: 'Browse night markets with food and shopping' },
-      { category: 'Nature', title: 'Stargazing Spot', description: 'Find a quiet spot to enjoy the night sky' }
+      { category: 'Food', title: 'Fine Dining Experience', description: 'Enjoy an upscale dinner at a renowned restaurant', time: '8:00 PM - 10:00 PM' },
+      { category: 'Culture', title: 'Night Walking Tour', description: 'Discover the city\'s nighttime charm and illuminated landmarks', time: '8:30 PM - 10:30 PM' },
+      { category: 'Adventure', title: 'Nightlife Experience', description: 'Experience local bars, clubs, or entertainment venues', time: '9:00 PM - 12:00 AM' },
+      { category: 'Culture', title: 'Night Market Visit', description: 'Browse night markets with food and shopping', time: '8:00 PM - 10:30 PM' },
+      { category: 'Nature', title: 'Stargazing Spot', description: 'Find a quiet spot to enjoy the night sky', time: '9:00 PM - 11:00 PM' }
     ]
   };
 
@@ -141,17 +141,8 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
   const occupiedTimeSlots = getOccupiedTimeSlots();
 
   const handleSuggestionClick = (suggestion: any, timeSlot: string) => {
-    const timeMap = {
-      'Early Morning (6:00-9:00 AM)': '7:00 AM',
-      'Morning (9:00 AM-12:00 PM)': '10:00 AM',
-      'Lunch Time (12:00-2:00 PM)': '12:30 PM',
-      'Afternoon (2:00-5:00 PM)': '3:00 PM',
-      'Evening (5:00-8:00 PM)': '6:00 PM',
-      'Night (8:00 PM-Late)': '8:00 PM'
-    };
-    
     const activity: Activity = {
-      time: timeMap[timeSlot as keyof typeof timeMap],
+      time: suggestion.time,
       title: suggestion.title,
       description: suggestion.description,
       location: `${destination}`,

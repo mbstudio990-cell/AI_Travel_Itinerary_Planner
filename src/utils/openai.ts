@@ -217,7 +217,7 @@ const generateMockActivities = (formData: FormData, day: number): Activity[] => 
 
   const activities = [
     {
-      time: '9:00 AM',
+      time: '9:00 AM - 11:30 AM',
       title: `Explore Historic ${currentDestination} Downtown`,
       description: 'Start your day with a walking tour through the historic city center, discovering local architecture and hidden gems.',
       location: `Historic City Center, ${currentDestination}`,
@@ -226,7 +226,7 @@ const generateMockActivities = (formData: FormData, day: number): Activity[] => 
       category: 'Culture'
     },
     {
-      time: '12:30 PM',
+      time: '12:30 PM - 2:00 PM',
       title: 'Local Cuisine Experience',
       description: 'Enjoy an authentic lunch at a highly-rated local restaurant featuring regional specialties.',
       location: `Popular Restaurant District, ${currentDestination}`,
@@ -235,7 +235,7 @@ const generateMockActivities = (formData: FormData, day: number): Activity[] => 
       category: 'Food'
     },
     {
-      time: '2:30 PM',
+      time: '2:30 PM - 4:30 PM',
       title: `${currentDestination} Art Museum`,
       description: 'Discover local and international art collections in this renowned museum.',
       location: `Cultural Arts District, ${currentDestination}`,
@@ -244,7 +244,7 @@ const generateMockActivities = (formData: FormData, day: number): Activity[] => 
       category: 'Culture'
     },
     {
-      time: '5:00 PM',
+      time: '5:00 PM - 6:30 PM',
       title: 'Sunset Viewpoint',
       description: 'End your day at the best viewpoint in the city for spectacular sunset views.',
       location: `Panoramic Viewpoint, ${currentDestination}`,
