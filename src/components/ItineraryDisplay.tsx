@@ -49,14 +49,18 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     }
   }, []);
   const handleSave = () => {
-    // Check if user is authenticated before saving
     if (!isAuthenticated) {
-      alert('Please sign in to save your itinerary.');
+      // Show auth modal for signup when trying to save
+      if (typeof onSave === 'function') {
+        onSave(); // This will trigger the auth modal in App.tsx
+      }
       return;
     }
     
     saveItinerary(currentItinerary);
-    onSave();
+    if (typeof onSave === 'function') {
+      onSave();
+    }
     alert('Itinerary saved successfully!');
   };
 
