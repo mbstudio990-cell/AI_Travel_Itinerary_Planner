@@ -491,7 +491,7 @@ const DayCard: React.FC<DayCardProps> = ({
                   <span>{isManageMode ? 'Done' : 'Customize'}</span>
                 </button>
                 
-                {isInManageMode && (
+                {isManageMode && (
                   <button
                     onClick={() => setShowAddActivityModal(true)}
                     className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
