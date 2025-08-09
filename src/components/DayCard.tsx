@@ -420,21 +420,29 @@ const DayCard: React.FC<DayCardProps> = ({
 
           <div className="flex items-center space-x-4">
             {/* Notes Button */}
-            <button
-              onClick={() => setIsNotesModalOpen(true)}
-              className={`p-3 rounded-xl transition-all duration-200 hover:scale-110 ${
-                displayNotes 
-                  ? 'bg-yellow-400/30 hover:bg-yellow-400/40 text-white' 
-                  : 'hover:bg-white/20 text-white/80 hover:text-white'
-              }`}
-              title="Take Notes"
-            >
-              {displayNotes ? (
-                <FileText className="h-5 w-5" />
-              ) : (
-                <Edit3 className="h-5 w-5" />
-              )}
-            </button>
+            <Tooltip>
+              <TooltipTrigger 
+                render={
+                  <button
+                    onClick={() => setIsNotesModalOpen(true)}
+                    className={`p-3 rounded-xl transition-all duration-200 hover:scale-110 ${
+                      displayNotes 
+                        ? 'bg-yellow-400/30 hover:bg-yellow-400/40 text-white' 
+                        : 'hover:bg-white/20 text-white/80 hover:text-white'
+                    }`}
+                  >
+                    {displayNotes ? (
+                      <FileText className="h-5 w-5" />
+                    ) : (
+                      <Edit3 className="h-5 w-5" />
+                    )}
+                  </button>
+                }
+              />
+              <TooltipContent side="bottom" sideOffset={8} align="center" arrow>
+                <p>Take Notes</p>
+              </TooltipContent>
+            </Tooltip>
             
             <div className="text-right">
               <div className="text-sm text-white font-medium mb-1">Activities</div>
