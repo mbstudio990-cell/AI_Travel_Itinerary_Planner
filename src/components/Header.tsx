@@ -39,14 +39,6 @@ const Header: React.FC<HeaderProps> = ({ onViewSaved, savedCount, onShowAuth }) 
                 ) : (
                   <>
                     <button
-                      onClick={onViewSaved}
-                      className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2 text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
-                    >
-                      <Save className="h-4 w-4 sm:h-5 sm:w-5" />
-                      <span className="font-medium text-sm sm:text-base hidden sm:inline">My Saved Itinerary ({savedCount})</span>
-                      <span className="font-medium text-sm sm:hidden">({savedCount})</span>
-                    </button>
-                    <button
                       onClick={onShowAuth}
                       className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
                     >
