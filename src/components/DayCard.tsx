@@ -359,6 +359,7 @@ const DayCard: React.FC<DayCardProps> = ({
                       <h4 className="text-lg font-bold text-gray-900">{timeRange}</h4>
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-sm text-gray-600">{activities.length} activities</span>
+                        <span className="text-sm text-gray-600">{activities.length} {activities.length === 1 ? 'activity' : 'activities'}</span>
                         <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
                         <span className="text-sm text-blue-600 font-medium">
                           {activities.reduce((total, activity) => {
@@ -369,7 +370,7 @@ const DayCard: React.FC<DayCardProps> = ({
                           }, 0) > 0 ? (
                             <div className="flex items-center space-x-1">
                               <Banknote className="h-3 w-3" />
-                              <span>{activities.reduce((total, activity) => {
+                              <span>₹{activities.reduce((total, activity) => {
                                 const cost = activity.costEstimate.toLowerCase();
                                 if (cost.includes('free')) return total;
                                 const match = cost.match(/[\d,]+/);
