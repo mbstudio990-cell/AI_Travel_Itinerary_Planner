@@ -13,17 +13,22 @@ if (!supabaseUrl || !supabaseAnonKey) {
   supabase = {
     auth: {
       getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
       signUp: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
-      signIn: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
-      signOut: () => Promise.resolve({ error: null })
+      signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      signOut: () => Promise.resolve({ error: null }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
     },
     from: () => ({
       select: () => ({ data: [], error: null }),
       insert: () => ({ data: null, error: new Error('Supabase not configured') }),
       update: () => ({ data: null, error: new Error('Supabase not configured') }),
       delete: () => ({ data: null, error: new Error('Supabase not configured') }),
+      upsert: () => ({ data: null, error: new Error('Supabase not configured') }),
       eq: function() { return this; },
-      not: function() { return this; }
+      not: function() { return this; },
+      single: function() { return this; },
+      order: function() { return this; }
     })
   };
 } else {
