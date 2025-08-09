@@ -248,7 +248,7 @@ function App() {
       
       <main className="w-full py-4 sm:py-8">
         {appState === 'form' && (
-          <div className="space-y-8">
+          <div className="space-y-8 px-2 sm:px-4">
             {!showMainContent && (
               <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center z-50">
                 <div className="text-center max-w-sm sm:max-w-none">
@@ -284,7 +284,7 @@ function App() {
             )}
             
             {showMainContent && (
-              <div className="text-center mb-8 sm:mb-12 animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]">
+              <div className="text-center mb-8 sm:mb-12 animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards] px-2">
                 <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
                   WanderAI
                 </h1>
@@ -303,7 +303,7 @@ function App() {
             )}
             
             {showMainContent && (
-              <div className="animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards] delay-300">
+              <div className="animate-fade-in opacity-0 animate-[fadeIn_1s_ease-in-out_forwards] delay-300 px-2 sm:px-4">
                 <TravelForm 
                   onSubmit={handleFormSubmit} 
                   loading={loading}
@@ -321,10 +321,14 @@ function App() {
           </div>
         )}
 
-        {appState === 'loading' && <LoadingSpinner />}
+        {appState === 'loading' && (
+          <div className="px-2 sm:px-4">
+            <LoadingSpinner />
+          </div>
+        )}
 
         {appState === 'itinerary' && currentItinerary && (
-          <div className="space-y-8">
+          <div className="space-y-8 px-2 sm:px-4">
             <div className="flex justify-center">
               <button
                 onClick={handleBackToForm}
@@ -344,21 +348,25 @@ function App() {
         )}
 
         {appState === 'saved' && (
-          <SavedItineraries
-            itineraries={savedItineraries}
-            onBack={handleBackToForm}
-            onView={handleViewItinerary}
-            onEdit={handleEditItinerary}
-            onUpdate={handleUpdateSaved}
-            defaultCurrency="USD"
-          />
+          <div className="px-2 sm:px-4">
+            <SavedItineraries
+              itineraries={savedItineraries}
+              onBack={handleBackToForm}
+              onView={handleViewItinerary}
+              onEdit={handleEditItinerary}
+              onUpdate={handleUpdateSaved}
+              defaultCurrency="USD"
+            />
+          </div>
         )}
 
         {appState === 'shared' && sharedItinerary && (
-          <SharedItineraryView
-            itinerary={sharedItinerary}
-            onPlanNewTrip={handleBackToForm}
-          />
+          <div className="px-2 sm:px-4">
+            <SharedItineraryView
+              itinerary={sharedItinerary}
+              onPlanNewTrip={handleBackToForm}
+            />
+          </div>
         )}
       </main>
 
@@ -383,7 +391,7 @@ function App() {
       />
 
       <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="w-full py-4 sm:py-6 lg:py-8 text-center">
+        <div className="w-full py-4 sm:py-6 lg:py-8 text-center px-2 sm:px-4">
           <p className="text-sm sm:text-base text-gray-600">
             Powered by AI • Made with ❤️ for travelers everywhere
           </p>

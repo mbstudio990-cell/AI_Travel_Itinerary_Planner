@@ -3,7 +3,7 @@ import { Plane, Sparkles } from 'lucide-react';
 
 const LoadingSpinner: React.FC = () => {
   return (
-    <div className="bg-white rounded-none sm:rounded-2xl shadow-lg sm:shadow-xl p-6 sm:p-8 lg:p-12 w-full text-center">
+    <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg sm:shadow-xl p-6 sm:p-8 lg:p-12 w-full text-center max-w-4xl mx-auto">
       <div className="relative mb-8">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="animate-spin rounded-full h-16 w-16 sm:h-20 sm:w-20 border-b-2 border-blue-600"></div>

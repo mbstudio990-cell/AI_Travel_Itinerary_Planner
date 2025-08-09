@@ -32,7 +32,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
       </div>
 
       {/* Header Section */}
-      <div className="bg-white rounded-none sm:rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg border border-gray-100 overflow-hidden max-w-6xl mx-auto">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-12 text-white">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-6">
@@ -104,7 +104,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
 
       {/* Daily Itineraries */}
       {itinerary.days && itinerary.days.length > 0 ? (
-        <div className="space-y-6">
+        <div className="space-y-6 max-w-6xl mx-auto">
           {itinerary.days.map((day) => (
             <DayCard 
               key={day.day} 
@@ -114,7 +114,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-none sm:rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
+        <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg border border-gray-100 p-8 text-center max-w-6xl mx-auto">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
             <span className="text-2xl">📋</span>
           </div>
@@ -139,7 +139,7 @@ const SharedItineraryView: React.FC<SharedItineraryViewProps> = ({
       )}
 
       {/* Footer */}
-      <div className="bg-white rounded-none sm:rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
+      <div className="bg-white rounded-lg sm:rounded-2xl shadow-lg border border-gray-100 p-8 text-center max-w-6xl mx-auto">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
           <span className="text-2xl">✈️</span>
         </div>
