@@ -1,45 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase configuration - will be set when connecting to new account
-const supabaseUrl = '';
-const supabaseAnonKey = '';
+// Supabase configuration
+const supabaseUrl = 'https://oagjtgnviejwvbrpiuxw.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZ2p0Z252aWVqd3ZicnBpdXh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY0NTI4MDAsImV4cCI6MjA1MjAyODgwMH0.placeholder';
 
-// Create a mock client if environment variables are missing
-let supabase;
+// Create Supabase client
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase not configured. Click "Connect to Supabase" to set up your database connection.');
-  
-  // Create a mock client that won't cause initialization errors
-  supabase = {
-    auth: {
-      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
-      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-      signUp: () => Promise.resolve({ data: null, error: new Error('Please connect to Supabase first') }),
-      signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Please connect to Supabase first') }),
-      signOut: () => Promise.resolve({ error: null }),
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
-    },
-    functions: {
-      invoke: () => Promise.resolve({ data: null, error: new Error('Please connect to Supabase first') })
-    },
-    from: () => ({
-      select: () => ({ data: [], error: null }),
-      insert: () => ({ data: null, error: new Error('Please connect to Supabase first') }),
-      update: () => ({ data: null, error: new Error('Please connect to Supabase first') }),
-      delete: () => ({ data: null, error: new Error('Please connect to Supabase first') }),
-      upsert: () => ({ data: null, error: new Error('Please connect to Supabase first') }),
-      eq: function() { return this; },
-      not: function() { return this; },
-      single: function() { return this; },
-      order: function() { return this; }
-    })
-  };
-} else {
-  supabase = createClient(supabaseUrl, supabaseAnonKey);
-}
-
-export { supabase };
 
 // Database types
 export interface TravelRequest {
