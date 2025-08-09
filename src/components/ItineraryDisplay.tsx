@@ -76,20 +76,114 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   };
 
   const createShareableLink = (itinerary: Itinerary): string => {
-    // Create a shareable link by encoding the itinerary data
-    const shareData = {
-      id: itinerary.id,
-      destination: itinerary.destination,
-      startDate: itinerary.startDate,
-      endDate: itinerary.endDate,
-      preferences: itinerary.preferences,
-      days: itinerary.days,
-      totalBudget: itinerary.totalBudget,
-      createdAt: itinerary.createdAt
+    // Create a more compact shareable link with essential data only
+    const compactData = {
+      d: itinerary.destination,
+      s: itinerary.startDate,
+      e: itinerary.endDate,
+      b: itinerary.preferences.budget,
+      i: itinerary.preferences.interests.slice(0, 3), // Limit interests
+      days: itinerary.days.map(day => ({
+        d: day.day,
+        dt: day.date.split(',')[0], // Shorter date format
+        c: day.totalEstimatedCost,
+        a: day.activities.slice(0, 3).map(act => ({ // Limit activities
+          t: act.time,
+          n: act.title.substring(0, 50), // Truncate title
+          l: act.location.substring(0, 40), // Truncate location
+          c: act.costEstimate,
+          cat: act.category
+        }))
+      }))
     };
     
-    // Compress and encode the data
-    const encodedData = btoa(encodeURIComponent(JSON.stringify(shareData)));
+    try {
+      const jsonString = JSON.stringify(compactData);
+      // Check if the data is still too large
+      if (jsonString.length > 1500) {
+        // Create an even more minimal version
+        const minimalData = {
+          d: itinerary.destination,
+          s: itinerary.startDate,
+          e: itinerary.endDate,
+          b: itinerary.preferences.budget,
+          days: itinerary.days.length,
+          budget: itinerary.totalBudget
+        };
+        const encodedData = btoa(encodeURIComponent(JSON.stringify(minimalData)));
+        const baseUrl = window.location.origin;
+        return `${baseUrl}/share/${encodedData}`;
+      }
+      
+      const encodedData = btoa(encodeURIComponent(jsonString));
+      const baseUrl = window.location.origin;
+      return `${baseUrl}/share/${encodedData}`;
+    } catch (error) {
+      console.error('Error creating shareable link:', error);
+      // Fallback to minimal data
+      const fallbackData = {
+        destination: itinerary.destination,
+        days: itinerary.days.length,
+        budget: itinerary.totalBudget
+      };
+      const encodedData = btoa(encodeURIComponent(JSON.stringify(fallbackData)));
+      const baseUrl = window.location.origin;
+      return `${baseUrl}/share/${encodedData}`;
+    }
+  };
+
+  const handleWhatsAppShare = () => {
+    const shareableLink = createShareableLink(currentItinerary);
+    // Create a shorter message for WhatsApp
+    const shareText = `🌍 Check out my ${currentItinerary.destination} travel plan!\n${shareableLink}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    window.open(whatsappUrl, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const handleTelegramShare = () => {
+    const shareableLink = createShareableLink(currentItinerary);
+    const shareText = `🌍 ${currentItinerary.destination} travel itinerary`;
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareableLink)}&text=${encodeURIComponent(shareText)}`;
+    window.open(telegramUrl, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const handleTwitterShare = () => {
+    const shareableLink = createShareableLink(currentItinerary);
+    const shareText = `🌍 My ${currentItinerary.destination} travel itinerary`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareableLink)}`;
+    window.open(twitterUrl, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const handleCopyLink = async () => {
+    const shareableLink = createShareableLink(currentItinerary);
+    const shareText = `🌍 Check out my ${currentItinerary.destination} travel itinerary!\n\n${shareableLink}`;
+    try {
+      await navigator.clipboard.writeText(shareText);
+      alert('Itinerary link copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = shareText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      alert('Itinerary link copied to clipboard!');
+    }
+    setShowShareMenu(false);
+  };
+
+  const handleEmailShare = () => {
+    const shareableLink = createShareableLink(currentItinerary);
+    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}!\n\nView the full itinerary: ${shareableLink}`;
+    const subject = `${currentItinerary.destination} Travel Itinerary`;
+    const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(shareText)}`;
+    window.open(mailtoUrl);
+    setShowShareMenu(false);
     const baseUrl = window.location.origin;
     return `${baseUrl}/share/${encodedData}`;
   };
