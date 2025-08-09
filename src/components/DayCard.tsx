@@ -94,14 +94,14 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
 
         {/* Notes Preview */}
         {dayItinerary.notes && (
-          <div className="px-6 py-4 bg-yellow-50 border-b border-yellow-100">
+          <div className="px-6 py-4 bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200">
             <div className="flex items-start space-x-3">
-              <div className="bg-yellow-100 p-2 rounded-lg mt-1">
-                <FileText className="h-4 w-4 text-yellow-600" />
+              <div className="bg-amber-100 p-2 rounded-lg mt-1 shadow-sm">
+                <FileText className="h-4 w-4 text-amber-600" />
               </div>
               <div className="flex-1">
-                <h4 className="text-sm font-medium text-yellow-800 mb-1">Your Notes</h4>
-                <p className="text-sm text-yellow-700 line-clamp-2">
+                <h4 className="text-sm font-medium text-amber-800 mb-1">Your Experience</h4>
+                <p className="text-sm text-amber-700 line-clamp-2 leading-relaxed">
                   {dayItinerary.notes.length > 150 
                     ? `${dayItinerary.notes.substring(0, 150)}...` 
                     : dayItinerary.notes
@@ -109,7 +109,7 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
                 </p>
                 <button
                   onClick={() => setIsNotesModalOpen(true)}
-                  className="text-xs text-yellow-600 hover:text-yellow-800 font-medium mt-1"
+                  className="text-xs text-amber-600 hover:text-amber-800 font-medium mt-1 hover:underline transition-all duration-200"
                 >
                   {dayItinerary.notes.length > 150 ? 'Read more' : 'Edit notes'}
                 </button>
