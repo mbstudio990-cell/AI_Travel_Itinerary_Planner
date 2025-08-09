@@ -1,8 +1,8 @@
 import React from 'react';
-import { Share2, Save, Download, MapPin, Calendar, Banknote, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown, BookOpen, Settings, CheckCircle } from 'lucide-react';
+import { Save, Download, MapPin, Calendar, Banknote, Edit, Heart, Clock, Users, FileDown, BookOpen, Settings, CheckCircle } from 'lucide-react';
 import { Itinerary } from '../types';
 import DayCard from './DayCard';
-import { saveItinerary, shareItinerary, updateItineraryNotes, getItineraries } from '../utils/storage';
+import { saveItinerary, updateItineraryNotes, getItineraries } from '../utils/storage';
 import { generatePDF } from '../utils/pdfGenerator';
 import { TravelSummaryModal } from './TravelSummaryModal';
 import { useAuth } from '../hooks/useAuth';
@@ -19,7 +19,6 @@ interface ItineraryDisplayProps {
 
 const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, onEdit, onUpdate, currency }) => {
   const { isAuthenticated } = useAuth();
-  const [showShareMenu, setShowShareMenu] = React.useState(false);
   const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
   const [showTravelSummary, setShowTravelSummary] = React.useState(false);
   const [autoSaveStatus, setAutoSaveStatus] = React.useState<'idle' | 'saving' | 'saved'>('idle');
@@ -82,16 +81,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     onEdit();
   };
 
-  const handleShare = () => {
-    if (!isAuthenticated) {
-      // Show auth modal for signup when trying to share
-      if (typeof onSave === 'function') {
-        onSave(); // This will trigger the auth modal in App.tsx
-      }
-      return;
-    }
-    setShowShareMenu(!showShareMenu);
-  };
 
   const handleSaveNotes = (dayNumber: number, notes: string) => {
     const updatedItinerary = {
@@ -172,151 +161,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     autoSaveItinerary(updatedItinerary);
   };
 
-  const getShareText = () => {
-    const shareText = shareItinerary(currentItinerary);
-    return shareText;
-  };
-
-  const getShareUrl = () => {
-    return window.location.href;
-  };
-
-  const handleNativeShare = () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️`;
-    if (navigator.share) {
-      navigator.share({
-        title: `Travel Itinerary for ${currentItinerary.destination}`,
-        text: shareText,
-        url: shareableLink
-      }).catch(err => console.log('Error sharing:', err));
-    }
-    setShowShareMenu(false);
-  };
-
-  const createShareableLink = (itinerary: Itinerary): string => {
-    // Create a comprehensive but optimized shareable link
-    const minimalData = {
-      id: itinerary.id,
-      destination: itinerary.destination,
-      s: itinerary.startDate,
-      e: itinerary.endDate,
-      budget: itinerary.preferences.budget,
-      interests: itinerary.preferences.interests,
-      days: itinerary.days.map(day => ({
-        day: day.day,
-        date: day.date,
-        activities: day.activities.filter(activity => activity.selected !== false).map(activity => ({
-          time: activity.time,
-          title: activity.title,
-          description: activity.description,
-          location: activity.location,
-          costEstimate: activity.costEstimate,
-          tips: activity.tips,
-          category: activity.category
-        })),
-        totalEstimatedCost: day.totalEstimatedCost,
-        notes: day.notes || ''
-      })),
-      totalBudget: itinerary.totalBudget,
-      currency: itinerary.currency || 'USD'
-    };
-    
-    try {
-      const jsonString = JSON.stringify(minimalData);
-      
-      // Use base64 encoding with URL-safe characters
-      const encodedData = btoa(jsonString).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-      const baseUrl = window.location.origin;
-      
-      const fullUrl = `${baseUrl}/share/${encodedData}`;
-      
-      return fullUrl;
-    } catch (error) {
-      console.error('Error creating shareable link:', error);
-      // Fallback to basic info
-      const fallbackData = {
-        destination: itinerary.destination,
-        startDate: itinerary.startDate,
-        endDate: itinerary.endDate,
-        budget: itinerary.preferences.budget,
-        interests: itinerary.preferences.interests,
-        totalBudget: itinerary.totalBudget
-      };
-      const encodedData = btoa(JSON.stringify(fallbackData)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-      const baseUrl = window.location.origin;
-      return `${baseUrl}/share/${encodedData}`;
-    }
-  };
-
-  const handleWhatsAppShare = () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    // Create a compelling message for WhatsApp
-    const shareText = `🌍✈️ Check out my ${currentItinerary.destination} travel itinerary!\n\n📅 ${currentItinerary.days.length} days of amazing activities\n💰 ${currentItinerary.preferences.budget} budget\n🎯 ${currentItinerary.preferences.interests.slice(0, 2).join(', ')} and more\n\n👆 Click the link to see the full itinerary:\n${shareableLink}`;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-    window.open(whatsappUrl, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const handleTelegramShare = () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `🌍 ${currentItinerary.destination} travel itinerary`;
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareableLink)}&text=${encodeURIComponent(shareText)}`;
-    window.open(telegramUrl, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const handleTwitterShare = () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `🌍 My ${currentItinerary.destination} travel itinerary`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareableLink)}`;
-    window.open(twitterUrl, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const handleCopyLink = async () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `🌍 ${currentItinerary.destination} travel itinerary: ${shareableLink}`;
-    try {
-      await navigator.clipboard.writeText(shareText);
-      showDialog({
-        title: 'Link Copied!',
-        message: 'Itinerary link copied to clipboard!',
-        type: 'success'
-      });
-    } catch (err) {
-      console.error('Failed to copy:', err);
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = shareText;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      showDialog({
-        title: 'Link Copied!',
-        message: 'Itinerary link copied to clipboard!',
-        type: 'success'
-      });
-    }
-    setShowShareMenu(false);
-  };
-
-  const handleEmailShare = () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    const shareText = `${currentItinerary.destination} travel itinerary: ${shareableLink}`;
-    const subject = `${currentItinerary.destination} Travel Itinerary`;
-    const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(shareText)}`;
-    window.open(mailtoUrl);
-    setShowShareMenu(false);
-  };
-
-  const handleFacebookShare = () => {
-    const shareableLink = createShareableLink(currentItinerary);
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareableLink)}`;
-    window.open(facebookUrl, '_blank');
-    setShowShareMenu(false);
-  };
 
   const handleDownloadPDF = async () => {
     try {
@@ -448,61 +292,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
               <span>Save</span>
             </button>
 
-            <div className="relative">
-              <button
-                onClick={handleShare}
-                className="flex items-center space-x-1 sm:space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors font-medium relative z-10 text-sm sm:text-base"
-              >
-                <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                <span>Share</span>
-              </button>
-
-              {showShareMenu && (
-                <div 
-                  className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-48 sm:w-56 bg-white rounded-xl shadow-2xl border border-gray-200 z-[99999] overflow-hidden"
-                  style={{ 
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 99999
-                  }}
-                >
-                  <div className="py-2">
-                    <button
-                      onClick={handleWhatsAppShare}
-                     className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-2 sm:space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02] text-sm sm:text-base"
-                    >
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-lg flex items-center justify-center">
-                        <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
-                      </div>
-                      <span>WhatsApp</span>
-                    </button>
-                    
-                    <button
-                      onClick={handleTelegramShare}
-                     className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-2 sm:space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02] text-sm sm:text-base"
-                    >
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                        <Send className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
-                      </div>
-                      <span>Telegram</span>
-                    </button>
-                    
-                    <button
-                      onClick={handleCopyLink}
-                     className="w-full px-3 sm:px-4 py-2 sm:py-3 text-left hover:bg-blue-50 hover:text-blue-700 flex items-center space-x-2 sm:space-x-3 text-gray-700 transition-all duration-200 hover:scale-[1.02] text-sm sm:text-base"
-                    >
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-500 rounded-lg flex items-center justify-center">
-                        <Share2 className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
-                      </div>
-                      <span>Copy Link</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-            
             <button
               onClick={handleDownloadPDF}
               className="flex items-center space-x-1 sm:space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors font-medium text-sm sm:text-base"
@@ -514,13 +303,6 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
         </div>
       </div>
 
-      {/* Click outside to close share menu */}
-      {showShareMenu && (
-        <div 
-          className="fixed inset-0 z-[99998] bg-black bg-opacity-10" 
-          onClick={() => setShowShareMenu(false)}
-        />
-      )}
 
       {/* Travel Summary Modal */}
       <TravelSummaryModal
