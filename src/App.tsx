@@ -213,6 +213,7 @@ function App() {
               itinerary={currentItinerary} 
               onSave={handleSaveItinerary}
               onEdit={() => handleEditPlan(currentItinerary)}
+              onUpdate={setCurrentItinerary}
             />
           </div>
         )}

@@ -18,6 +18,7 @@ export interface DayItinerary {
   date: string;
   activities: Activity[];
   totalEstimatedCost: string;
+  notes?: string;
 }
 
 export interface Itinerary {

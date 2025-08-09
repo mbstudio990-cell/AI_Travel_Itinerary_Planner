@@ -42,6 +42,29 @@ export const deleteItinerary = (id: string): void => {
   }
 };
 
+export const updateItineraryNotes = (itineraryId: string, dayNumber: number, notes: string): void => {
+  try {
+    const existing = getItineraries();
+    const updated = existing.map(itinerary => {
+      if (itinerary.id === itineraryId) {
+        return {
+          ...itinerary,
+          days: itinerary.days.map(day => 
+            day.day === dayNumber 
+              ? { ...day, notes }
+              : day
+          )
+        };
+      }
+      return itinerary;
+    });
+    
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  } catch (error) {
+    console.error('Error updating itinerary notes:', error);
+  }
+};
+
 export const shareItinerary = (itinerary: Itinerary): string => {
   const shareData = {
     destination: itinerary.destination,

@@ -2,26 +2,54 @@ import React from 'react';
 import { Share2, Save, Download, MapPin, Calendar, DollarSign, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown } from 'lucide-react';
 import { Itinerary } from '../types';
 import DayCard from './DayCard';
-import { saveItinerary, shareItinerary } from '../utils/storage';
+import { saveItinerary, shareItinerary, updateItineraryNotes } from '../utils/storage';
 import { generatePDF } from '../utils/pdfGenerator';
 
 interface ItineraryDisplayProps {
   itinerary: Itinerary;
   onSave: () => void;
   onEdit: () => void;
+  onUpdate?: (updatedItinerary: Itinerary) => void;
 }
 
-const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, onEdit }) => {
+const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, onEdit, onUpdate }) => {
   const [showShareMenu, setShowShareMenu] = React.useState(false);
+  const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
+
+  // Update current itinerary when prop changes
+  React.useEffect(() => {
+    setCurrentItinerary(itinerary);
+  }, [itinerary]);
 
   const handleSave = () => {
-    saveItinerary(itinerary);
+    saveItinerary(currentItinerary);
     onSave();
     alert('Itinerary saved successfully!');
   };
 
+  const handleSaveNotes = (dayNumber: number, notes: string) => {
+    const updatedItinerary = {
+      ...currentItinerary,
+      days: currentItinerary.days.map(day => 
+        day.day === dayNumber 
+          ? { ...day, notes }
+          : day
+      )
+    };
+    
+    setCurrentItinerary(updatedItinerary);
+    
+    // Update in storage if it's a saved itinerary
+    updateItineraryNotes(updatedItinerary.id, dayNumber, notes);
+    
+    // Notify parent component of the update
+    if (onUpdate) {
+      onUpdate(updatedItinerary);
+    }
+  };
+
   const getShareText = () => {
-    const shareText = shareItinerary(itinerary);
+    const shareText = shareItinerary(currentItinerary);
     return shareText;
   };
 
@@ -30,11 +58,11 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   };
 
   const handleNativeShare = () => {
-    const shareableLink = createShareableLink(itinerary);
-    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️`;
+    const shareableLink = createShareableLink(currentItinerary);
+    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️`;
     if (navigator.share) {
       navigator.share({
-        title: `Travel Itinerary for ${itinerary.destination}`,
+        title: `Travel Itinerary for ${currentItinerary.destination}`,
         text: shareText,
         url: shareableLink
       }).catch(err => console.log('Error sharing:', err));
@@ -62,8 +90,8 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   };
 
   const handleCopyLink = async () => {
-    const shareableLink = createShareableLink(itinerary);
-    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️\n\n${shareableLink}`;
+    const shareableLink = createShareableLink(currentItinerary);
+    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️\n\n${shareableLink}`;
     try {
       await navigator.clipboard.writeText(shareText);
       alert('Itinerary copied to clipboard!');
@@ -74,40 +102,40 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   };
 
   const handleEmailShare = () => {
-    const shareableLink = createShareableLink(itinerary);
-    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️\n\nView the full itinerary here: ${shareableLink}`;
-    const subject = `Travel Itinerary for ${itinerary.destination}`;
+    const shareableLink = createShareableLink(currentItinerary);
+    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️\n\nView the full itinerary here: ${shareableLink}`;
+    const subject = `Travel Itinerary for ${currentItinerary.destination}`;
     const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(shareText)}`;
     window.open(mailtoUrl);
     setShowShareMenu(false);
   };
 
   const handleWhatsAppShare = () => {
-    const shareableLink = createShareableLink(itinerary);
-    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️\n\n${shareableLink}`;
+    const shareableLink = createShareableLink(currentItinerary);
+    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️\n\n${shareableLink}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, '_blank');
     setShowShareMenu(false);
   };
 
   const handleTelegramShare = () => {
-    const shareableLink = createShareableLink(itinerary);
-    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️`;
+    const shareableLink = createShareableLink(currentItinerary);
+    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️`;
     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareableLink)}&text=${encodeURIComponent(shareText)}`;
     window.open(telegramUrl, '_blank');
     setShowShareMenu(false);
   };
 
   const handleTwitterShare = () => {
-    const shareableLink = createShareableLink(itinerary);
-    const shareText = `Check out my travel itinerary for ${itinerary.destination}! 🌍✈️`;
+    const shareableLink = createShareableLink(currentItinerary);
+    const shareText = `Check out my travel itinerary for ${currentItinerary.destination}! 🌍✈️`;
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareableLink)}`;
     window.open(twitterUrl, '_blank');
     setShowShareMenu(false);
   };
 
   const handleFacebookShare = () => {
-    const shareableLink = createShareableLink(itinerary);
+    const shareableLink = createShareableLink(currentItinerary);
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareableLink)}`;
     window.open(facebookUrl, '_blank');
     setShowShareMenu(false);
@@ -115,7 +143,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
   const handleDownloadPDF = async () => {
     try {
-      await generatePDF(itinerary);
+      await generatePDF(currentItinerary);
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Sorry, there was an error generating the PDF. Please try again.');
@@ -131,21 +159,21 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-6">
               <MapPin className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold mb-4">{itinerary.destination}</h1>
+            <h1 className="text-4xl font-bold mb-4">{currentItinerary.destination}</h1>
             <p className="text-xl text-blue-100 mb-8">Your Perfect Travel Itinerary</p>
             
             <div className="flex flex-wrap justify-center gap-8 text-blue-100">
               <div className="flex items-center space-x-2">
                 <Calendar className="h-5 w-5" />
-                <span>{new Date(itinerary.startDate).toLocaleDateString()} - {new Date(itinerary.endDate).toLocaleDateString()}</span>
+                <span>{new Date(currentItinerary.startDate).toLocaleDateString()} - {new Date(currentItinerary.endDate).toLocaleDateString()}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="h-5 w-5" />
-                <span>{itinerary.days.length} Days</span>
+                <span>{currentItinerary.days.length} Days</span>
               </div>
               <div className="flex items-center space-x-2">
                 <DollarSign className="h-5 w-5" />
-                <span>{itinerary.totalBudget}</span>
+                <span>{currentItinerary.totalBudget}</span>
               </div>
             </div>
           </div>
@@ -158,21 +186,21 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
               <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl mb-3">
                 <Calendar className="h-6 w-6 text-blue-600" />
               </div>
-              <div className="text-2xl font-bold text-gray-900">{itinerary.days.length}</div>
+              <div className="text-2xl font-bold text-gray-900">{currentItinerary.days.length}</div>
               <div className="text-sm text-gray-600">Days</div>
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl mb-3">
                 <DollarSign className="h-6 w-6 text-green-600" />
               </div>
-              <div className="text-2xl font-bold text-gray-900">{itinerary.preferences.budget}</div>
+              <div className="text-2xl font-bold text-gray-900">{currentItinerary.preferences.budget}</div>
               <div className="text-sm text-gray-600">Budget Level</div>
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl mb-3">
                 <Heart className="h-6 w-6 text-purple-600" />
               </div>
-              <div className="text-2xl font-bold text-gray-900">{itinerary.preferences.interests.length}</div>
+              <div className="text-2xl font-bold text-gray-900">{currentItinerary.preferences.interests.length}</div>
               <div className="text-sm text-gray-600">Interests</div>
             </div>
           </div>
@@ -283,8 +311,12 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
       {/* Daily Itineraries */}
       <div className="space-y-6">
-        {itinerary.days.map((day) => (
-          <DayCard key={day.day} dayItinerary={day} />
+        {currentItinerary.days.map((day) => (
+          <DayCard 
+            key={day.day} 
+            dayItinerary={day} 
+            onSaveNotes={handleSaveNotes}
+          />
         ))}
       </div>
 
