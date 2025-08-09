@@ -90,11 +90,11 @@ export const Dialog: React.FC<DialogProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+            className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md overflow-hidden mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className={`${getHeaderColor()} px-6 py-4 text-white relative`}>
+            <div className={`${getHeaderColor()} px-4 sm:px-6 py-4 text-white relative`}>
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 p-1 hover:bg-white/20 rounded-lg transition-colors"
@@ -108,29 +108,29 @@ export const Dialog: React.FC<DialogProps> = ({
                   {getIcon()}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold">{title}</h3>
+                  <h3 className="text-base sm:text-lg font-bold pr-8">{title}</h3>
                 </div>
               </div>
             </div>
 
             {/* Content */}
-            <div className="p-6">
-              <p className="text-gray-700 leading-relaxed mb-6">
+            <div className="p-4 sm:p-6">
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-6">
                 {message}
               </p>
               
-              <div className="flex justify-end space-x-3">
+              <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
                 {showCancel && (
                   <button
                     onClick={onClose}
-                    className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+                    className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors text-sm sm:text-base"
                   >
                     {cancelText}
                   </button>
                 )}
                 <button
                   onClick={handleConfirm}
-                  className={`px-6 py-2 text-white rounded-lg transition-colors font-medium ${
+                  className={`px-4 sm:px-6 py-2 text-white rounded-lg transition-colors font-medium text-sm sm:text-base ${
                     type === 'error' 
                       ? 'bg-red-500 hover:bg-red-600' 
                       : type === 'success'
