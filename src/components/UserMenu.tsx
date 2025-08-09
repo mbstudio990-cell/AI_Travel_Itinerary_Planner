@@ -72,7 +72,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onViewSaved, savedCount }) =
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+        <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
           {/* User Info */}
           <div className="px-4 py-3 border-b border-gray-100">
             <div className="flex items-center space-x-3">
@@ -80,8 +80,8 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onViewSaved, savedCount }) =
                 {initials}
               </div>
               <div>
-                <div className="font-medium text-gray-900">{displayName}</div>
-                <div className="text-sm text-gray-500">{user.email}</div>
+                <div className="font-medium text-gray-900 truncate max-w-[200px]">{displayName}</div>
+                <div className="text-sm text-gray-500 truncate max-w-[200px]" title={user.email}>{user.email}</div>
               </div>
             </div>
           </div>
