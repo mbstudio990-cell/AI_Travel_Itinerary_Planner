@@ -67,12 +67,7 @@ const DayCard: React.FC<DayCardProps> = ({
   // In manage mode, show all activities if never customized, otherwise show only selected
   // In view mode, always show only selected activities
   const isInManageMode = showManage || localManageMode;
-  const displayActivities = isInManageMode 
-    ? (hasBeenCustomized 
-        ? dayItinerary.activities.filter(activity => activity.selected !== false)
-        : dayItinerary.activities
-      )
-    : dayItinerary.activities.filter(activity => activity.selected !== false);
+  const displayActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
   
   const toggleActivity = (index: number) => {
     const newExpanded = new Set(expandedActivities);
