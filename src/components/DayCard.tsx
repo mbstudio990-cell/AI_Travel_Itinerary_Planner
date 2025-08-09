@@ -3,16 +3,38 @@ import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3 }
 import { DayItinerary } from '../types';
 import ActivityCard from './ActivityCard';
 import { NotesModal } from './NotesModal';
+import { loadItineraryNotes } from '../utils/storage';
 
 interface DayCardProps {
   dayItinerary: DayItinerary;
+  itineraryId?: string;
   onSaveNotes?: (dayNumber: number, notes: string) => void;
 }
 
-const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
+const DayCard: React.FC<DayCardProps> = ({ dayItinerary, itineraryId, onSaveNotes }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedActivities, setExpandedActivities] = useState<Set<number>>(new Set());
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [currentNotes, setCurrentNotes] = useState(dayItinerary.notes || '');
+
+  // Load notes from Supabase when component mounts
+  useEffect(() => {
+    const loadNotes = async () => {
+      if (itineraryId) {
+        try {
+          const notesMap = await loadItineraryNotes(itineraryId);
+          const dayNotes = notesMap[dayItinerary.day];
+          if (dayNotes) {
+            setCurrentNotes(dayNotes);
+          }
+        } catch (error) {
+          console.warn('Error loading notes for day:', error);
+        }
+      }
+    };
+
+    loadNotes();
+  }, [itineraryId, dayItinerary.day]);
 
   const toggleActivity = (index: number) => {
     const newExpanded = new Set(expandedActivities);
@@ -24,11 +46,15 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
     setExpandedActivities(newExpanded);
   };
 
-  const handleSaveNotes = (dayNumber: number, notes: string) => {
+  const handleSaveNotes = async (dayNumber: number, notes: string) => {
+    setCurrentNotes(notes);
     if (onSaveNotes) {
-      onSaveNotes(dayNumber, notes);
+      await onSaveNotes(dayNumber, notes);
     }
   };
+
+  // Use current notes state instead of dayItinerary.notes
+  const displayNotes = currentNotes || dayItinerary.notes;
 
   return (
     <>
@@ -60,13 +86,13 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
             <button
               onClick={() => setIsNotesModalOpen(true)}
               className={`p-3 rounded-xl transition-all duration-200 hover:scale-110 ${
-                dayItinerary.notes 
+                displayNotes 
                   ? 'bg-yellow-400/30 hover:bg-yellow-400/40 text-white' 
                   : 'hover:bg-white/20 text-white/80 hover:text-white'
               }`}
               title="Take Notes"
             >
-              {dayItinerary.notes ? (
+              {displayNotes ? (
                 <FileText className="h-5 w-5" />
               ) : (
                 <Edit3 className="h-5 w-5" />
@@ -93,7 +119,7 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
       </div>
 
         {/* Notes Preview */}
-        {dayItinerary.notes && (
+        {displayNotes && (
           <div className="px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-600">
             <div className="flex items-start space-x-3">
               <div className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg mt-1 shadow-sm">
@@ -102,16 +128,16 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
               <div className="flex-1">
                 <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-1">Your Experience</h4>
                 <p className="text-sm text-gray-900 dark:text-white line-clamp-2 leading-relaxed">
-                  {dayItinerary.notes.length > 150 
-                    ? `${dayItinerary.notes.substring(0, 150)}...` 
-                    : dayItinerary.notes
+                  {displayNotes.length > 150 
+                    ? `${displayNotes.substring(0, 150)}...` 
+                    : displayNotes
                   }
                 </p>
                 <button
                   onClick={() => setIsNotesModalOpen(true)}
                   className="text-xs text-gray-600 dark:text-white hover:text-gray-800 dark:hover:text-gray-200 font-medium mt-1 hover:underline transition-all duration-200"
                 >
-                  {dayItinerary.notes.length > 150 ? 'Read more' : 'Edit notes'}
+                  {displayNotes.length > 150 ? 'Read more' : 'Edit notes'}
                 </button>
               </div>
             </div>
@@ -145,7 +171,7 @@ const DayCard: React.FC<DayCardProps> = ({ dayItinerary, onSaveNotes }) => {
       <NotesModal
         isOpen={isNotesModalOpen}
         onClose={() => setIsNotesModalOpen(false)}
-        dayItinerary={dayItinerary}
+        dayItinerary={{ ...dayItinerary, notes: currentNotes }}
         onSaveNotes={handleSaveNotes}
       />
     </>

@@ -42,7 +42,10 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     setCurrentItinerary(updatedItinerary);
     
     // Update in storage if it's a saved itinerary
-    updateItineraryNotes(updatedItinerary.id, dayNumber, notes);
+    updateItineraryNotes(updatedItinerary.id, dayNumber, notes).catch(error => {
+      console.error('Error saving notes:', error);
+      // You might want to show a user-friendly error message here
+    });
     
     // Notify parent component of the update
     if (onUpdate) {
@@ -335,6 +338,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
           <DayCard 
             key={day.day} 
             dayItinerary={day} 
+            itineraryId={currentItinerary.id}
             onSaveNotes={handleSaveNotes}
           />
         ))}

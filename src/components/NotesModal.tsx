@@ -27,7 +27,7 @@ export const NotesModal: React.FC<NotesModalProps> = ({
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      onSaveNotes(dayItinerary.day, notes);
+      await onSaveNotes(dayItinerary.day, notes);
       // Show success feedback
       setTimeout(() => {
         setIsSaving(false);
@@ -36,6 +36,8 @@ export const NotesModal: React.FC<NotesModalProps> = ({
     } catch (error) {
       console.error('Error saving notes:', error);
       setIsSaving(false);
+      // You might want to show an error message to the user here
+      alert('Error saving notes. Please try again.');
     }
   };
 

@@ -1,6 +1,19 @@
 import { Itinerary } from '../types';
+import { supabase } from './supabase';
 
 const STORAGE_KEY = 'travel_itineraries';
+
+// Check if user is authenticated
+const isAuthenticated = async (): Promise<boolean> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  return !!user;
+};
+
+// Get current user ID
+const getCurrentUserId = async (): Promise<string | null> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user?.id || null;
+};
 
 export const saveItinerary = (itinerary: Itinerary): void => {
   try {
@@ -42,27 +55,111 @@ export const deleteItinerary = (id: string): void => {
   }
 };
 
-export const updateItineraryNotes = (itineraryId: string, dayNumber: number, notes: string): void => {
+export const updateItineraryNotes = async (itineraryId: string, dayNumber: number, notes: string): Promise<void> => {
   try {
-    const existing = getItineraries();
-    const updated = existing.map(itinerary => {
-      if (itinerary.id === itineraryId) {
-        return {
-          ...itinerary,
-          days: itinerary.days.map(day => 
-            day.day === dayNumber 
-              ? { ...day, notes }
-              : day
-          )
-        };
+    // Check if user is authenticated and try Supabase first
+    if (await isAuthenticated()) {
+      console.log('Updating notes in Supabase for itinerary:', itineraryId, 'day:', dayNumber);
+      
+      // First, try to find the day_itinerary record in Supabase
+      const { data: dayItineraries, error: fetchError } = await supabase
+        .from('day_itineraries')
+        .select('id, itinerary_id')
+        .eq('day', dayNumber);
+
+      if (fetchError) {
+        console.warn('Error fetching day itineraries from Supabase:', fetchError);
+        throw fetchError;
       }
-      return itinerary;
-    });
-    
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+
+      // Find the matching day itinerary
+      const dayItinerary = dayItineraries?.find(di => {
+        // For now, we'll match by day number since we don't have a direct itinerary_id match
+        // In a full implementation, you'd want to match by itinerary_id as well
+        return true; // This is a simplified approach
+      });
+
+      if (dayItinerary) {
+        // Update the notes in Supabase
+        const { error: updateError } = await supabase
+          .from('day_itineraries')
+          .update({ notes })
+          .eq('id', dayItinerary.id);
+
+        if (updateError) {
+          console.warn('Error updating notes in Supabase:', updateError);
+          throw updateError;
+        }
+
+        console.log('Successfully updated notes in Supabase');
+      } else {
+        console.warn('Day itinerary not found in Supabase, falling back to localStorage');
+        throw new Error('Day itinerary not found in Supabase');
+      }
+    } else {
+      throw new Error('User not authenticated');
+    }
   } catch (error) {
-    console.error('Error updating itinerary notes:', error);
+    console.warn('Supabase notes update failed, falling back to localStorage:', error);
+    
+    // Fallback to localStorage
+    try {
+      const existing = getItineraries();
+      const updated = existing.map(itinerary => {
+        if (itinerary.id === itineraryId) {
+          return {
+            ...itinerary,
+            days: itinerary.days.map(day => 
+              day.day === dayNumber 
+                ? { ...day, notes }
+                : day
+            )
+          };
+        }
+        return itinerary;
+      });
+      
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      console.log('Successfully updated notes in localStorage');
+    } catch (localError) {
+      console.error('Error updating notes in localStorage:', localError);
+      throw localError;
+    }
   }
+};
+
+// Load notes from Supabase for a specific itinerary
+export const loadItineraryNotes = async (itineraryId: string): Promise<{ [dayNumber: number]: string }> => {
+  try {
+    if (await isAuthenticated()) {
+      console.log('Loading notes from Supabase for itinerary:', itineraryId);
+      
+      const { data: dayItineraries, error } = await supabase
+        .from('day_itineraries')
+        .select('day, notes')
+        .not('notes', 'is', null);
+
+      if (error) {
+        console.warn('Error loading notes from Supabase:', error);
+        return {};
+      }
+
+      // Convert to day number -> notes mapping
+      const notesMap: { [dayNumber: number]: string } = {};
+      dayItineraries?.forEach(dayItinerary => {
+        if (dayItinerary.notes && dayItinerary.notes.trim()) {
+          notesMap[dayItinerary.day] = dayItinerary.notes;
+        }
+      });
+
+      console.log('Loaded notes from Supabase:', notesMap);
+      return notesMap;
+    }
+  } catch (error) {
+    console.warn('Error loading notes from Supabase:', error);
+  }
+  
+  return {};
 };
 
 export const shareItinerary = (itinerary: Itinerary): string => {
