@@ -233,19 +233,6 @@ const DayCard: React.FC<DayCardProps> = ({
               )}
             </button>
             
-            {/* Customize Activities Button */}
-            <button
-              onClick={handleToggleLocalManage}
-              className={`px-4 py-2 rounded-xl transition-all duration-200 hover:scale-105 font-medium text-sm ${
-                isInManageMode
-                  ? 'bg-green-500/30 hover:bg-green-500/40 text-white border border-white/30'
-                  : 'bg-white/20 hover:bg-white/30 text-white border border-white/30'
-              }`}
-              title={isInManageMode ? "Done Customizing" : "Customize Activities"}
-            >
-              {isInManageMode ? 'Done' : 'Customize'}
-            </button>
-            
             <div className="text-right">
               <div className="text-sm text-white font-medium mb-1">Activities</div>
               <div className="text-xl font-bold text-white">
@@ -300,9 +287,22 @@ const DayCard: React.FC<DayCardProps> = ({
       {isExpanded && (
         <div className="p-6 bg-gray-50">
           <div className="flex items-center justify-between mb-4">
+            {/* Customize Activities Button */}
+            <button
+              onClick={handleToggleLocalManage}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 font-medium text-sm ${
+                isInManageMode
+                  ? 'bg-green-600 hover:bg-green-700 text-white'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+              }`}
+              title={isInManageMode ? "Done Customizing" : "Customize Activities"}
+            >
+              <span>{isInManageMode ? 'Done Customizing' : 'Customize Activities'}</span>
+            </button>
+            
             {isInManageMode ? (
               <div className="flex items-center justify-between w-full">
-                <p className="text-indigo-600 font-semibold">
+                <p className="text-indigo-600 font-semibold ml-4">
                   {dayItinerary.activities.filter(a => a.selected !== false).length} of {dayItinerary.activities.length} activities selected
                 </p>
                 <button
@@ -314,7 +314,7 @@ const DayCard: React.FC<DayCardProps> = ({
                 </button>
               </div>
             ) : (
-              <p className="text-indigo-600 font-semibold">
+              <p className="text-indigo-600 font-semibold ml-4">
                 {displayActivities.length} activities planned for this day
               </p>
             )}
