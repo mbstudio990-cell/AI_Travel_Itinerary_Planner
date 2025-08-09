@@ -113,7 +113,7 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
       'Night (8:00 PM-Late)'
     ];
 
-    // Only consider selected activities when determining occupied slots
+    // Find time slots that have selected activities
     const occupiedSlots = new Set(existingActivities
       .filter(activity => activity.selected !== false)
       .map(activity => {
@@ -133,12 +133,12 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
       }
     }));
 
-    // Return occupied slots, or all slots if none are occupied
-    const occupied = allTimeSlots.filter(slot => occupiedSlots.has(slot));
-    return occupied.length > 0 ? occupied : allTimeSlots;
+    // Return unoccupied slots (time ranges without selected activities)
+    const unoccupiedSlots = allTimeSlots.filter(slot => !occupiedSlots.has(slot));
+    return unoccupiedSlots;
   };
 
-  const occupiedTimeSlots = getOccupiedTimeSlots();
+  const availableTimeSlots = getOccupiedTimeSlots();
 
   const handleSuggestionClick = (suggestion: any, timeSlot: string) => {
     const activity: Activity = {
@@ -211,48 +211,31 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
                 Add More Activities to Your Day
               </h3>
               <p className="text-gray-600">
-                Here are additional activity suggestions for your scheduled time slots in {destination}
+                Here are activity suggestions for available time slots in {destination}
               </p>
             </div>
 
-            {occupiedTimeSlots.length === 0 ? (
               <div className="text-center py-8">
                 <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                   <Clock className="h-8 w-8 text-blue-600" />
                 </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">No Activities Scheduled Yet</h4>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">All Time Slots Filled!</h4>
                 <p className="text-gray-600 mb-4">
-                  Start by adding some activities to see suggestions for those time slots.
+                  You have activities scheduled for all time ranges. Great planning!
                 </p>
                 <button
                   onClick={() => setShowCustomForm(true)}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
                 >
-                  Create Your First Activity
+                  Add Custom Activity
                 </button>
               </div>
             ) : (
               <>
-                {/* Occupied Time Slots with Additional Suggestions */}
+                {/* Available Time Slots with Suggestions */}
                 <div className="space-y-6">
-                  {occupiedTimeSlots.map((timeSlot) => {
+                  {availableTimeSlots.map((timeSlot) => {
                     const suggestions = getTimeBasedSuggestions(timeSlot, destination);
-                    const existingActivitiesInSlot = existingActivities.filter(activity => {
-                      const time = activity.time.toLowerCase();
-                      if (timeSlot === 'Early Morning (6:00-9:00 AM)') {
-                        return time.includes('6:') || time.includes('7:') || (time.includes('8:') && time.includes('am'));
-                      } else if (timeSlot === 'Morning (9:00 AM-12:00 PM)') {
-                        return time.includes('9:') || time.includes('10:') || (time.includes('11:') && time.includes('am'));
-                      } else if (timeSlot === 'Lunch Time (12:00-2:00 PM)') {
-                        return time.includes('12:') || (time.includes('1:') && time.includes('pm'));
-                      } else if (timeSlot === 'Afternoon (2:00-5:00 PM)') {
-                        return time.includes('2:') || time.includes('3:') || (time.includes('4:') && time.includes('pm'));
-                      } else if (timeSlot === 'Evening (5:00-8:00 PM)') {
-                        return time.includes('5:') || time.includes('6:') || (time.includes('7:') && time.includes('pm'));
-                      } else {
-                        return time.includes('8:') || time.includes('9:') || time.includes('10:') || time.includes('11:');
-                      }
-                    }).filter(activity => activity.selected !== false);
                     
                     return (
                       <div key={timeSlot} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
@@ -261,28 +244,13 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
                             <Clock className="h-4 w-4 mr-2" />
                             {timeSlot}
                           </div>
-                          <span className="text-orange-600 text-sm font-medium bg-orange-100 px-3 py-1 rounded-full">
-                            {existingActivitiesInSlot.length} activity(ies) scheduled
+                          <span className="text-green-600 text-sm font-medium bg-green-100 px-3 py-1 rounded-full">
+                            Available Time Slot
                           </span>
                         </h4>
                         
-                        {/* Show existing activities in this time slot */}
-                        {existingActivitiesInSlot.length > 0 && (
-                          <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                            <p className="text-sm font-medium text-gray-700 mb-2">Currently scheduled:</p>
-                            <div className="space-y-1">
-                              {existingActivitiesInSlot.map((activity, index) => (
-                                <div key={index} className="text-sm text-gray-600 flex items-center">
-                                  <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
-                                  {activity.time} - {activity.title}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        
                         <p className="text-gray-600 text-sm mb-4">
-                          Additional activity options for this time slot in {destination}:
+                          Perfect activities for this time slot in {destination}:
                         </p>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -326,7 +294,7 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
                                   📍 {destination}
                                 </div>
                                 <div className="text-xs text-blue-600 font-medium group-hover:text-blue-700">
-                                  Add as alternative →
+                                  Add to schedule →
                                 </div>
                               </div>
                               </div>
