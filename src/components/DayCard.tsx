@@ -98,13 +98,27 @@ const DayCard: React.FC<DayCardProps> = ({
     
     // If exiting manage mode (clicking Done), remove unselected activities
     if (!newManageMode && localManageMode) {
-      // Remove unselected activities from the data structure
+      // Remove ALL unselected activities from the data structure at once
       if (onToggleActivity) {
         const unselectedActivities = dayItinerary.activities.filter(activity => activity.selected === false);
-        unselectedActivities.forEach(activity => {
-          // Remove the activity by setting it as completely removed
-          onToggleActivity(dayItinerary.day, { ...activity, remove: true });
-        });
+        
+        // Create a batch removal by filtering out all unselected activities
+        const selectedActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
+        
+        // Signal to parent to replace the entire activities array with only selected ones
+        if (unselectedActivities.length > 0) {
+          onToggleActivity(dayItinerary.day, { 
+            title: '__BATCH_REMOVE_UNSELECTED__', 
+            time: '', 
+            description: '', 
+            location: '', 
+            costEstimate: '', 
+            tips: '', 
+            category: '',
+            batchRemove: true,
+            selectedActivities: selectedActivities
+          });
+        }
       }
       setHasBeenCustomized(true);
     }

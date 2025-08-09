@@ -13,6 +13,8 @@ export interface Activity {
   category: string;
   selected?: boolean;
   remove?: boolean;
+  batchRemove?: boolean;
+  selectedActivities?: Activity[];
 }
 
 export interface DayItinerary {

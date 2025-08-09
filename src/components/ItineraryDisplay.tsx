@@ -86,6 +86,11 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
           ? {
               ...day,
               activities: (() => {
+                // Handle batch removal of unselected activities
+                if (activity.batchRemove && activity.selectedActivities) {
+                  return activity.selectedActivities;
+                }
+                
                 // If activity has remove flag, completely remove it
                 if (activity.remove) {
                   return day.activities.filter(act => 
