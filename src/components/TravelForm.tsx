@@ -83,12 +83,8 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
   const [currentDestination, setCurrentDestination] = useState('');
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [showDestinationAlert, setShowDestinationAlert] = useState(false);
-  const [destinationAlertMessage, setDestinationAlertMessage] = useState('');
-  const [showDestinationAlert, setShowDestinationAlert] = useState(false);
-  const [destinationAlertMessage, setDestinationAlertMessage] = useState('');
-  const [showDestinationAlert, setShowDestinationAlert] = useState(false);
-  const [destinationAlertMessage, setDestinationAlertMessage] = useState('');
+  const [showDestinationDialog, setShowDestinationDialog] = useState(false);
+  const [destinationErrorMessage, setDestinationErrorMessage] = useState('');
 
   // Update form data when initialData changes (for editing)
   React.useEffect(() => {
@@ -97,18 +93,6 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
     }
   }, [initialData]);
 
-  // Validate destination input
-  const validateDestination = (destination: string): boolean => {
-    const trimmedDestination = destination.trim();
-    
-    // Check if empty
-    if (!trimmedDestination) {
-  // Validate destination input
-  const validateDestination = (destination: string): boolean => {
-    const trimmedDestination = destination.trim();
-    
-    // Check if empty
-    if (!trimmedDestination) {
   // Validate destination input
   const validateDestination = (destination: string): boolean => {
     const trimmedDestination = destination.trim();
@@ -564,7 +548,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
           </div>
         )}
       </AnimatePresence>
-    </>
+
       {/* Destination Validation Error Dialog */}
       <AnimatePresence>
         {showDestinationDialog && (
@@ -608,6 +592,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, loading, initialData 
           </div>
         )}
       </AnimatePresence>
+    </>
   );
 };
 
