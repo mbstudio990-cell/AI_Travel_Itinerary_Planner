@@ -257,6 +257,7 @@ const DayCard: React.FC<DayCardProps> = ({
         destination={destination}
         budget={budget}
         currency={currency}
+        existingActivities={dayItinerary.activities}
       />
 
       {/* Notes Modal */}

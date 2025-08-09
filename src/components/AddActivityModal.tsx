@@ -11,60 +11,58 @@ interface AddActivityModalProps {
   destination: string;
   budget: string;
   currency: string;
+  existingActivities: Activity[];
 }
 
-const ACTIVITY_SUGGESTIONS = [
-  {
-    category: 'Culture',
-    suggestions: [
-      'Visit Local Museum',
-      'Historic Walking Tour',
-      'Art Gallery Visit',
-      'Cultural Center Tour',
-      'Traditional Market Visit'
+// Time-based activity suggestions
+const getTimeBasedSuggestions = (timeSlot: string, destination: string) => {
+  const suggestions = {
+    'Early Morning (6:00-9:00 AM)': [
+      { category: 'Nature', title: 'Sunrise Viewpoint Visit', description: 'Watch the sunrise from the best viewpoint in the city' },
+      { category: 'Adventure', title: 'Morning Jog in City Park', description: 'Start your day with a refreshing jog through local parks' },
+      { category: 'Culture', title: 'Early Morning Temple Visit', description: 'Experience peaceful morning prayers and rituals' },
+      { category: 'Food', title: 'Local Breakfast Market', description: 'Try authentic breakfast dishes at the local market' },
+      { category: 'Adventure', title: 'Morning Yoga Session', description: 'Join a local yoga class or practice in a scenic location' }
+    ],
+    'Morning (9:00 AM-12:00 PM)': [
+      { category: 'Culture', title: 'Museum Visit', description: 'Explore the city\'s main museum with fewer crowds' },
+      { category: 'Culture', title: 'Historic Walking Tour', description: 'Join a guided tour of the historic district' },
+      { category: 'Adventure', title: 'City Bike Tour', description: 'Explore the city on two wheels with a guided tour' },
+      { category: 'Nature', title: 'Botanical Garden Visit', description: 'Stroll through beautiful gardens and green spaces' },
+      { category: 'Shopping', title: 'Local Artisan Market', description: 'Browse handmade crafts and local products' }
+    ],
+    'Lunch Time (12:00-2:00 PM)': [
+      { category: 'Food', title: 'Traditional Restaurant Experience', description: 'Enjoy authentic local cuisine at a recommended restaurant' },
+      { category: 'Food', title: 'Street Food Tour', description: 'Sample various street foods with a local guide' },
+      { category: 'Food', title: 'Rooftop Dining', description: 'Lunch with a view at a rooftop restaurant' },
+      { category: 'Food', title: 'Food Market Exploration', description: 'Discover local ingredients and try fresh foods' },
+      { category: 'Culture', title: 'Cooking Class', description: 'Learn to prepare local dishes in a hands-on class' }
+    ],
+    'Afternoon (2:00-5:00 PM)': [
+      { category: 'Culture', title: 'Art Gallery Visit', description: 'Explore contemporary and traditional art collections' },
+      { category: 'Adventure', title: 'Photography Walk', description: 'Capture the city\'s beauty with a photography tour' },
+      { category: 'Shopping', title: 'Shopping District Tour', description: 'Browse local shops and boutiques' },
+      { category: 'Culture', title: 'Cultural Center Visit', description: 'Learn about local traditions and history' },
+      { category: 'Nature', title: 'Scenic City Walk', description: 'Explore scenic neighborhoods and hidden gems' }
+    ],
+    'Evening (5:00-8:00 PM)': [
+      { category: 'Nature', title: 'Sunset Viewpoint', description: 'Watch the sunset from the city\'s best vantage point' },
+      { category: 'Culture', title: 'Evening Cultural Show', description: 'Attend a traditional music or dance performance' },
+      { category: 'Adventure', title: 'River/Harbor Cruise', description: 'Enjoy the city from the water during golden hour' },
+      { category: 'Food', title: 'Happy Hour & Local Drinks', description: 'Try local beverages and appetizers' },
+      { category: 'Shopping', title: 'Evening Market Visit', description: 'Experience the vibrant atmosphere of evening markets' }
+    ],
+    'Night (8:00 PM-Late)': [
+      { category: 'Food', title: 'Fine Dining Experience', description: 'Enjoy an upscale dinner at a renowned restaurant' },
+      { category: 'Culture', title: 'Night Walking Tour', description: 'Discover the city\'s nighttime charm and illuminated landmarks' },
+      { category: 'Adventure', title: 'Nightlife Experience', description: 'Experience local bars, clubs, or entertainment venues' },
+      { category: 'Culture', title: 'Night Market Visit', description: 'Browse night markets with food and shopping' },
+      { category: 'Nature', title: 'Stargazing Spot', description: 'Find a quiet spot to enjoy the night sky' }
     ]
-  },
-  {
-    category: 'Food',
-    suggestions: [
-      'Local Restaurant Experience',
-      'Street Food Tour',
-      'Cooking Class',
-      'Food Market Visit',
-      'Wine/Beer Tasting'
-    ]
-  },
-  {
-    category: 'Nature',
-    suggestions: [
-      'City Park Visit',
-      'Botanical Garden',
-      'Scenic Viewpoint',
-      'River/Lake Walk',
-      'Nature Trail'
-    ]
-  },
-  {
-    category: 'Adventure',
-    suggestions: [
-      'City Bike Tour',
-      'Boat Trip',
-      'Photography Walk',
-      'Adventure Sports',
-      'Outdoor Activity'
-    ]
-  },
-  {
-    category: 'Shopping',
-    suggestions: [
-      'Local Shopping District',
-      'Souvenir Shopping',
-      'Artisan Market',
-      'Mall Visit',
-      'Boutique Shopping'
-    ]
-  }
-];
+  };
+
+  return suggestions[timeSlot as keyof typeof suggestions] || [];
+};
 
 const getBudgetRange = (budget: string, currency: string) => {
   const ranges = {
@@ -90,7 +88,8 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
   dayNumber,
   destination,
   budget,
-  currency
+  currency,
+  existingActivities
 }) => {
   const [showCustomForm, setShowCustomForm] = useState(false);
   const [customActivity, setCustomActivity] = useState({
@@ -102,6 +101,39 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
     costEstimate: getBudgetRange(budget, currency),
     tips: ''
   });
+
+  // Calculate available time slots
+  const getAvailableTimeSlots = () => {
+    const allTimeSlots = [
+      'Early Morning (6:00-9:00 AM)',
+      'Morning (9:00 AM-12:00 PM)', 
+      'Lunch Time (12:00-2:00 PM)',
+      'Afternoon (2:00-5:00 PM)',
+      'Evening (5:00-8:00 PM)',
+      'Night (8:00 PM-Late)'
+    ];
+
+    const occupiedSlots = existingActivities.map(activity => {
+      const time = activity.time.toLowerCase();
+      if (time.includes('6:') || time.includes('7:') || time.includes('8:') && time.includes('am')) {
+        return 'Early Morning (6:00-9:00 AM)';
+      } else if (time.includes('9:') || time.includes('10:') || time.includes('11:') && time.includes('am')) {
+        return 'Morning (9:00 AM-12:00 PM)';
+      } else if (time.includes('12:') || time.includes('1:') && time.includes('pm')) {
+        return 'Lunch Time (12:00-2:00 PM)';
+      } else if (time.includes('2:') || time.includes('3:') || time.includes('4:') && time.includes('pm')) {
+        return 'Afternoon (2:00-5:00 PM)';
+      } else if (time.includes('5:') || time.includes('6:') || time.includes('7:') && time.includes('pm')) {
+        return 'Evening (5:00-8:00 PM)';
+      } else {
+        return 'Night (8:00 PM-Late)';
+      }
+    });
+
+    return allTimeSlots.filter(slot => !occupiedSlots.includes(slot));
+  };
+
+  const availableTimeSlots = getAvailableTimeSlots();
 
   const handleSuggestionClick = (suggestion: string, category: string) => {
     const activity: Activity = {
@@ -171,51 +203,115 @@ export const AddActivityModal: React.FC<AddActivityModalProps> = ({
           <div className="space-y-6">
             <div className="text-center mb-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Choose from suggestions or create your own
+                Add Activity Based on Available Time
               </h3>
               <p className="text-gray-600">
-                Select an activity that matches your interests for {destination}
+                Here are suggestions for your available time slots in {destination}
               </p>
             </div>
 
-            {/* Activity Suggestions */}
-            <div className="space-y-6">
-              {ACTIVITY_SUGGESTIONS.map((categoryGroup) => (
-                <div key={categoryGroup.category}>
-                  <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
-                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm mr-3">
-                      {categoryGroup.category}
-                    </span>
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {categoryGroup.suggestions.map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        onClick={() => handleSuggestionClick(suggestion, categoryGroup.category)}
-                        className="text-left p-4 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-md group"
-                      >
-                        <div className="font-medium text-gray-900 group-hover:text-blue-700 mb-1">
-                          {suggestion}
-                        </div>
-                        <div className="text-sm text-gray-600 group-hover:text-blue-600">
-                          {getBudgetRange(budget, currency)}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+            {availableTimeSlots.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="bg-yellow-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <Clock className="h-8 w-8 text-yellow-600" />
                 </div>
-              ))}
-            </div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">Day is Fully Scheduled!</h4>
+                <p className="text-gray-600 mb-4">
+                  All time slots are occupied. You can still create a custom activity or replace an existing one.
+                </p>
+                <button
+                  onClick={() => setShowCustomForm(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
+                >
+                  Create Custom Activity
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* Time-based Activity Suggestions */}
+                <div className="space-y-6">
+                  {availableTimeSlots.map((timeSlot) => {
+                    const suggestions = getTimeBasedSuggestions(timeSlot, destination);
+                    return (
+                      <div key={timeSlot}>
+                        <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
+                          <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm mr-3 flex items-center">
+                            <Clock className="h-4 w-4 mr-2" />
+                            {timeSlot}
+                          </div>
+                          <span className="text-green-600 text-sm">Available</span>
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {suggestions.map((suggestion) => (
+                            <button
+                              key={suggestion.title}
+                              onClick={() => {
+                                const timeMap = {
+                                  'Early Morning (6:00-9:00 AM)': '7:00 AM',
+                                  'Morning (9:00 AM-12:00 PM)': '10:00 AM',
+                                  'Lunch Time (12:00-2:00 PM)': '12:30 PM',
+                                  'Afternoon (2:00-5:00 PM)': '3:00 PM',
+                                  'Evening (5:00-8:00 PM)': '6:00 PM',
+                                  'Night (8:00 PM-Late)': '8:00 PM'
+                                };
+                                
+                                const activity: Activity = {
+                                  time: timeMap[timeSlot as keyof typeof timeMap],
+                                  title: suggestion.title,
+                                  description: suggestion.description,
+                                  location: `${destination}`,
+                                  category: suggestion.category,
+                                  costEstimate: getBudgetRange(budget, currency),
+                                  tips: 'Check opening hours and book in advance if needed.',
+                                  selected: true
+                                };
+                                
+                                onAddActivity(activity);
+                                onClose();
+                              }}
+                              className="text-left p-4 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-md group"
+                            >
+                              <div className="flex items-start justify-between mb-2">
+                                <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                  suggestion.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
+                                  suggestion.category === 'Food' ? 'bg-orange-100 text-orange-700' :
+                                  suggestion.category === 'Nature' ? 'bg-green-100 text-green-700' :
+                                  suggestion.category === 'Adventure' ? 'bg-red-100 text-red-700' :
+                                  'bg-blue-100 text-blue-700'
+                                }`}>
+                                  {suggestion.category}
+                                </span>
+                              </div>
+                              <div className="font-medium text-gray-900 group-hover:text-blue-700 mb-1">
+                                {suggestion.title}
+                              </div>
+                              <div className="text-sm text-gray-600 group-hover:text-blue-600 mb-2">
+                                {suggestion.description}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {getBudgetRange(budget, currency)}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
             
             {/* Custom Activity Button */}
-            <div className="pt-6 border-t border-gray-200">
-              <button
-                onClick={() => setShowCustomForm(true)}
-                className="w-full flex items-center justify-center space-x-3 p-6 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-105"
-              >
-                <Plus className="h-6 w-6 text-blue-600" />
-                <span className="font-semibold text-blue-600 text-lg">Create Custom Activity</span>
-              </button>
+            <div className="space-y-6">
+              <div className="pt-6 border-t border-gray-200">
+                <button
+                  onClick={() => setShowCustomForm(true)}
+                  className="w-full flex items-center justify-center space-x-3 p-6 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-105"
+                >
+                  <Plus className="h-6 w-6 text-blue-600" />
+                  <span className="font-semibold text-blue-600 text-lg">Create Custom Activity</span>
+                </button>
+              </div>
             </div>
           </div>
         ) : (
