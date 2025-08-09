@@ -18,6 +18,21 @@ interface DayCardProps {
   onToggleManageMode?: (dayNumber: number) => void;
 }
 
+const getPlaceholderImage = (category: string): string => {
+  const images = {
+    'food': 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'culture': 'https://images.pexels.com/photos/2901209/pexels-photo-2901209.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'nature': 'https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'adventure': 'https://images.pexels.com/photos/1365425/pexels-photo-1365425.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'shopping': 'https://images.pexels.com/photos/1488463/pexels-photo-1488463.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'history': 'https://images.pexels.com/photos/2901209/pexels-photo-2901209.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'art': 'https://images.pexels.com/photos/1839919/pexels-photo-1839919.jpeg?auto=compress&cs=tinysrgb&w=400',
+    'default': 'https://images.pexels.com/photos/1008155/pexels-photo-1008155.jpeg?auto=compress&cs=tinysrgb&w=400'
+  };
+  
+  return images[category.toLowerCase() as keyof typeof images] || images.default;
+};
+
 const DayCard: React.FC<DayCardProps> = ({ 
   dayItinerary, 
   itineraryId, 
@@ -404,6 +419,65 @@ const DayCard: React.FC<DayCardProps> = ({
                               ? 'border-blue-200 hover:border-blue-300' 
                               : 'border-gray-200 opacity-75'
                           }`}>
+                            {/* Activity Image */}
+                            <div className="relative h-32 overflow-hidden rounded-lg mb-4">
+                              <img
+                                src={getPlaceholderImage(activity.category)}
+                                alt={activity.title}
+                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = getPlaceholderImage('default');
+                                }}
+                              />
+                              
+                              {/* Category Badge Overlay */}
+                              <div className="absolute top-2 left-2">
+                                <span className={`text-xs px-2 py-1 rounded-full font-medium text-white shadow-lg ${
+                                  activity.category === 'Culture' ? 'bg-purple-600' :
+                                  activity.category === 'Food' ? 'bg-orange-600' :
+                                  activity.category === 'Nature' ? 'bg-green-600' :
+                                  activity.category === 'Adventure' ? 'bg-red-600' :
+                                  activity.category === 'Shopping' ? 'bg-pink-600' :
+                                  'bg-blue-600'
+                                }`}>
+                                  {activity.category}
+                                </span>
+                              </div>
+
+                              {/* Cost Badge Overlay */}
+                              <div className="absolute top-2 right-2">
+                                <div className="bg-white bg-opacity-95 backdrop-blur-sm px-2 py-1 rounded-lg shadow-lg">
+                                  <span className="text-xs font-semibold text-green-700">{activity.costEstimate}</span>
+                                </div>
+                              </div>
+
+                              {/* Manage Checkbox Overlay */}
+                              {isInManageMode && (
+                                <div className="absolute bottom-2 right-2">
+                                  <div
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleToggleActivity(activity);
+                                    }}
+                                    className="flex items-center justify-center cursor-pointer"
+                                    title={activity.selected !== false ? "Remove from itinerary" : "Add to itinerary"}
+                                  >
+                                    <div className={`w-6 h-6 border-2 rounded-md flex items-center justify-center transition-all duration-200 hover:scale-110 backdrop-blur-sm ${
+                                      activity.selected !== false
+                                        ? 'bg-green-500 bg-opacity-95 border-green-500 hover:bg-green-600 hover:border-green-600 shadow-lg'
+                                        : 'border-white bg-white bg-opacity-90 hover:border-green-400 bg-white'
+                                    }`}>
+                                      {activity.selected !== false && (
+                                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                        </svg>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                             {/* Activity Header */}
                             <div className="flex items-start justify-between mb-3">
                               <div className="flex-1">
@@ -412,16 +486,6 @@ const DayCard: React.FC<DayCardProps> = ({
                                   <div className="bg-blue-100 px-3 py-1 rounded-full">
                                     <span className="text-sm font-semibold text-blue-700">{activity.time}</span>
                                   </div>
-                                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                                    activity.category === 'Culture' ? 'bg-purple-100 text-purple-700' :
-                                    activity.category === 'Food' ? 'bg-orange-100 text-orange-700' :
-                                    activity.category === 'Nature' ? 'bg-green-100 text-green-700' :
-                                    activity.category === 'Adventure' ? 'bg-red-100 text-red-700' :
-                                    activity.category === 'Shopping' ? 'bg-pink-100 text-pink-700' :
-                                    'bg-blue-100 text-blue-700'
-                                  }`}>
-                                    {activity.category}
-                                  </span>
                                 </div>
 
                                 {/* Activity Title */}
@@ -444,10 +508,6 @@ const DayCard: React.FC<DayCardProps> = ({
 
                               {/* Cost and Manage Controls */}
                               <div className="flex items-center space-x-3">
-                                {/* Cost Badge */}
-                                <div className="bg-green-50 px-3 py-1 rounded-lg border border-green-200">
-                                  <span className="text-sm font-semibold text-green-700">{activity.costEstimate}</span>
-                                </div>
 
                                 {/* Manage Checkbox */}
                                 {isInManageMode && (
