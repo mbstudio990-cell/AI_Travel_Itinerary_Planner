@@ -1,21 +1,25 @@
 import React from 'react';
-import { Clock, MapPin, DollarSign, Lightbulb, Camera, Utensils, Mountain, Palette, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { Clock, MapPin, DollarSign, Lightbulb, Camera, Utensils, Mountain, Palette, ChevronDown, ChevronUp, Plus, Minus } from 'lucide-react';
 import { Activity } from '../types';
 
 interface ActivityCardProps {
   activity: Activity;
   isExpanded: boolean;
   onToggle: () => void;
-  onActivityToggle?: (activity: Activity) => void;
-  showSelection?: boolean;
+  onAddActivity?: (activity: Activity) => void;
+  onRemoveActivity?: (activity: Activity) => void;
+  showAddRemove?: boolean;
+  isAdded?: boolean;
 }
 
 const ActivityCard: React.FC<ActivityCardProps> = ({ 
   activity, 
   isExpanded, 
   onToggle, 
-  onActivityToggle,
-  showSelection = false 
+  onAddActivity,
+  onRemoveActivity,
+  showAddRemove = false,
+  isAdded = true
 }) => {
   const getCategoryIcon = (category: string) => {
     const iconClass = "h-5 w-5 text-white";
@@ -38,37 +42,51 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
     }
   };
 
-  const handleActivityToggle = (e: React.MouseEvent) => {
+  const handleAddActivity = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onActivityToggle) {
-      onActivityToggle({ ...activity, selected: !activity.selected });
+    if (onAddActivity) {
+      onAddActivity(activity);
     }
   };
 
-  const isSelected = activity.selected !== false; // Default to true if not specified
+  const handleRemoveActivity = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onRemoveActivity) {
+      onRemoveActivity(activity);
+    }
+  };
+
 
   return (
     <div className={`bg-white border rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer ${
-      showSelection 
-        ? isSelected 
-          ? 'border-blue-300 bg-blue-50' 
+      showAddRemove 
+        ? isAdded 
+          ? 'border-green-300 bg-green-50' 
           : 'border-gray-300 bg-gray-50 opacity-75'
         : 'border-gray-200 hover:border-blue-300 hover:scale-105'
     }`}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-4">
-          {showSelection && (
-            <button
-              onClick={handleActivityToggle}
-              className={`flex items-center justify-center w-6 h-6 rounded-full border-2 transition-all duration-200 ${
-                isSelected
-                  ? 'bg-blue-600 border-blue-600 text-white'
-                  : 'border-gray-300 hover:border-blue-400 bg-white'
-              }`}
-              title={isSelected ? 'Click to remove from itinerary' : 'Click to add to itinerary'}
-            >
-              {isSelected && <Check className="h-3 w-3" />}
-            </button>
+          {showAddRemove && (
+            <div className="flex flex-col space-y-2">
+              {!isAdded ? (
+                <button
+                  onClick={handleAddActivity}
+                  className="flex items-center justify-center w-8 h-8 rounded-full bg-green-600 hover:bg-green-700 text-white transition-all duration-200 hover:scale-110"
+                  title="Add to itinerary"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleRemoveActivity}
+                  className="flex items-center justify-center w-8 h-8 rounded-full bg-red-600 hover:bg-red-700 text-white transition-all duration-200 hover:scale-110"
+                  title="Remove from itinerary"
+                >
+                  <Minus className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           )}
           <div className={`${getCategoryColor(activity.category)} p-3 rounded-xl shadow-sm`}>
             {getCategoryIcon(activity.category)}

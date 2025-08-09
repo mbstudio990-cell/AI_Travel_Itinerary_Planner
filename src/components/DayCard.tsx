@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, DollarSign, ChevronDown, ChevronUp, MapPin, FileText, Edit3 } from 'lucide-react';
-import { DayItinerary } from '../types';
+import { DayItinerary, Activity } from '../types';
 import ActivityCard from './ActivityCard';
 import { NotesModal } from './NotesModal';
 import { loadItineraryNotes } from '../utils/storage';
@@ -9,16 +9,18 @@ interface DayCardProps {
   dayItinerary: DayItinerary;
   itineraryId?: string;
   onSaveNotes?: (dayNumber: number, notes: string) => void;
-  onActivityToggle?: (dayNumber: number, activity: Activity) => void;
-  showActivitySelection?: boolean;
+  onAddActivity?: (dayNumber: number, activity: Activity) => void;
+  onRemoveActivity?: (dayNumber: number, activity: Activity) => void;
+  showAddRemove?: boolean;
 }
 
 const DayCard: React.FC<DayCardProps> = ({ 
   dayItinerary, 
   itineraryId, 
   onSaveNotes,
-  onActivityToggle,
-  showActivitySelection = false 
+  onAddActivity,
+  onRemoveActivity,
+  showAddRemove = false 
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedActivities, setExpandedActivities] = useState<Set<number>>(new Set());
@@ -61,16 +63,22 @@ const DayCard: React.FC<DayCardProps> = ({
     }
   };
 
-  const handleActivityToggle = (activity: Activity) => {
-    if (onActivityToggle) {
-      onActivityToggle(dayItinerary.day, activity);
+  const handleAddActivity = (activity: Activity) => {
+    if (onAddActivity) {
+      onAddActivity(dayItinerary.day, activity);
+    }
+  };
+
+  const handleRemoveActivity = (activity: Activity) => {
+    if (onRemoveActivity) {
+      onRemoveActivity(dayItinerary.day, activity);
     }
   };
 
   // Use current notes state instead of dayItinerary.notes
   const displayNotes = currentNotes || dayItinerary.notes;
 
-  const selectedActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
+  const addedActivities = dayItinerary.activities.filter(activity => activity.selected !== false);
   const totalActivities = dayItinerary.activities.length;
 
   return (
@@ -119,7 +127,7 @@ const DayCard: React.FC<DayCardProps> = ({
             <div className="text-right">
               <div className="text-sm text-white font-medium mb-1">Activities</div>
               <div className="text-xl font-bold text-white">
-                {showActivitySelection ? `${selectedActivities.length}/${totalActivities}` : dayItinerary.activities.length}
+                {showAddRemove ? `${addedActivities.length}/${totalActivities}` : dayItinerary.activities.length}
               </div>
             </div>
             <button
@@ -168,14 +176,14 @@ const DayCard: React.FC<DayCardProps> = ({
         <div className="p-6 bg-gray-50">
           <div className="mb-4">
             <p className="text-indigo-600 font-semibold text-center">
-              {showActivitySelection 
-                ? `${selectedActivities.length} of ${totalActivities} activities selected for this day`
+              {showAddRemove 
+                ? `${addedActivities.length} of ${totalActivities} activities added to this day`
                 : `${dayItinerary.activities.length} activities planned for this day`
               }
             </p>
-            {showActivitySelection && (
+            {showAddRemove && (
               <p className="text-sm text-gray-600 text-center mt-1">
-                Click the circles to add/remove activities from your itinerary
+                Use the + and - buttons to add/remove activities from your itinerary
               </p>
             )}
           </div>
@@ -187,8 +195,10 @@ const DayCard: React.FC<DayCardProps> = ({
                 activity={activity}
                 isExpanded={expandedActivities.has(index)}
                 onToggle={() => toggleActivity(index)}
-                onActivityToggle={handleActivityToggle}
-                showSelection={showActivitySelection}
+                onAddActivity={handleAddActivity}
+                onRemoveActivity={handleRemoveActivity}
+                showAddRemove={showAddRemove}
+                isAdded={activity.selected !== false}
               />
             ))}
           </div>

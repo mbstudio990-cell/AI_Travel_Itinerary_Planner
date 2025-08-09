@@ -1,8 +1,8 @@
 import React from 'react';
-import { Share2, Save, Download, MapPin, Calendar, DollarSign, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown, BookOpen, Settings } from 'lucide-react';
+import { Share2, Save, Download, MapPin, Calendar, DollarSign, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown, BookOpen, Settings, CheckCircle } from 'lucide-react';
 import { Itinerary } from '../types';
 import DayCard from './DayCard';
-import { saveItinerary, shareItinerary, updateItineraryNotes } from '../utils/storage';
+import { saveItinerary, shareItinerary, updateItineraryNotes, getItineraries } from '../utils/storage';
 import { generatePDF } from '../utils/pdfGenerator';
 import { TravelSummaryModal } from './TravelSummaryModal';
 
@@ -17,13 +17,35 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
   const [showShareMenu, setShowShareMenu] = React.useState(false);
   const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
   const [showTravelSummary, setShowTravelSummary] = React.useState(false);
-  const [showActivitySelection, setShowActivitySelection] = React.useState(false);
+  const [showAddRemove, setShowAddRemove] = React.useState(false);
+  const [autoSaveStatus, setAutoSaveStatus] = React.useState<'idle' | 'saving' | 'saved'>('idle');
 
   // Update current itinerary when prop changes
   React.useEffect(() => {
     setCurrentItinerary(itinerary);
   }, [itinerary]);
 
+  // Auto-save function
+  const autoSaveItinerary = React.useCallback(async (updatedItinerary: Itinerary) => {
+    setAutoSaveStatus('saving');
+    try {
+      // Check if this itinerary exists in saved itineraries
+      const savedItineraries = getItineraries();
+      const existingItinerary = savedItineraries.find(saved => saved.id === updatedItinerary.id);
+      
+      if (existingItinerary) {
+        // Auto-save if it's already saved
+        saveItinerary(updatedItinerary);
+        setAutoSaveStatus('saved');
+        
+        // Reset status after 2 seconds
+        setTimeout(() => setAutoSaveStatus('idle'), 2000);
+      }
+    } catch (error) {
+      console.error('Auto-save failed:', error);
+      setAutoSaveStatus('idle');
+    }
+  }, []);
   const handleSave = () => {
     saveItinerary(currentItinerary);
     onSave();
@@ -52,9 +74,12 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     if (onUpdate) {
       onUpdate(updatedItinerary);
     }
+
+    // Auto-save the itinerary
+    autoSaveItinerary(updatedItinerary);
   };
 
-  const handleActivityToggle = (dayNumber: number, activity: Activity) => {
+  const handleAddActivity = (dayNumber: number, activity: Activity) => {
     const updatedItinerary = {
       ...currentItinerary,
       days: currentItinerary.days.map(day => 
@@ -63,7 +88,7 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
               ...day,
               activities: day.activities.map(act => 
                 act.title === activity.title && act.time === activity.time
-                  ? { ...act, selected: activity.selected }
+                  ? { ...act, selected: true }
                   : act
               )
             }
@@ -77,6 +102,37 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
     if (onUpdate) {
       onUpdate(updatedItinerary);
     }
+
+    // Auto-save the itinerary
+    autoSaveItinerary(updatedItinerary);
+  };
+
+  const handleRemoveActivity = (dayNumber: number, activity: Activity) => {
+    const updatedItinerary = {
+      ...currentItinerary,
+      days: currentItinerary.days.map(day => 
+        day.day === dayNumber 
+          ? {
+              ...day,
+              activities: day.activities.map(act => 
+                act.title === activity.title && act.time === activity.time
+                  ? { ...act, selected: false }
+                  : act
+              )
+            }
+          : day
+      )
+    };
+    
+    setCurrentItinerary(updatedItinerary);
+    
+    // Notify parent component of the update
+    if (onUpdate) {
+      onUpdate(updatedItinerary);
+    }
+
+    // Auto-save the itinerary
+    autoSaveItinerary(updatedItinerary);
   };
 
   const getShareText = () => {
@@ -297,6 +353,29 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
 
         {/* Action Buttons */}
         <div className="px-8 py-6">
+          {/* Auto-save Status */}
+          {autoSaveStatus !== 'idle' && (
+            <div className="flex justify-center mb-4">
+              <div className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium ${
+                autoSaveStatus === 'saving' 
+                  ? 'bg-yellow-100 text-yellow-800' 
+                  : 'bg-green-100 text-green-800'
+              }`}>
+                {autoSaveStatus === 'saving' ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-600"></div>
+                    <span>Auto-saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="h-4 w-4" />
+                    <span>Auto-saved!</span>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-wrap justify-center gap-4">
             <button
               onClick={onEdit}
@@ -307,15 +386,15 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             </button>
             
             <button
-              onClick={() => setShowActivitySelection(!showActivitySelection)}
+              onClick={() => setShowAddRemove(!showAddRemove)}
               className={`flex items-center space-x-2 px-6 py-3 rounded-xl transition-colors font-medium ${
-                showActivitySelection
+                showAddRemove
                   ? 'bg-purple-600 hover:bg-purple-700 text-white'
                   : 'bg-purple-500 hover:bg-purple-600 text-white'
               }`}
             >
               <Settings className="h-5 w-5" />
-              <span>{showActivitySelection ? 'Done Customizing' : 'Customize Activities'}</span>
+              <span>{showAddRemove ? 'Done Managing' : 'Manage Activities'}</span>
             </button>
             
             <button
@@ -425,8 +504,9 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
             dayItinerary={day} 
             itineraryId={currentItinerary.id}
             onSaveNotes={handleSaveNotes}
-            onActivityToggle={handleActivityToggle}
-            showActivitySelection={showActivitySelection}
+            onAddActivity={handleAddActivity}
+            onRemoveActivity={handleRemoveActivity}
+            showAddRemove={showAddRemove}
           />
         ))}
       </div>
