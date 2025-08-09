@@ -54,7 +54,15 @@ function App() {
       console.log('Calling generateItinerary...');
       const itinerary = await generateItinerary(formData);
       console.log('Itinerary generated successfully:', itinerary);
-      setCurrentItinerary(itinerary);
+      
+      // If we're editing an existing itinerary, preserve the original ID
+      const finalItinerary = currentItinerary ? {
+        ...itinerary,
+        id: currentItinerary.id,
+        createdAt: currentItinerary.createdAt
+      } : itinerary;
+      
+      setCurrentItinerary(finalItinerary);
       setAppState('itinerary');
     } catch (error) {
       console.error('Error generating itinerary:', error);
@@ -81,6 +89,7 @@ function App() {
   };
 
   const handleBackToForm = () => {
+    // Clear current itinerary when going back to form for a new trip
     setCurrentItinerary(null);
     setAppState('form');
   };
