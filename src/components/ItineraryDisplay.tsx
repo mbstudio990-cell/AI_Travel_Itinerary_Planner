@@ -1,9 +1,10 @@
 import React from 'react';
-import { Share2, Save, Download, MapPin, Calendar, DollarSign, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown } from 'lucide-react';
+import { Share2, Save, Download, MapPin, Calendar, DollarSign, Mail, MessageCircle, Send, Facebook, Edit, Heart, Clock, Users, FileDown, BookOpen } from 'lucide-react';
 import { Itinerary } from '../types';
 import DayCard from './DayCard';
 import { saveItinerary, shareItinerary, updateItineraryNotes } from '../utils/storage';
 import { generatePDF } from '../utils/pdfGenerator';
+import { TravelSummaryModal } from './TravelSummaryModal';
 
 interface ItineraryDisplayProps {
   itinerary: Itinerary;
@@ -15,6 +16,7 @@ interface ItineraryDisplayProps {
 const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, onEdit, onUpdate }) => {
   const [showShareMenu, setShowShareMenu] = React.useState(false);
   const [currentItinerary, setCurrentItinerary] = React.useState(itinerary);
+  const [showTravelSummary, setShowTravelSummary] = React.useState(false);
 
   // Update current itinerary when prop changes
   React.useEffect(() => {
@@ -210,6 +212,14 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
         <div className="px-8 py-6">
           <div className="flex flex-wrap justify-center gap-4">
             <button
+              onClick={() => setShowTravelSummary(true)}
+              className="flex items-center space-x-2 px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl transition-colors font-medium"
+            >
+              <BookOpen className="h-5 w-5" />
+              <span>View Travel Summary</span>
+            </button>
+            
+            <button
               onClick={onEdit}
               className="flex items-center space-x-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl transition-colors font-medium"
             >
@@ -308,6 +318,13 @@ const ItineraryDisplay: React.FC<ItineraryDisplayProps> = ({ itinerary, onSave, 
           onClick={() => setShowShareMenu(false)}
         />
       )}
+
+      {/* Travel Summary Modal */}
+      <TravelSummaryModal
+        isOpen={showTravelSummary}
+        onClose={() => setShowTravelSummary(false)}
+        itinerary={currentItinerary}
+      />
 
       {/* Daily Itineraries */}
       <div className="space-y-6">
