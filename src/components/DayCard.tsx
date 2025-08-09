@@ -35,6 +35,7 @@ const DayCard: React.FC<DayCardProps> = ({
   const [currentNotes, setCurrentNotes] = useState(dayItinerary.notes || '');
   const [showAddActivityModal, setShowAddActivityModal] = useState(false);
   const [localManageMode, setLocalManageMode] = useState(false);
+  const [hasBeenCustomized, setHasBeenCustomized] = useState(false);
 
   // Load notes from Supabase when component mounts
   useEffect(() => {
@@ -55,10 +56,22 @@ const DayCard: React.FC<DayCardProps> = ({
     loadNotes();
   }, [itineraryId, dayItinerary.day]);
 
-  // In manage mode, show all activities. In view mode, show only selected activities
+  // Track if activities have been customized
+  useEffect(() => {
+    const hasUnselectedActivities = dayItinerary.activities.some(activity => activity.selected === false);
+    if (hasUnselectedActivities) {
+      setHasBeenCustomized(true);
+    }
+  }, [dayItinerary.activities]);
+
+  // In manage mode, show all activities if never customized, otherwise show only selected
+  // In view mode, always show only selected activities
   const isInManageMode = showManage || localManageMode;
   const displayActivities = isInManageMode 
-    ? dayItinerary.activities 
+    ? (hasBeenCustomized 
+        ? dayItinerary.activities.filter(activity => activity.selected !== false)
+        : dayItinerary.activities
+      )
     : dayItinerary.activities.filter(activity => activity.selected !== false);
   
   const toggleActivity = (index: number) => {
@@ -85,7 +98,13 @@ const DayCard: React.FC<DayCardProps> = ({
   };
 
   const handleToggleLocalManage = () => {
-    setLocalManageMode(!localManageMode);
+    const newManageMode = !localManageMode;
+    setLocalManageMode(newManageMode);
+    
+    // If exiting manage mode (clicking Done), mark as customized
+    if (!newManageMode && localManageMode) {
+      setHasBeenCustomized(true);
+    }
   };
 
   // Use current notes state instead of dayItinerary.notes
