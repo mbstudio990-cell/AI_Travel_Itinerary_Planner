@@ -63,30 +63,6 @@ function App() {
       return;
     }
     
-    // Check for password reset
-    const type = urlParams.get('type');
-    const accessToken = urlParams.get('access_token');
-    const isEmailLink = type === 'recovery' || type === 'signup' || accessToken;
-    
-    // Skip animation for email links
-    if (isEmailLink) {
-      setShowMainContent(true);
-    }
-    
-    if (type === 'recovery' && accessToken) {
-      // This is a password reset link, show the reset page
-      return;
-    }
-    
-    // Check for email confirmation
-    if (accessToken && type === 'signup') {
-      setShowMainContent(true);
-      setShowEmailConfirmation(true);
-      // Clean up URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-      return;
-    }
-    
     // Check if this is a shared itinerary URL
     const path = window.location.pathname;
     if (path.startsWith('/share/')) {
