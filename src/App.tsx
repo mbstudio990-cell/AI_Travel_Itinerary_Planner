@@ -37,21 +37,23 @@ function App() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    const currentPath = window.location.pathname;
     setSavedItineraries(getItineraries());
     
-    // Check for password reset
+    // Check for password reset - both URL params and path
     const type = urlParams.get('type');
     const accessToken = urlParams.get('access_token');
     const refreshToken = urlParams.get('refresh_token');
-    const isEmailLink = type === 'recovery' || type === 'signup' || accessToken;
+    const isPasswordResetPath = currentPath === '/reset-password';
+    const isEmailLink = type === 'recovery' || type === 'signup' || accessToken || isPasswordResetPath;
     
     // Skip animation for email links
     if (isEmailLink) {
       setShowMainContent(true);
     }
     
-    // Check for password reset - this should return early to show PasswordResetPage
-    if (type === 'recovery' && accessToken && refreshToken) {
+    // Check for password reset - check both URL params and path
+    if ((type === 'recovery' && accessToken && refreshToken) || isPasswordResetPath) {
       // This is a password reset link, show the reset page
       console.log('Password reset detected, should show PasswordResetPage');
       return;
@@ -156,7 +158,8 @@ function App() {
 
   // Check if this is a password reset page
   const urlParams = new URLSearchParams(window.location.search);
-  const isPasswordReset = urlParams.get('type') === 'recovery' && urlParams.get('access_token');
+  const currentPath = window.location.pathname;
+  const isPasswordReset = (urlParams.get('type') === 'recovery' && urlParams.get('access_token')) || currentPath === '/reset-password';
   
   if (isPasswordReset) {
     return <PasswordResetPage />;
