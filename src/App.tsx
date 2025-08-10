@@ -40,16 +40,18 @@ function App() {
     const currentPath = window.location.pathname;
     setSavedItineraries(getItineraries());
     
-    // Check for password reset - both URL params and path
+    // Check for email links (confirmation, reset, etc.)
     const type = urlParams.get('type');
     const accessToken = urlParams.get('access_token');
     const refreshToken = urlParams.get('refresh_token');
     const isPasswordResetPath = currentPath === '/reset-password';
-    const isEmailLink = type === 'recovery' || type === 'signup' || accessToken || isPasswordResetPath;
+    const isEmailLink = type === 'recovery' || type === 'signup' || accessToken || refreshToken || isPasswordResetPath;
     
     // Skip animation for email links
     if (isEmailLink) {
       setShowMainContent(true);
+      setShowSubtitle(true);
+      setFadeOutText(false);
     }
     
     // Check for password reset - check both URL params and path
