@@ -7,7 +7,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIU
 // Create Supabase client with auth configuration
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    redirectTo: 'https://darling-fenglisu-95b8df.netlify.app'
+    redirectTo: window.location.origin
   }
 });
 
