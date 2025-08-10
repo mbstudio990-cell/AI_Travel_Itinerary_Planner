@@ -214,7 +214,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: 'https://darling-fenglisu-95b8df.netlify.app/reset-password',
       });
 
       if (error) throw error;
