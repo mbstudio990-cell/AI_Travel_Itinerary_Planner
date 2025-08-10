@@ -36,12 +36,18 @@ function App() {
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
     setSavedItineraries(getItineraries());
     
     // Check for password reset
-    const urlParams = new URLSearchParams(window.location.search);
     const type = urlParams.get('type');
     const accessToken = urlParams.get('access_token');
+    const isEmailLink = type === 'recovery' || type === 'signup' || accessToken;
+    
+    // Skip animation for email links
+    if (isEmailLink) {
+      setShowMainContent(true);
+    }
     
     if (type === 'recovery' && accessToken) {
       // This is a password reset link, show the reset page
@@ -50,6 +56,7 @@ function App() {
     
     // Check for email confirmation
     if (accessToken && type === 'signup') {
+      setShowMainContent(true);
       setShowEmailConfirmation(true);
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -59,6 +66,7 @@ function App() {
     // Check if this is a shared itinerary URL
     const path = window.location.pathname;
     if (path.startsWith('/share/')) {
+      setShowMainContent(true); // Skip animation for shared links too
       const encodedData = path.replace('/share/', '');
       try {
         // Decode URL-safe base64
@@ -134,7 +142,6 @@ function App() {
         setSharedItinerary(reconstructedItinerary);
         }
         setAppState('shared');
-        setShowMainContent(true); // Skip the typing animation for shared links
       } catch (error) {
         console.error('Error decoding shared itinerary:', error);
         // If decoding fails, show normal form
