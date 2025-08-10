@@ -42,6 +42,7 @@ function App() {
     // Check for password reset
     const type = urlParams.get('type');
     const accessToken = urlParams.get('access_token');
+    const refreshToken = urlParams.get('refresh_token');
     const isEmailLink = type === 'recovery' || type === 'signup' || accessToken;
     
     // Skip animation for email links
@@ -49,8 +50,10 @@ function App() {
       setShowMainContent(true);
     }
     
-    if (type === 'recovery' && accessToken) {
+    // Check for password reset - this should return early to show PasswordResetPage
+    if (type === 'recovery' && accessToken && refreshToken) {
       // This is a password reset link, show the reset page
+      console.log('Password reset detected, should show PasswordResetPage');
       return;
     }
     
