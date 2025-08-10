@@ -83,6 +83,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
         email,
         password,
         options: {
+          emailRedirectTo: 'https://darling-fenglisu-95b8df.netlify.app',
           data: {
             full_name: fullName,
           }
