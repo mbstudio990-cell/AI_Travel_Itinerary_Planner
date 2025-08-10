@@ -15,6 +15,7 @@ import SharedItineraryView from './components/SharedItineraryView';
 import { Dialog } from './components/ui/Dialog';
 import { useDialog } from './hooks/useDialog';
 import { EmailConfirmation } from './components/EmailConfirmation';
+import { PasswordResetPage } from './components/PasswordResetPage';
 
 type AppState = 'form' | 'loading' | 'itinerary' | 'saved' | 'shared';
 
@@ -37,11 +38,17 @@ function App() {
   useEffect(() => {
     setSavedItineraries(getItineraries());
     
-    // Check for email confirmation
+    // Check for password reset
     const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get('access_token');
     const type = urlParams.get('type');
+    const accessToken = urlParams.get('access_token');
     
+    if (type === 'recovery' && accessToken) {
+      // This is a password reset link, show the reset page
+      return;
+    }
+    
+    // Check for email confirmation
     if (accessToken && type === 'signup') {
       setShowEmailConfirmation(true);
       // Clean up URL
@@ -135,6 +142,14 @@ function App() {
       }
     }
   }, []);
+
+  // Check if this is a password reset page
+  const urlParams = new URLSearchParams(window.location.search);
+  const isPasswordReset = urlParams.get('type') === 'recovery' && urlParams.get('access_token');
+  
+  if (isPasswordReset) {
+    return <PasswordResetPage />;
+  }
 
   const handleFormSubmit = async (formData: FormData) => {
     console.log('handleFormSubmit called with:', formData);
